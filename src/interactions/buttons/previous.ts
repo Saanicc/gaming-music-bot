@@ -4,8 +4,8 @@ import {
   ChatInputCommandInteraction,
 } from "discord.js";
 import { useQueue } from "discord-player";
-import { buildMessage } from "../../utils/bot-message/buildMessage";
-import { emoji } from "../../utils/constants/emojis";
+import { buildMessage } from "@/utils/bot-message/buildMessage";
+import { emoji } from "@/utils/constants/emojis";
 
 export const previousButton = new ButtonBuilder()
   .setCustomId("previous")

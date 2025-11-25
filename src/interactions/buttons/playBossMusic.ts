@@ -1,6 +1,6 @@
 import { ButtonBuilder, ButtonInteraction, ButtonStyle } from "discord.js";
 import { execute as playBossMusic } from "../commands/playBossMusic";
-import { emoji } from "../../utils/constants/emojis";
+import { emoji } from "@/utils/constants/emojis";
 
 export const bossMusicButton = new ButtonBuilder()
   .setCustomId("playBossMusic")

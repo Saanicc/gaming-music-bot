@@ -1,6 +1,6 @@
 import { ChatInputCommandInteraction, SlashCommandBuilder } from "discord.js";
 import { useQueue } from "discord-player";
-import { buildMessage } from "../../utils/bot-message/buildMessage";
+import { buildMessage } from "@/utils/bot-message/buildMessage";
 
 export const data = new SlashCommandBuilder()
   .setName("skip")

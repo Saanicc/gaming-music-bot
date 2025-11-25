@@ -1,4 +1,4 @@
-import config from "../../bot-config.json";
+import config from "@/bot-config.json";
 
 export interface RankDefinition {
   minLevel: number;

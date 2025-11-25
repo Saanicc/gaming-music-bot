@@ -1,7 +1,7 @@
 import { Player, Track } from "discord-player";
 import { User } from "discord.js";
 import { getSearchEngine } from "./getSearchEngine";
-import { BossTrack, TrackType } from "../../models/BossTrack";
+import { BossTrack, TrackType } from "@/models/BossTrack";
 
 export const getBossTracks = async (
   type: TrackType,

@@ -1,5 +1,5 @@
 import { User, UserType } from "../models/User";
-import config from "../../bot-config.json";
+import config from "@/bot-config.json";
 
 export type XPGrantingCommand = "play_boss_music" | "play";
 

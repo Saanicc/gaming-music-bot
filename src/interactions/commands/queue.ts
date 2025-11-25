@@ -4,9 +4,9 @@ import {
   SlashCommandBuilder,
 } from "discord.js";
 import { useQueue } from "discord-player";
-import { buildMessage } from "../../utils/bot-message/buildMessage";
-import { getFormattedTrackDescription } from "../../utils/helpers/getFormattedTrackDescription";
-import { emoji } from "../../utils/constants/emojis";
+import { buildMessage } from "@/utils/bot-message/buildMessage";
+import { getFormattedTrackDescription } from "@/utils/helpers/getFormattedTrackDescription";
+import { emoji } from "@/utils/constants/emojis";
 
 export const data = new SlashCommandBuilder()
   .setName("queue")

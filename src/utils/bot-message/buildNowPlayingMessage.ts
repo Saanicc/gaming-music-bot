@@ -10,17 +10,17 @@ import {
   TextDisplayBuilder,
   ThumbnailBuilder,
 } from "discord.js";
-import { victoryButton } from "../../interactions/buttons/victory";
-import { bossMusicButton } from "../../interactions/buttons/playBossMusic";
-import { stopButton } from "../../interactions/buttons/stop";
+import { victoryButton } from "@/interactions/buttons/victory";
+import { bossMusicButton } from "@/interactions/buttons/playBossMusic";
+import { stopButton } from "@/interactions/buttons/stop";
 import { colors } from "../constants/colors";
-import { queueManager } from "../../services/queueManager";
-import { pauseButton } from "../../interactions/buttons/pause";
-import { resumeButton } from "../../interactions/buttons/resume";
+import { queueManager } from "@/services/queueManager";
+import { pauseButton } from "@/interactions/buttons/pause";
+import { resumeButton } from "@/interactions/buttons/resume";
 import { getFormattedTrackDescription } from "../helpers/getFormattedTrackDescription";
-import { queueButton } from "../../interactions/buttons/queue";
-import { nextButton } from "../../interactions/buttons/next";
-import { previousButton } from "../../interactions/buttons/previous";
+import { queueButton } from "@/interactions/buttons/queue";
+import { nextButton } from "@/interactions/buttons/next";
+import { previousButton } from "@/interactions/buttons/previous";
 import { emoji } from "../constants/emojis";
 import { getThumbnail } from "../helpers/utils";
 
@@ -107,5 +107,6 @@ ${progressBar}
   return {
     flags: MessageFlags.IsComponentsV2,
     components: [container],
+    allowedMentions: { repliedUser: false },
   };
 };

@@ -1,13 +1,13 @@
-import { User } from "../../models/User";
+import { User } from "@/models/User";
 import {
   AttachmentBuilder,
   ChatInputCommandInteraction,
   SlashCommandBuilder,
 } from "discord.js";
-import { getRequiredXP } from "../../modules/xpSystem";
-import { getRankImage, getRankTitle } from "../../modules/rankSystem";
+import { getRequiredXP } from "@/modules/xpSystem";
+import { getRankImage, getRankTitle } from "@/modules/rankSystem";
 import { Font } from "canvacord";
-import { LevelCardBuilder } from "../../utils/helpers/LevelCard";
+import { LevelCardBuilder } from "@/utils/helpers/LevelCard";
 
 export const data = new SlashCommandBuilder()
   .setName("rank")

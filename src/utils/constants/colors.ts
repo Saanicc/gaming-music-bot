@@ -1,4 +1,4 @@
-import config from "../../../bot-config.json";
+import config from "@/bot-config.json";
 
 export type ColorType = keyof typeof config.colors;
 export type Colors = Record<ColorType, number>;

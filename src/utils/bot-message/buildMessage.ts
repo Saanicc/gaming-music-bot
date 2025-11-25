@@ -86,5 +86,6 @@ export const buildMessage = ({
   return {
     flags: getFlags(),
     components: [container],
+    allowedMentions: { repliedUser: false, parse: [] },
   } as InteractionReplyOptions;
 };

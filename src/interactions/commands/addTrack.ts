@@ -1,10 +1,10 @@
 import { ChatInputCommandInteraction, SlashCommandBuilder } from "discord.js";
-import { buildMessage } from "../../utils/bot-message/buildMessage";
-import { getFormattedTrackDescription } from "../../utils/helpers/getFormattedTrackDescription";
+import { buildMessage } from "@/utils/bot-message/buildMessage";
+import { getFormattedTrackDescription } from "@/utils/helpers/getFormattedTrackDescription";
 import { useMainPlayer, useQueue } from "discord-player";
-import { getThumbnail } from "../../utils/helpers/utils";
-import { BossTrack, TrackType } from "../../models/BossTrack";
-import { getSearchEngine } from "../../utils/helpers/getSearchEngine";
+import { getThumbnail } from "@/utils/helpers/utils";
+import { BossTrack, TrackType } from "@/models/BossTrack";
+import { getSearchEngine } from "@/utils/helpers/getSearchEngine";
 
 export const data = new SlashCommandBuilder()
   .setName("add_track")

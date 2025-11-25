@@ -1,4 +1,4 @@
-import { queueManager, StoredQueue } from "../../services/queueManager";
+import { queueManager, StoredQueue } from "@/services/queueManager";
 import { Guild, TextBasedChannel, VoiceBasedChannel } from "discord.js";
 import { Player, Track, useMainPlayer } from "discord-player";
 

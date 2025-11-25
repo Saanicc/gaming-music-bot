@@ -1,5 +1,5 @@
-import { User } from "../../models/User";
-import { getRankTitleWithEmoji } from "../../modules/rankSystem";
+import { User } from "@/models/User";
+import { getRankTitleWithEmoji } from "@/modules/rankSystem";
 import { User as DiscordUser } from "discord.js";
 
 export const getTrackRequestedByFooterText = async (

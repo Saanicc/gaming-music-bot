@@ -5,13 +5,13 @@ import {
   MessageCreateOptions,
   TextChannel,
 } from "discord.js";
-import { queueManager } from "../../services/queueManager";
-import { restoreOldQueue } from "../../utils/helpers/restoreOldQueue";
-import { delay } from "../../utils/helpers/utils";
-import { buildMessage } from "../../utils/bot-message/buildMessage";
-import { musicPlayerMessage } from "../../services/musicPlayerMessage";
+import { queueManager } from "@/services/queueManager";
+import { restoreOldQueue } from "@/utils/helpers/restoreOldQueue";
+import { delay } from "@/utils/helpers/utils";
+import { buildMessage } from "@/utils/bot-message/buildMessage";
+import { musicPlayerMessage } from "@/services/musicPlayerMessage";
 import { useQueue } from "discord-player";
-import { emoji } from "../../utils/constants/emojis";
+import { emoji } from "@/utils/constants/emojis";
 
 export const victoryButton = new ButtonBuilder()
   .setCustomId("victory")

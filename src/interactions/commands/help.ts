@@ -1,6 +1,6 @@
 import { ChatInputCommandInteraction, SlashCommandBuilder } from "discord.js";
-import { buildMessage } from "../../utils/bot-message/buildMessage";
-import { emoji } from "../../utils/constants/emojis";
+import { buildMessage } from "@/utils/bot-message/buildMessage";
+import { emoji } from "@/utils/constants/emojis";
 
 export const data = new SlashCommandBuilder()
   .setName("help")

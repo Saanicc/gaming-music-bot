@@ -1,6 +1,6 @@
 import { ButtonInteraction, CommandInteraction, TextChannel } from "discord.js";
-import { addXP, XPGrantingCommand } from "../../modules/xpSystem";
-import { getRankTitleWithEmoji } from "../../modules/rankSystem";
+import { addXP, XPGrantingCommand } from "@/modules/xpSystem";
+import { getRankTitleWithEmoji } from "@/modules/rankSystem";
 import { buildMessage } from "../bot-message/buildMessage";
 import { getTreasureInfo } from "./getTreasureMessage";
 import { emoji } from "../constants/emojis";

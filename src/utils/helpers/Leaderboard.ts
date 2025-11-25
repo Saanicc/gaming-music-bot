@@ -1,5 +1,5 @@
 import { JSX, Builder, loadImage } from "canvacord";
-import { getRankImage } from "../../modules/rankSystem";
+import { getRankImage } from "@/modules/rankSystem";
 
 export type PlayerData = {
   avatar: string;

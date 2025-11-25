@@ -1,4 +1,4 @@
-import { queueManager } from "../../services/queueManager";
+import { queueManager } from "@/services/queueManager";
 import { GuildQueue } from "discord-player";
 
 export const savePreviousQueue = async (queue: GuildQueue, guildId: string) => {

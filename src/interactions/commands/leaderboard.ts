@@ -1,9 +1,9 @@
 import { ChatInputCommandInteraction, SlashCommandBuilder } from "discord.js";
-import { buildMessage } from "../../utils/bot-message/buildMessage";
-import { User } from "../../models/User";
+import { buildMessage } from "@/utils/bot-message/buildMessage";
+import { User } from "@/models/User";
 import { Font } from "canvacord";
-import { LeaderboardBuilder } from "../../utils/helpers/Leaderboard";
-import { getRankTitle } from "../../modules/rankSystem";
+import { LeaderboardBuilder } from "@/utils/helpers/Leaderboard";
+import { getRankTitle } from "@/modules/rankSystem";
 
 export const data = new SlashCommandBuilder()
   .setName("leaderboard")

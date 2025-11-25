@@ -1,10 +1,10 @@
 import { ChatInputCommandInteraction, SlashCommandBuilder } from "discord.js";
-import { buildMessage } from "../../utils/bot-message/buildMessage";
+import { buildMessage } from "@/utils/bot-message/buildMessage";
 import { useMainPlayer, useQueue } from "discord-player";
-import { getFormattedTrackDescription } from "../../utils/helpers/getFormattedTrackDescription";
-import { updateUserLevel } from "../../utils/helpers/updateUserLevel";
-import { getSearchEngine } from "../../utils/helpers/getSearchEngine";
-import { getThumbnail } from "../../utils/helpers/utils";
+import { getFormattedTrackDescription } from "@/utils/helpers/getFormattedTrackDescription";
+import { updateUserLevel } from "@/utils/helpers/updateUserLevel";
+import { getSearchEngine } from "@/utils/helpers/getSearchEngine";
+import { getThumbnail } from "@/utils/helpers/utils";
 
 export const data = new SlashCommandBuilder()
   .setName("play")

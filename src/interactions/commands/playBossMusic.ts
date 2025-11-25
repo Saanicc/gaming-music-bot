@@ -4,15 +4,15 @@ import {
   SlashCommandBuilder,
   TextChannel,
 } from "discord.js";
-import { buildMessage } from "../../utils/bot-message/buildMessage";
-import { getRandomFightGif } from "../../utils/helpers/getRandomFightingGif";
-import { queueManager } from "../../services/queueManager";
-import { savePreviousQueue } from "../../utils/helpers/saveQueueData";
-import { getBossTracks } from "../../utils/helpers/getBossTracks";
+import { buildMessage } from "@/utils/bot-message/buildMessage";
+import { getRandomFightGif } from "@/utils/helpers/getRandomFightingGif";
+import { queueManager } from "@/services/queueManager";
+import { savePreviousQueue } from "@/utils/helpers/saveQueueData";
+import { getBossTracks } from "@/utils/helpers/getBossTracks";
 import { useMainPlayer, useQueue } from "discord-player";
-import { delay } from "../../utils/helpers/utils";
-import { updateUserLevel } from "../../utils/helpers/updateUserLevel";
-import { emoji } from "../../utils/constants/emojis";
+import { delay } from "@/utils/helpers/utils";
+import { updateUserLevel } from "@/utils/helpers/updateUserLevel";
+import { emoji } from "@/utils/constants/emojis";
 
 export const data = new SlashCommandBuilder()
   .setName("play_boss_music")

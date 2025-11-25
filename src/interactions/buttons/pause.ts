@@ -1,6 +1,6 @@
 import { ButtonBuilder, ButtonInteraction, ButtonStyle } from "discord.js";
 import { useQueue } from "discord-player";
-import { emoji } from "../../utils/constants/emojis";
+import { emoji } from "@/utils/constants/emojis";
 
 export const pauseButton = new ButtonBuilder()
   .setCustomId("pause")
