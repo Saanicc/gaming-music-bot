@@ -86,7 +86,11 @@ MONGO_INITDB_DATABASE=musicbotdb                  # Change if you want
 MONGO_URI=mongodb://localhost:27017/musicbotdb    # Authentication disabled by default
 ```
 
-### 4. Run the bot
+### 4. Configure the bot
+
+A full guide on how to configure the bot is found [here](./docs/BOT_CONFIG.md)
+
+### 5. Run the bot
 
 For local development:
 
@@ -96,7 +100,7 @@ npm run dev
 
 ## Docker Compose Setup
 
-A full guide on building and running the bot using Docker Compose can be found [here](./DOCKER_README.md)
+A full guide on building and running the bot using Docker Compose can be found [here](./docs/DOCKER_README.md)
 
 ## Example Usage
 

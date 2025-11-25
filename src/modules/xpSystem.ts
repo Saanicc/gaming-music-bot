@@ -1,11 +1,14 @@
 import { User, UserType } from "../models/User";
+import config from "../../bot-config.json";
 
 export type XPGrantingCommand = "play_boss_music" | "play";
 
-const XP_BASE = 3;
+const XP_BASE = config.leveling.xpBase;
+const XP_COOLDOWN_TIME = config.leveling.xpCooldownTime;
 
 export const getRequiredXP = (level: number) => {
-  const formula = 10 + (level * 12) ** 1.2;
+  const { base, multiplier, exponent } = config.leveling.formula;
+  const formula = base + (level * multiplier) ** exponent;
   return Math.floor(formula);
 };
 
@@ -43,7 +46,7 @@ export const addXP = async (
     user = await User.create({ guildId, userId });
   }
 
-  if (user.lastXP && now.getTime() - user.lastXP.getTime() < 5000) {
+  if (user.lastXP && now.getTime() - user.lastXP.getTime() < XP_COOLDOWN_TIME) {
     return { ...user.toObject(), noXP: true };
   }
 

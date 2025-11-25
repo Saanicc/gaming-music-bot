@@ -1,56 +1,23 @@
-import { ranks } from "../utils/constants/ranks";
+import config from "../../bot-config.json";
 
-export interface Rank {
+export interface RankDefinition {
   minLevel: number;
   title: string;
   titleWithEmoji: string;
   image: string;
+  emoji: string;
 }
 
-export const RANKS: Rank[] = [
-  {
-    minLevel: 25,
-    title: ranks.grandmaster.title,
-    titleWithEmoji: `${ranks.grandmaster.emoji} ${ranks.grandmaster.title}`,
-    image: ranks.grandmaster.imageUrl,
-  },
-  {
-    minLevel: 20,
-    title: ranks.elite.title,
-    titleWithEmoji: `${ranks.elite.emoji} ${ranks.elite.title}`,
-    image: ranks.elite.imageUrl,
-  },
-  {
-    minLevel: 15,
-    title: ranks.pro.title,
-    titleWithEmoji: `${ranks.pro.emoji} ${ranks.pro.title}`,
-    image: ranks.pro.imageUrl,
-  },
-  {
-    minLevel: 10,
-    title: ranks.specialist.title,
-    titleWithEmoji: `${ranks.specialist.emoji} ${ranks.specialist.title}`,
-    image: ranks.specialist.imageUrl,
-  },
-  {
-    minLevel: 5,
-    title: ranks.rising.title,
-    titleWithEmoji: `${ranks.rising.emoji} ${ranks.rising.title}`,
-    image: ranks.rising.imageUrl,
-  },
-  {
-    minLevel: 3,
-    title: ranks.enthusiast.title,
-    titleWithEmoji: `${ranks.enthusiast.emoji} ${ranks.enthusiast.title}`,
-    image: ranks.enthusiast.imageUrl,
-  },
-  {
-    minLevel: 1,
-    title: ranks.listener.title,
-    titleWithEmoji: `${ranks.listener.emoji} ${ranks.listener.title}`,
-    image: ranks.listener.imageUrl,
-  },
-];
+export const RANKS: RankDefinition[] = config.ranks.map(
+  (rank) =>
+    ({
+      minLevel: rank.minLevel,
+      title: rank.title,
+      titleWithEmoji: `${rank.title} ${rank.emoji}`,
+      image: rank.imageUrl,
+      emoji: rank.emoji,
+    } as RankDefinition)
+);
 
 export const getRankTitle = (level: number): string => {
   const rank = RANKS.find((r) => level >= r.minLevel);

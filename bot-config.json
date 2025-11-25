@@ -1,0 +1,95 @@
+{
+  "leveling": {
+    "xpBase": 3,
+    "xpCooldownTime": 5000,
+    "formula": {
+      "base": 10,
+      "multiplier": 12,
+      "exponent": 1.2
+    }
+  },
+  "colors": {
+    "nowPlaying": "#5865f2",
+    "paused": "#7289da",
+    "queue": "#3ba55d",
+    "error": "#ed4245",
+    "success": "#57f287",
+    "info": "#5865f2",
+    "stopped": "#99aab5",
+    "bossMode": "#9b51e0",
+    "default": "#2b2d31"
+  },
+  "emojis": {
+    "ui": {
+      "play": "<:play:1431066649116672171>",
+      "pause": "<:pause:1431066657249558669>",
+      "stop": "<:stop:1436463595155226634>",
+      "previous": "<:left:1431066658675622020>",
+      "next": "<:right:1431066660306948246>",
+      "queue": "<:queue:1431066663004016690>",
+      "levelup": "<a:levelup:1436470749820096664>",
+      "treasure": "<:crate:1431064935760134306>",
+      "info": "<:info:1431066661661970533>",
+      "fight": "<:swords:1431064938922901625>",
+      "victory": "<:trophy:1431064937123283135>"
+    },
+    "xp": {
+      "legendary": "<:chalice:1431073260551798877>",
+      "epic": "<:diamond:1431072331186442380>",
+      "rare": "<:chest:1431073259499159653>",
+      "gold": "<:gold:1431072329714110545>",
+      "coins": "<:coins:1431072332386013316>"
+    }
+  },
+  "ranks": [
+    {
+      "id": "grandmaster",
+      "minLevel": 25,
+      "title": "Grandmaster DJ",
+      "emoji": "<:level7:1431064932920725636>",
+      "imageUrl": "https://cdn.discordapp.com/emojis/1431064932920725636.png"
+    },
+    {
+      "id": "elite",
+      "minLevel": 20,
+      "title": "Elite Mixer",
+      "emoji": "<:level6:1431064934590054481>",
+      "imageUrl": "https://cdn.discordapp.com/emojis/1431064934590054481.png"
+    },
+    {
+      "id": "pro",
+      "minLevel": 15,
+      "title": "Pro Beatmaker",
+      "emoji": "<:level5:1431064931721285753>",
+      "imageUrl": "https://cdn.discordapp.com/emojis/1431064931721285753.png"
+    },
+    {
+      "id": "specialist",
+      "minLevel": 10,
+      "title": "Sound Specialist",
+      "emoji": "<:level4:1431064929670009004>",
+      "imageUrl": "https://cdn.discordapp.com/emojis/1431064929670009004.png"
+    },
+    {
+      "id": "rising",
+      "minLevel": 5,
+      "title": "Rising DJ",
+      "emoji": "<:level3:1431064928579485766>",
+      "imageUrl": "https://cdn.discordapp.com/emojis/1431064928579485766.png"
+    },
+    {
+      "id": "enthusiast",
+      "minLevel": 3,
+      "title": "Beat Enthusiast",
+      "emoji": "<:level2:1431064927006625862>",
+      "imageUrl": "https://cdn.discordapp.com/emojis/1431064927006625862.png"
+    },
+    {
+      "id": "listener",
+      "minLevel": 1,
+      "title": "Listener",
+      "emoji": "<:level1:1431064925375168582>",
+      "imageUrl": "https://cdn.discordapp.com/emojis/1431064925375168582.png"
+    }
+  ]
+}
