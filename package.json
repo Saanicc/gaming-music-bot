@@ -23,14 +23,13 @@
     "discord-player-soundcloud": "^1.0.7",
     "discord-player-spotify": "^1.1.7",
     "discord-player-youtube": "^0.8.1",
-    "discord.js": "^14.23.2",
+    "discord.js": "^14.25.0",
     "dotenv": "^17.2.3",
     "mediaplex": "^1.0.0",
     "mongoose": "^8.19.2"
   },
   "devDependencies": {
     "@types/jsdom": "^27.0.0",
-    "nodemon": "^3.0.0",
     "tsup": "^8.5.0",
     "tsx": "^4.20.5",
     "typescript": "^5.9.2"
