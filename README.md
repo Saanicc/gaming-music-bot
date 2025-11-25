@@ -36,6 +36,11 @@ Summon it anytime to power up your gameplay with cinematic, high-energy music.
 | `/skip`            | Skip the currently playing song.                    |
 | `/rank`            | Check your (or another users) current DJ rank       |
 | `/leaderboard`     | View the DJ leaderboard (top 8 DJs)                 |
+| `/autoplay`        | Turn on/off autoplay                                |
+| `/loop-all`        | loops the current queue                             |
+| `/loop-current`    | loops the playing track                             |
+| `/loop-disable`    | Disables the loop mode                              |
+| `/nightcore`       | Turns on/off the nightcore audio filter             |
 
 ---
 

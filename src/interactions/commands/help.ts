@@ -34,6 +34,21 @@ Here's how to summon the power of music and unleash epic soundtracks:
 
 **/leaderboard**
 > View the DJ leaderboard
+
+**/autoplay**
+> Turn on/off autoplay
+
+**/loop-all**
+> loops the current queue
+
+**/loop-current**
+> loops the playing track
+
+**/loop-disable**
+> Disables the loop mode
+
+**/nightcore**
+> Turns on/off the nightcore audio filter
 `;
 
   const embedMessage = buildMessage({
