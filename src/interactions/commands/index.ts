@@ -11,10 +11,12 @@ import * as loop_all from "./loop-all";
 import * as loop_current from "./loop-current";
 import * as loop_disable from "./loop-disable";
 import * as nightcore from "./nightcore";
+import * as playNext from "./playnext";
 
 export const commands = {
   help,
   play,
+  play_next: playNext,
   play_boss_music: playBossMusic,
   add_track: addTrack,
   queue,
