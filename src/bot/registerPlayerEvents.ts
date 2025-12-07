@@ -8,6 +8,7 @@ import { buildNowPlayingMessage } from "../utils/bot-message/buildNowPlayingMess
 import { musicPlayerMessage } from "../services/musicPlayerMessage";
 import { buildMessage } from "../utils/bot-message/buildMessage";
 import { getTrackRequestedByFooterText } from "../utils/helpers/getTrackRequestedByText";
+import { checkIfTrackInDB, isTrackInDB } from "../utils/helpers/isTrackInDB";
 
 export const registerPlayerEvents = (player: Player) => {
   player.events.on(GuildQueueEvent.PlayerStart, async (queue, track) => {
@@ -20,12 +21,20 @@ export const registerPlayerEvents = (player: Player) => {
       console.error(error);
     }
 
+    const inDB = await checkIfTrackInDB(track);
+
     const footerText = await getTrackRequestedByFooterText(
       track.requestedBy,
       queue.guild.id
     );
 
-    const data = buildNowPlayingMessage(track, true, queue, footerText);
+    const data = buildNowPlayingMessage({
+      track,
+      isPlaying: true,
+      queue,
+      footerText,
+      isTrackInDB: inDB,
+    });
     const msg = await channel.send(data as MessageCreateOptions);
     musicPlayerMessage.set(msg);
 
@@ -38,12 +47,13 @@ export const registerPlayerEvents = (player: Player) => {
         )
           return;
 
-        const updateData = buildNowPlayingMessage(
+        const updateData = buildNowPlayingMessage({
           track,
-          true,
+          isPlaying: true,
           queue,
-          footerText
-        );
+          footerText,
+          isTrackInDB,
+        });
         try {
           await musicPlayerMessage.edit(updateData as MessageEditOptions);
         } catch (err) {
@@ -61,12 +71,15 @@ export const registerPlayerEvents = (player: Player) => {
       queue.guild.id
     );
 
-    const data = buildNowPlayingMessage(
-      queue.currentTrack,
-      false,
+    await checkIfTrackInDB(queue.currentTrack);
+
+    const data = buildNowPlayingMessage({
+      track: queue.currentTrack,
+      isPlaying: false,
       queue,
-      footerText
-    );
+      footerText,
+      isTrackInDB,
+    });
 
     await musicPlayerMessage.edit(data as MessageEditOptions);
   });

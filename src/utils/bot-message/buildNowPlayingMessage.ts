@@ -23,6 +23,15 @@ import { nextButton } from "@/interactions/buttons/next";
 import { previousButton } from "@/interactions/buttons/previous";
 import { emoji } from "../constants/emojis";
 import { getThumbnail } from "../helpers/utils";
+import { addTrackButton } from "@/src/interactions/buttons/addTrack";
+
+type NowPlayingMessageProps = {
+  track: Track;
+  isPlaying: boolean;
+  queue: GuildQueue;
+  footerText: string;
+  isTrackInDB: boolean;
+};
 
 const createProgressBar = (queue: GuildQueue, size = 16) => {
   return queue.node.createProgressBar({
@@ -34,12 +43,13 @@ const createProgressBar = (queue: GuildQueue, size = 16) => {
   });
 };
 
-export const buildNowPlayingMessage = (
-  track: Track,
-  isPlaying: boolean,
-  queue: GuildQueue,
-  footerText: string
-): MessageCreateOptions => {
+export const buildNowPlayingMessage = ({
+  track,
+  isPlaying,
+  queue,
+  footerText,
+  isTrackInDB,
+}: NowPlayingMessageProps): MessageCreateOptions => {
   const isBossQueue =
     (isPlaying || !isPlaying) && queueManager.getQueueType() === "boss";
 
@@ -51,7 +61,8 @@ export const buildNowPlayingMessage = (
     queueButton
   );
   const row2 = new ActionRowBuilder<ButtonBuilder>().addComponents(
-    isBossQueue ? victoryButton : bossMusicButton
+    isBossQueue ? victoryButton : bossMusicButton,
+    addTrackButton.setDisabled(isTrackInDB)
   );
 
   const progressBar = queue ? createProgressBar(queue) : "N/A";

@@ -6,6 +6,7 @@ import * as resume from "./resume";
 import * as queue from "./queue";
 import * as next from "./next";
 import * as previous from "./previous";
+import * as addTrack from "./addTrack";
 
 export const buttons = {
   playBossMusic,
@@ -16,4 +17,5 @@ export const buttons = {
   queue,
   next,
   previous,
+  addTrack,
 };
