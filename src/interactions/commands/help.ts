@@ -15,8 +15,16 @@ Here's how to summon the power of music and unleash epic soundtracks:
 > Play any song by name or URL.  
 > *Example:* \`/play query: Never Gonna Give You Up\`
 
+**/play_next**
+> Enqueues a track from a url or search term, then plays it after the current track ends.
+> *Example:* \`/play_next query: Never Gonna Give You Up\`
+
+**/play_now**
+> Play a track from a url or search term, then plays it instantly.
+> *Example:* \`/play_now query: Never Gonna Give You Up\`
+
 **/play_boss_music**
-> Instantly summon **EPIC boss battle music**!  
+> Instantly summon your **EPIC boss battle music**!  
 > Perfect for intense raids, duels, or just feeling awesome.
 
 **/add_track**
@@ -29,26 +37,29 @@ Here's how to summon the power of music and unleash epic soundtracks:
 **/skip**
 > Skip the currently playing song.
 
+**/stop**
+> Stops and disconnects the player.
+
 **/rank**
 > Check your own or someone else's current DJ rank.
 
 **/leaderboard**
-> View the DJ leaderboard
+> View the DJ leaderboard.
 
 **/autoplay**
-> Turn on/off autoplay
+> Turn on/off autoplay.
 
 **/loop-all**
-> loops the current queue
+> loops the current queue.
 
 **/loop-current**
-> loops the playing track
+> loops the playing track.
 
 **/loop-disable**
-> Disables the loop mode
+> Disables the loop mode.
 
 **/nightcore**
-> Turns on/off the nightcore audio filter
+> Turns on/off the nightcore audio filter.
 `;
 
   const embedMessage = buildMessage({
