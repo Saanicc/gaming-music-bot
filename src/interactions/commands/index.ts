@@ -13,6 +13,7 @@ import * as loop_disable from "./loop-disable";
 import * as nightcore from "./nightcore";
 import * as playNext from "./playnext";
 import * as playNow from "./playNow";
+import * as stop from "./stop";
 
 export const commands = {
   help,
@@ -30,4 +31,5 @@ export const commands = {
   loop_current,
   loop_disable,
   nightcore,
+  stop,
 };
