@@ -26,21 +26,24 @@ Summon it anytime to power up your gameplay with cinematic, high-energy music.
 
 ## Commands
 
-| Command            | Description                                         |
-| ------------------ | --------------------------------------------------- |
-| `/play`            | Play a track from name or URL                       |
-| `/play_boss_music` | Loads, shuffles and plays all boss tracks           |
-| `/add_track`       | Add new track to the boss music collection          |
-| `/help`            | Shows info about available commands                 |
-| `/queue`           | Displays the next five upcoming tracks in the queue |
-| `/skip`            | Skip the currently playing song.                    |
-| `/rank`            | Check your (or another users) current DJ rank       |
-| `/leaderboard`     | View the DJ leaderboard (top 8 DJs)                 |
-| `/autoplay`        | Turn on/off autoplay                                |
-| `/loop-all`        | loops the current queue                             |
-| `/loop-current`    | loops the playing track                             |
-| `/loop-disable`    | Disables the loop mode                              |
-| `/nightcore`       | Turns on/off the nightcore audio filter             |
+| Command            | Description                                                                             |
+| ------------------ | --------------------------------------------------------------------------------------- |
+| `/play`            | Plays a track from a URL or search term.                                                |
+| `/play_now`        | Plays a track from a url or search term, then plays it instantly.                       |
+| `/play_next`       | Enqueues a track from a url or search term, then plays it after the current track ends. |
+| `/play_boss_music` | Loads, shuffles and plays all boss tracks                                               |
+| `/add_track`       | Add new track to the boss music collection                                              |
+| `/help`            | Shows info about available commands                                                     |
+| `/queue`           | Displays the next five upcoming tracks in the queue                                     |
+| `/skip`            | Skip the currently playing song.                                                        |
+| `/stop`            | Stops and disconnects the player.                                                       |
+| `/rank`            | Check your (or another users) current DJ rank                                           |
+| `/leaderboard`     | View the DJ leaderboard (top 8 DJs)                                                     |
+| `/autoplay`        | Turn on/off autoplay                                                                    |
+| `/loop-all`        | loops the current queue                                                                 |
+| `/loop-current`    | loops the playing track                                                                 |
+| `/loop-disable`    | Disables the loop mode                                                                  |
+| `/nightcore`       | Turns on/off the nightcore audio filter                                                 |
 
 ---
 
@@ -56,6 +59,7 @@ Summon it anytime to power up your gameplay with cinematic, high-energy music.
 | **Next**     | Play the next track                                                                               |
 | **Previous** | Play the previous track                                                                           |
 | **Queue**    | Displays the next five upcoming tracks in the queue                                               |
+| **💾**       | Save the currently playing track to the boss music library                                        |
 
 ---
 
