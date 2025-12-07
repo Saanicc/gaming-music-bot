@@ -9,7 +9,7 @@
     "node": ">=18.x"
   },
   "scripts": {
-    "dev": "tsx deploy-dev-commands.ts && tsx watch src/index.ts",
+    "dev": "cross-env NODE_ENV=dev tsx watch src/index.ts",
     "start": "node dist/index.cjs",
     "build": "tsup src/index.ts --minify --external unfetch,ffmpeg-static",
     "docker-build": "docker build -t gaming-music-bot .",
@@ -30,6 +30,7 @@
   },
   "devDependencies": {
     "@types/jsdom": "^27.0.0",
+    "cross-env": "^10.1.0",
     "tsup": "^8.5.0",
     "tsx": "^4.20.5",
     "typescript": "^5.9.2"

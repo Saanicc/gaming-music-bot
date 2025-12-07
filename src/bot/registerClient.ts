@@ -5,6 +5,14 @@ import { buttons } from "../interactions/buttons";
 import { commands } from "../interactions/commands";
 import { handleInteraction } from "../utils/helpers/handleInteraction";
 
+const checkIfDevClient = async () => {
+  if (process.env.NODE_ENV === "dev") {
+    await deployCommands({
+      guildId: process.env.DISCORD_GUILD_ID ?? "",
+    });
+  }
+};
+
 export const registerDiscordClient = () => {
   const client = new Client({
     intents: [
@@ -15,6 +23,7 @@ export const registerDiscordClient = () => {
   });
 
   client.once("clientReady", async () => {
+    await checkIfDevClient();
     console.log(`🤖 Logged in as ${client.user?.tag}`);
     await setBotActivity(client, "/help", ActivityType.Listening);
   });
