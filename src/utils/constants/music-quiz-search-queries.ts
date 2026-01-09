@@ -4,7 +4,6 @@ export const SEARCH_QUERIES = [
   "Billboard Hot 100",
   "Today's Top Hits",
   "Sweden Top 50",
-  "TikTok Viral Hits",
 
   // Decades
   "All Out 50s",
