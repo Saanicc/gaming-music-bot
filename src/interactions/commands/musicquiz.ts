@@ -224,16 +224,17 @@ const playQuizRounds = async (
 
     queue.node.stop();
 
-    await collectArtistAnswer(thread, track.author, scores);
+    await collectArtistAnswer(thread, track.author, scores, 20000);
     await delay(2000);
-    await collectTrackAnswer(thread, track.cleanTitle, scores);
+    await collectTrackAnswer(thread, track.cleanTitle, scores, 20000);
   }
 };
 
 const collectArtistAnswer = async (
   thread: PublicThreadChannel,
   artist: string,
-  scores: Map<string, number>
+  scores: Map<string, number>,
+  timeMs: number
 ) => {
   await thread.send(
     buildMessage({
@@ -243,7 +244,7 @@ const collectArtistAnswer = async (
     })
   );
 
-  const artistWinner = await collectAnswer(thread, artist, 15000);
+  const artistWinner = await collectAnswer(thread, artist, timeMs);
 
   if (artistWinner) {
     const currentScore = scores.get(artistWinner.id) || 0;
@@ -269,7 +270,8 @@ const collectArtistAnswer = async (
 const collectTrackAnswer = async (
   thread: PublicThreadChannel,
   track: string,
-  scores: Map<string, number>
+  scores: Map<string, number>,
+  timeMs: number
 ) => {
   await thread.send(
     buildMessage({
@@ -279,7 +281,7 @@ const collectTrackAnswer = async (
     })
   );
 
-  const trackWinner = await collectAnswer(thread, track, 15000);
+  const trackWinner = await collectAnswer(thread, track, timeMs);
 
   if (trackWinner) {
     const currentScore = scores.get(trackWinner.id) || 0;
@@ -344,18 +346,21 @@ async function collectAnswer(
     filter: (m: any) => !m.author.bot,
   });
 
-  const FUSE_THRESHOLD = 0.3;
+  const FUSE_THRESHOLD = 0.25;
   const fuse = new Fuse([correctAnswer], {
     includeScore: true,
     threshold: FUSE_THRESHOLD,
-    ignoreLocation: true,
+    location: 0,
+    distance: 100,
+    findAllMatches: false,
+    minMatchCharLength: 2,
     isCaseSensitive: false,
   });
 
   return new Promise((resolve) => {
     let winner: User | null = null;
 
-    collector.on("collect", (message: Message) => {
+    collector.on("collect", async (message: Message) => {
       const userInput = message.content.trim();
       if (userInput.length < 2) return;
 
@@ -363,13 +368,22 @@ async function collectAnswer(
 
       if (results.length > 0) {
         const bestMatch = results[0];
-        if (
-          bestMatch.score !== undefined &&
-          bestMatch.score <= FUSE_THRESHOLD
-        ) {
+
+        if (bestMatch.score && bestMatch.score <= FUSE_THRESHOLD) {
           console.log("MATCH FOUND: ", bestMatch.score);
           winner = message.author;
           collector.stop("guessed");
+        } else if (
+          bestMatch.score &&
+          bestMatch.score > FUSE_THRESHOLD &&
+          bestMatch.score <= FUSE_THRESHOLD + 0.35
+        ) {
+          await thread.send(
+            buildMessage({
+              title: `${message.author} you're close!`,
+              color: "info",
+            })
+          );
         } else {
           console.log(
             `Input "${userInput}" was too far off. Score: ${bestMatch.score}`
