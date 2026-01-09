@@ -129,7 +129,7 @@ async function runGameLoop(
   if (!queue) {
     queue = player.nodes.create(voiceChannel.guild, {
       metadata: { channel: thread, isSwitching: true, musicQuiz: true },
-      leaveOnEmpty: true,
+      leaveOnEmpty: false,
       leaveOnEnd: false,
       volume: 100,
     });
