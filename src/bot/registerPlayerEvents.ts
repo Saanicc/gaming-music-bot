@@ -12,6 +12,7 @@ import { checkIfTrackInDB, isTrackInDB } from "../utils/helpers/isTrackInDB";
 
 export const registerPlayerEvents = (player: Player) => {
   player.events.on(GuildQueueEvent.PlayerStart, async (queue, track) => {
+    if (queue.metadata.musicQuiz) return;
     const channel = queue.metadata.channel as TextChannel;
 
     musicPlayerMessage.clearProgressInterval();
@@ -100,6 +101,8 @@ export const registerPlayerEvents = (player: Player) => {
   });
 
   player.events.on(GuildQueueEvent.EmptyQueue, async (queue) => {
+    if (queue.metadata.musicQuiz) return;
+
     const channel = queue.metadata.channel as TextChannel;
 
     queue.history.clear();

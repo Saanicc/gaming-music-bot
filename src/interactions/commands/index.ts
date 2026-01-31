@@ -14,6 +14,7 @@ import * as nightcore from "./nightcore";
 import * as playNext from "./playnext";
 import * as playNow from "./playNow";
 import * as stop from "./stop";
+import * as musicquiz from "./musicquiz";
 
 export const commands = {
   help,
@@ -32,4 +33,5 @@ export const commands = {
   loop_disable,
   nightcore,
   stop,
+  musicquiz,
 };

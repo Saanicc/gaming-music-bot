@@ -9,6 +9,8 @@ import {
   MediaGalleryBuilder,
   MediaGalleryItemBuilder,
   BaseMessageOptions,
+  ButtonBuilder,
+  ActionRowBuilder,
 } from "discord.js";
 import { colors as colorConstant, ColorType } from "../constants/colors";
 
@@ -21,6 +23,7 @@ export const buildMessage = ({
   imageUrl,
   thumbnail,
   footerText,
+  actionRowButtons,
 }: {
   title: string;
   titleFontSize?: "lg" | "md" | "sm";
@@ -30,6 +33,7 @@ export const buildMessage = ({
   imageUrl?: string;
   thumbnail?: string;
   footerText?: string;
+  actionRowButtons?: ActionRowBuilder<ButtonBuilder>[];
 }): BaseMessageOptions => {
   const getFontSize = () => {
     switch (titleFontSize) {
@@ -74,6 +78,11 @@ export const buildMessage = ({
 
   if (color) {
     container.setAccentColor(colorConstant[color]);
+  }
+
+  if (actionRowButtons) {
+    container.addSeparatorComponents(new SeparatorBuilder());
+    container.addActionRowComponents(actionRowButtons);
   }
 
   const getFlags = () => {
