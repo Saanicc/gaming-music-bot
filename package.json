@@ -25,7 +25,6 @@
     "discord-player-youtube": "^0.8.1",
     "discord.js": "^14.25.0",
     "dotenv": "^17.2.3",
-    "fuse.js": "^7.1.0",
     "mediaplex": "^1.0.0",
     "mongoose": "^8.19.2"
   },
