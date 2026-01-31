@@ -24,6 +24,8 @@ import { SEARCH_QUERIES } from "@/src/utils/constants/music-quiz-search-queries"
 import { delay } from "@/src/utils/helpers/utils";
 import { ColorType } from "@/src/utils/constants/colors";
 
+const TIME_TO_PLAY_SONG = 45000;
+
 const truncateLabelIfNeeded = (label: string): string =>
   label.length > 80 ? label.substring(0, 77) + "..." : label;
 
@@ -224,7 +226,7 @@ const playQuizRounds = async (
     await thread.send(
       buildMessage({
         title: `Round ${roundNum}/5`,
-        description: "Listen carefully! Playing for 30 seconds...",
+        description: `Listen carefully! Playing for ${TIME_TO_PLAY_SONG / 1000} seconds...`,
         color: "info",
       })
     );
@@ -242,8 +244,7 @@ const playQuizRounds = async (
       continue;
     }
 
-    // 1. Play for 60 seconds
-    await delay(60000);
+    await delay(TIME_TO_PLAY_SONG);
     queue.node.stop();
 
     await askQuestion(
