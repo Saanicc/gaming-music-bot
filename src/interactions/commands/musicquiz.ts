@@ -6,11 +6,10 @@ import {
   ButtonStyle,
   ActionRowBuilder,
   GuildMember,
-  User,
   ThreadAutoArchiveDuration,
   PublicThreadChannel,
-  Message,
   VoiceBasedChannel,
+  ButtonInteraction,
 } from "discord.js";
 import {
   useMainPlayer,
@@ -22,9 +21,11 @@ import {
 } from "discord-player";
 import { buildMessage } from "@/utils/bot-message/buildMessage";
 import { SEARCH_QUERIES } from "@/src/utils/constants/music-quiz-search-queries";
-import Fuse from "fuse.js";
 import { delay } from "@/src/utils/helpers/utils";
 import { ColorType } from "@/src/utils/constants/colors";
+
+const truncateLabelIfNeeded = (label: string): string =>
+  label.length > 80 ? label.substring(0, 77) + "..." : label;
 
 const shuffleArray = <T>(array: T[]): T[] => {
   const arr = [...array];
@@ -33,6 +34,25 @@ const shuffleArray = <T>(array: T[]): T[] => {
     [arr[i], arr[j]] = [arr[j], arr[i]];
   }
   return arr;
+};
+
+const generateOptions = (
+  correctAnswer: string,
+  allTracks: Track[],
+  type: "author" | "cleanTitle"
+): string[] => {
+  const pool = new Set<string>();
+
+  for (const t of allTracks) {
+    const val = t[type].trim();
+    if (val.toLowerCase() !== correctAnswer.toLowerCase()) {
+      pool.add(val);
+    }
+  }
+
+  const wrongOptions = shuffleArray(Array.from(pool)).slice(0, 4);
+
+  return shuffleArray([correctAnswer, ...wrongOptions]);
 };
 
 export const data = new SlashCommandBuilder()
@@ -108,7 +128,7 @@ export async function execute(interaction: ChatInputCommandInteraction) {
 
       const quizStartedMessage = buildMessage({
         title: "🎵 Music Quiz Started",
-        description: "Playing 5 rounds.",
+        description: "Playing 5 rounds. Get ready!",
       });
       await lobbyMsg.edit(quizStartedMessage);
 
@@ -139,7 +159,7 @@ async function runGameLoop(
     return interaction.followUp(
       buildMessage({
         title: "Error",
-        description: "No queue found. Aborting...",
+        description: "No queue found.",
         color: "error",
       })
     );
@@ -184,7 +204,7 @@ async function runGameLoop(
 
   const allTracks = shuffleArray<Track>(searchResult.tracks);
   const quizTracks = allTracks.slice(0, 5);
-  await playQuizRounds(quizTracks, thread, queue, scores);
+  await playQuizRounds(quizTracks, allTracks, thread, queue, scores);
   await delay(3000);
   await declareWinner(scores, thread);
   queue.delete();
@@ -192,6 +212,7 @@ async function runGameLoop(
 
 const playQuizRounds = async (
   quizTracks: Track[],
+  allTracks: Track[],
   thread: PublicThreadChannel,
   queue: GuildQueue,
   scores: Map<string, number>
@@ -209,99 +230,142 @@ const playQuizRounds = async (
     );
 
     try {
-      await queue.node.play(track, { seek: 25, transitionMode: false });
+      await queue.node.play(track, { seek: 30, transitionMode: false });
     } catch (error) {
       await thread.send(
         buildMessage({
           title: "Error",
-          description: "Failed to play track. Skipping round.",
+          description: "Failed to play track. Skipping.",
+          color: "error",
         })
       );
       continue;
     }
 
-    await delay(30000);
-
+    // 1. Play for 60 seconds
+    await delay(60000);
     queue.node.stop();
 
-    await collectArtistAnswer(thread, track.author, scores, 20000);
+    await askQuestion(
+      thread,
+      track,
+      allTracks,
+      scores,
+      "author",
+      "Who is the Artist?"
+    );
+
     await delay(2000);
-    await collectTrackAnswer(thread, track.cleanTitle, scores, 20000);
+
+    await askQuestion(
+      thread,
+      track,
+      allTracks,
+      scores,
+      "cleanTitle",
+      "What is the Track Name?"
+    );
+
+    await delay(2000);
   }
 };
 
-const collectArtistAnswer = async (
+const askQuestion = async (
   thread: PublicThreadChannel,
-  artist: string,
+  track: Track,
+  allTracks: Track[],
   scores: Map<string, number>,
-  timeMs: number
+  property: "author" | "cleanTitle",
+  questionText: string
 ) => {
-  await thread.send(
+  const correctAnswer = track[property];
+  const options = generateOptions(correctAnswer, allTracks, property);
+
+  const answerMap = new Map<string, string>();
+
+  const buttons = options.map((opt, index) => {
+    const customId = `quiz_opt_${index}`;
+    const label = truncateLabelIfNeeded(opt);
+
+    answerMap.set(customId, label);
+
+    return new ButtonBuilder()
+      .setCustomId(customId)
+      .setLabel(label)
+      .setStyle(ButtonStyle.Primary);
+  });
+
+  const row = new ActionRowBuilder<ButtonBuilder>().addComponents(buttons);
+
+  const questionMsg = await thread.send(
     buildMessage({
-      title: "Question 1",
-      description: "Who is the **Artist**?",
-      footerText: "You have 15 seconds to answer.",
+      title: "Guess Now!",
+      description: `**${questionText}**`,
+      footerText: "You have 15 seconds!",
+      color: "info",
+      actionRowButtons: [row],
     })
   );
 
-  const artistWinner = await collectAnswer(thread, artist, timeMs);
+  const correctUserIds: string[] = [];
+  const answeredUserIds = new Set<string>();
 
-  if (artistWinner) {
-    const currentScore = scores.get(artistWinner.id) || 0;
-    scores.set(artistWinner.id, currentScore + 1);
-    await thread.send(
-      buildMessage({
-        title: "Correct!",
-        description: `<@${artistWinner.id}> got it right! The artist is **${artist}**.`,
-        color: "success",
-      })
-    );
-  } else {
-    await thread.send(
-      buildMessage({
-        title: "Time's up!",
-        description: `No one guessed it. The artist was **${artist}**.`,
-        color: "error",
-      })
-    );
-  }
-};
+  const collector = questionMsg.createMessageComponentCollector({
+    componentType: ComponentType.Button,
+    time: 15000,
+  });
 
-const collectTrackAnswer = async (
-  thread: PublicThreadChannel,
-  track: string,
-  scores: Map<string, number>,
-  timeMs: number
-) => {
-  await thread.send(
-    buildMessage({
-      title: "Question 2",
-      description: "What is the **Track Name**?",
-      footerText: "You have 15 seconds to answer.",
-    })
-  );
+  collector.on("collect", async (i: ButtonInteraction) => {
+    if (answeredUserIds.has(i.user.id)) {
+      await i.reply({ content: "You already guessed!", ephemeral: true });
+      return;
+    }
 
-  const trackWinner = await collectAnswer(thread, track, timeMs);
+    answeredUserIds.add(i.user.id);
 
-  if (trackWinner) {
-    const currentScore = scores.get(trackWinner.id) || 0;
-    scores.set(trackWinner.id, currentScore + 1);
-    await thread.send(
-      buildMessage({
-        title: "Correct!",
-        description: `<@${trackWinner.id}> got it right! The track is **${track}**.`,
-        color: "success",
-      })
-    );
-  } else {
-    await thread.send(
-      buildMessage({
-        title: "Time's up!",
-        description: `No one guessed it. The track was **${track}**.`,
-        color: "error",
-      })
-    );
-  }
+    const selectedAnswer = answerMap.get(i.customId);
+    const targetAnswer = truncateLabelIfNeeded(correctAnswer);
+    const isCorrect = selectedAnswer === targetAnswer;
+
+    if (isCorrect) {
+      const currentScore = scores.get(i.user.id) || 0;
+      scores.set(i.user.id, currentScore + 1);
+      correctUserIds.push(i.user.id);
+      await i.reply({ content: "✅ Correct!", ephemeral: true });
+    } else {
+      await i.reply({ content: "❌ Wrong!", ephemeral: true });
+    }
+  });
+
+  await new Promise<void>((resolve) => {
+    collector.on("end", async () => {
+      const disabledRow = new ActionRowBuilder<ButtonBuilder>().addComponents(
+        buttons.map((b) => b.setDisabled(true).setStyle(ButtonStyle.Secondary))
+      );
+
+      await questionMsg.edit({ components: [disabledRow] });
+
+      if (correctUserIds.length > 0) {
+        const names = correctUserIds.map((id) => `<@${id}>`).join(", ");
+        await thread.send(
+          buildMessage({
+            title: "Time's Up!",
+            description: `The answer was **${correctAnswer}**.\nCorrect: ${names}`,
+            color: "success",
+          })
+        );
+      } else {
+        await thread.send(
+          buildMessage({
+            title: "Time's Up!",
+            description: `No one got it! The answer was **${correctAnswer}**.`,
+            color: "error",
+          })
+        );
+      }
+      resolve();
+    });
+  });
 };
 
 const declareWinner = async (
@@ -320,7 +384,7 @@ const declareWinner = async (
     title = "🎉 We have a winner!";
     color = "success";
     description =
-      `**Winner:** <@${winnerId}> with **${winnerScore}** points!\n\n**Leaderboard:**\n` +
+      `**Winner:** <@${winnerId}> with **${winnerScore}** points!\n\n**Quiz result:**\n` +
       sortedScores
         .map(([id, s], idx) => `${idx + 1}. <@${id}>: ${s} pts`)
         .join("\n");
@@ -335,69 +399,3 @@ const declareWinner = async (
     })
   );
 };
-
-async function collectAnswer(
-  thread: PublicThreadChannel,
-  correctAnswer: string,
-  timeMs: number
-): Promise<User | null> {
-  const collector = thread.createMessageCollector({
-    time: timeMs,
-    filter: (m: any) => !m.author.bot,
-  });
-
-  const FUSE_THRESHOLD = 0.25;
-  const fuse = new Fuse([correctAnswer], {
-    includeScore: true,
-    threshold: FUSE_THRESHOLD,
-    location: 0,
-    distance: 100,
-    findAllMatches: false,
-    minMatchCharLength: 2,
-    isCaseSensitive: false,
-  });
-
-  return new Promise((resolve) => {
-    let winner: User | null = null;
-
-    collector.on("collect", async (message: Message) => {
-      const userInput = message.content.trim();
-      if (userInput.length < 2) return;
-
-      const results = fuse.search(userInput);
-
-      if (results.length > 0) {
-        const bestMatch = results[0];
-
-        if (bestMatch.score && bestMatch.score <= FUSE_THRESHOLD) {
-          console.log("MATCH FOUND: ", bestMatch.score);
-          winner = message.author;
-          collector.stop("guessed");
-        } else if (
-          bestMatch.score &&
-          bestMatch.score > FUSE_THRESHOLD &&
-          bestMatch.score <= FUSE_THRESHOLD + 0.35
-        ) {
-          await thread.send(
-            buildMessage({
-              title: `${message.author} you're close!`,
-              color: "info",
-            })
-          );
-        } else {
-          console.log(
-            `Input "${userInput}" was too far off. Score: ${bestMatch.score}`
-          );
-        }
-      }
-    });
-
-    collector.on("end", (_: any, reason: string) => {
-      if (reason === "guessed" && winner) {
-        resolve(winner);
-      } else {
-        resolve(null);
-      }
-    });
-  });
-}
