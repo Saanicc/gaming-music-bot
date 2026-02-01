@@ -53,23 +53,17 @@ export const addXP = async (
   const previousLevel = user.level;
   let gainedXP = XP_BASE;
   let treasure = false;
-  let roll = Math.random();
 
-  if (roll < 0.0000001) {
-    gainedXP *= 100;
+  if (Math.random() < 0.1) {
     treasure = true;
-  } else if (roll < 0.000001) {
-    gainedXP *= 50;
-    treasure = true;
-  } else if (roll < 0.00001) {
-    gainedXP *= 25;
-    treasure = true;
-  } else if (roll < 0.0001) {
-    gainedXP *= 10;
-    treasure = true;
-  } else if (roll < 0.001) {
-    gainedXP *= 2.5;
-    treasure = true;
+
+    let tierRoll = Math.random();
+
+    if (tierRoll < 0.001) gainedXP *= 100;
+    else if (tierRoll < 0.01) gainedXP *= 50;
+    else if (tierRoll < 0.05) gainedXP *= 25;
+    else if (tierRoll < 0.2) gainedXP *= 10;
+    else gainedXP *= 2.5;
   }
 
   user.lastXP = now;

@@ -1,6 +1,6 @@
 {
   "leveling": {
-    "xpBase": 3,
+    "xpBase": 4,
     "xpCooldownTime": 5000,
     "formula": {
       "base": 10,
