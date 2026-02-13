@@ -1,8 +1,4 @@
-import {
-  ButtonBuilder,
-  ButtonStyle,
-  ChatInputCommandInteraction,
-} from "discord.js";
+import { ButtonBuilder, ButtonInteraction, ButtonStyle } from "discord.js";
 import { useQueue } from "discord-player";
 import { buildMessage } from "@/utils/bot-message/buildMessage";
 import { emoji } from "@/utils/constants/emojis";
@@ -12,7 +8,7 @@ export const nextButton = new ButtonBuilder()
   .setEmoji(emoji.next)
   .setStyle(ButtonStyle.Primary);
 
-export async function execute(interaction: ChatInputCommandInteraction) {
+export async function execute(interaction: ButtonInteraction) {
   const queue = useQueue();
 
   if (!queue) {
@@ -34,6 +30,7 @@ export async function execute(interaction: ChatInputCommandInteraction) {
     return;
   }
 
+  await interaction.deferUpdate();
   queue.history.next();
   if (queue.node.isPaused()) queue.node.resume();
 }

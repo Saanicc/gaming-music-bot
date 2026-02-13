@@ -70,9 +70,7 @@ export const buildNowPlayingMessage = ({
   const container = new ContainerBuilder();
 
   const trackInfoText = new TextDisplayBuilder().setContent(`
-### ${
-    isPlaying ? `${emoji.play} Now Playing` : `${emoji.pause} Music Stopped`
-  }  
+### ${isPlaying ? `${emoji.play} Now Playing` : `${emoji.pause} Music Paused`}  
 ${getFormattedTrackDescription(track, queue)}
 
 **Progress**
