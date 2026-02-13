@@ -12,9 +12,12 @@
     "dev": "cross-env NODE_ENV=dev tsx watch src/index.ts",
     "start": "node dist/index.cjs",
     "build": "tsup src/index.ts --minify --external unfetch,ffmpeg-static",
-    "docker-build": "docker build -t gaming-music-bot .",
-    "docker-save": "docker save gaming-music-bot -o music-discord-bot.tar",
-    "build-prod": "npm run build && npm run docker-build && npm run docker-save"
+    "docker-build": "VERSION=$(node -p \"require('./package.json').version\") && docker build --platform linux/amd64 -t gaming-music-bot:$VERSION -t gaming-music-bot:latest .",
+    "docker-save": "VERSION=$(node -p \"require('./package.json').version\") && docker save gaming-music-bot:$VERSION -o music-discord-bot-$VERSION.tar",
+    "build-prod": "npm run build && npm run docker-build && npm run docker-save",
+    "release:patch": "npm version patch && npm run build-prod",
+    "release:minor": "npm version minor && npm run build-prod",
+    "release:major": "npm version major && npm run build-prod"
   },
   "dependencies": {
     "@discordjs/opus": "^0.10.0",
