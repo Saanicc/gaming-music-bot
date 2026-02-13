@@ -4,17 +4,10 @@ import { useQueue } from "discord-player";
 
 export const data = new SlashCommandBuilder()
   .setName("nightcore")
-  .setDescription("Turn the nightcore filter on or off")
-  .addBooleanOption((option) =>
-    option
-      .setName("enabled")
-      .setDescription("If the nightcore filter should be enabled or disabled")
-      .setRequired(true)
-  );
+  .setDescription("Turn the nightcore filter on or off");
 
 export async function execute(interaction: ChatInputCommandInteraction) {
   await interaction.deferReply();
-  const enabled = interaction.options.getBoolean("enabled") ?? true;
 
   const queue = useQueue();
 
@@ -29,7 +22,11 @@ export async function execute(interaction: ChatInputCommandInteraction) {
 
   let title = "Nightcore filter has been ";
 
-  if (enabled) {
+  const isNightcoreEnabled = () => {
+    return queue.filters.ffmpeg.filters.includes("nightcore");
+  };
+
+  if (!isNightcoreEnabled()) {
     queue.filters.ffmpeg.setFilters(["nightcore"]);
     title += "enabled";
   } else {
