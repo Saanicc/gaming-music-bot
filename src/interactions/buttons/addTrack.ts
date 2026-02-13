@@ -4,7 +4,7 @@ import { getFormattedTrackDescription } from "@/utils/helpers/getFormattedTrackD
 import { useQueue } from "discord-player";
 import { getThumbnail } from "@/utils/helpers/utils";
 import { BossTrack } from "@/models/BossTrack";
-import { setTrackInDB } from "@/src/utils/helpers/isTrackInDB";
+import { addTrackToCache } from "@/src/utils/helpers/isTrackInCache";
 import { emoji } from "@/src/utils/constants/emojis";
 
 export const addTrackButton = new ButtonBuilder()
@@ -72,7 +72,9 @@ export const execute = async (interaction: ButtonInteraction) => {
     interaction.reply(message);
   }
 
-  setTrackInDB(true);
+  if (interaction.guildId) {
+    addTrackToCache(interaction.guildId, trackUrl);
+  }
 
   const data = buildMessage({
     title: `Added successfully`,

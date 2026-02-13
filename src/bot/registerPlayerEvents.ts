@@ -8,7 +8,10 @@ import { buildNowPlayingMessage } from "../utils/bot-message/buildNowPlayingMess
 import { musicPlayerMessage } from "../services/musicPlayerMessage";
 import { buildMessage } from "../utils/bot-message/buildMessage";
 import { getTrackRequestedByFooterText } from "../utils/helpers/getTrackRequestedByText";
-import { checkIfTrackInDB, isTrackInDB } from "../utils/helpers/isTrackInDB";
+import {
+  checkIfTrackInDB,
+  isTrackInCache,
+} from "../utils/helpers/isTrackInCache";
 
 export const registerPlayerEvents = (player: Player) => {
   player.events.on(GuildQueueEvent.PlayerStart, async (queue, track) => {
@@ -22,7 +25,7 @@ export const registerPlayerEvents = (player: Player) => {
       console.error(error);
     }
 
-    const inDB = await checkIfTrackInDB(track);
+    const inDB = await checkIfTrackInDB(queue.guild.id, track);
 
     const footerText = await getTrackRequestedByFooterText(
       track.requestedBy,
@@ -53,7 +56,7 @@ export const registerPlayerEvents = (player: Player) => {
           isPlaying: true,
           queue,
           footerText,
-          isTrackInDB,
+          isTrackInDB: isTrackInCache(queue.guild.id, track.url),
         });
         try {
           await musicPlayerMessage.edit(updateData as MessageEditOptions);
@@ -72,14 +75,14 @@ export const registerPlayerEvents = (player: Player) => {
       queue.guild.id
     );
 
-    await checkIfTrackInDB(queue.currentTrack);
+    await checkIfTrackInDB(queue.guild.id, queue.currentTrack);
 
     const data = buildNowPlayingMessage({
       track: queue.currentTrack,
       isPlaying: false,
       queue,
       footerText,
-      isTrackInDB,
+      isTrackInDB: isTrackInCache(queue.guild.id, queue.currentTrack.url),
     });
 
     await musicPlayerMessage.edit(data as MessageEditOptions);

@@ -111,8 +111,8 @@ ${progressBar}
     isPlaying && !isBossQueue
       ? colors.nowPlaying
       : isPlaying && isBossQueue
-      ? colors.bossMode
-      : colors.paused
+        ? colors.bossMode
+        : colors.paused
   );
 
   return {
