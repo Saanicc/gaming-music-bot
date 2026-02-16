@@ -25,8 +25,8 @@ export const data = new SlashCommandBuilder()
   )
   .addStringOption((option) =>
     option
-      .setName("category")
-      .setDescription("The category of music to play.")
+      .setName("genre")
+      .setDescription("The genre of music to play.")
       .addChoices(
         ...GENRES.map((query) => ({
           name: query,
@@ -39,7 +39,7 @@ export async function execute(interaction: ChatInputCommandInteraction) {
   const member = interaction.member as GuildMember;
   const voiceChannel = member.voice.channel;
   const type = interaction.options.getString("type", true);
-  const category = interaction.options.getString("category", false);
+  const genre = interaction.options.getString("genre", false);
 
   const player = useMainPlayer();
   let queue = useQueue();
@@ -78,8 +78,8 @@ export async function execute(interaction: ChatInputCommandInteraction) {
 
   await interaction.deferReply();
 
-  const searchTheme = category
-    ? category
+  const searchTheme = genre
+    ? genre
     : GENRES[Math.floor(Math.random() * GENRES.length)];
 
   const spotifyPlaylists = await searchSpotifyPlaylists(searchTheme);
