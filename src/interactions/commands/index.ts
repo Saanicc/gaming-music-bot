@@ -15,6 +15,7 @@ import * as playNext from "./playnext";
 import * as playNow from "./playNow";
 import * as stop from "./stop";
 import * as musicquiz from "./musicquiz";
+import * as playRandom from "./playRandom";
 
 export const commands = {
   help,
@@ -34,4 +35,5 @@ export const commands = {
   nightcore,
   stop,
   musicquiz,
+  play_random: playRandom,
 };
