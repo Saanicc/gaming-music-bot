@@ -44,6 +44,8 @@ Summon it anytime to power up your gameplay with cinematic, high-energy music.
 | `/loop-current`    | loops the playing track                                                                 |
 | `/loop-disable`    | Disables the loop mode                                                                  |
 | `/nightcore`       | Turns on/off the nightcore audio filter                                                 |
+| `/musicquiz`       | Start a music quiz in a thread!                                                         |
+| `/play_random`     | Play a random track or playlist from a genre                                            |
 
 ---
 
@@ -60,6 +62,8 @@ Summon it anytime to power up your gameplay with cinematic, high-energy music.
 | **Previous** | Play the previous track                                                                           |
 | **Queue**    | Displays the next five upcoming tracks in the queue                                               |
 | **💾**       | Save the currently playing track to the boss music library                                        |
+| **🔂**       | Loops the current track                                                                           |
+| **🔁**       | Loops the current queue                                                                           |
 
 ---
 
