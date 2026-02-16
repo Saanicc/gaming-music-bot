@@ -1,7 +1,9 @@
-import { GuildQueue, Track } from "discord-player";
+import { GuildQueue, QueueRepeatMode, Track } from "discord-player";
+
 import {
   ActionRowBuilder,
   ButtonBuilder,
+  ButtonStyle,
   ContainerBuilder,
   MessageCreateOptions,
   MessageFlags,
@@ -23,7 +25,9 @@ import { nextButton } from "@/interactions/buttons/next";
 import { previousButton } from "@/interactions/buttons/previous";
 import { emoji } from "../constants/emojis";
 import { getThumbnail } from "../helpers/utils";
-import { addTrackButton } from "@/src/interactions/buttons/addTrack";
+import { addTrackButton } from "@/interactions/buttons/addTrack";
+import { loopTrackButton } from "@/interactions/buttons/loopTrack";
+import { loopQueueButton } from "@/interactions/buttons/loopQueue";
 
 type NowPlayingMessageProps = {
   track: Track;
@@ -53,6 +57,24 @@ export const buildNowPlayingMessage = ({
   const isBossQueue =
     (isPlaying || !isPlaying) && queueManager.getQueueType() === "boss";
 
+  const repeatMode = queue.repeatMode;
+
+  const loopTrack = loopTrackButton
+    .setDisabled(!isPlaying)
+    .setStyle(
+      repeatMode === QueueRepeatMode.TRACK
+        ? ButtonStyle.Primary
+        : ButtonStyle.Secondary
+    );
+
+  const loopQueue = loopQueueButton
+    .setDisabled(!isPlaying)
+    .setStyle(
+      repeatMode === QueueRepeatMode.QUEUE
+        ? ButtonStyle.Primary
+        : ButtonStyle.Secondary
+    );
+
   const row = new ActionRowBuilder<ButtonBuilder>().addComponents(
     isPlaying ? pauseButton : resumeButton,
     previousButton.setDisabled(queue?.history.previousTrack ? false : true),
@@ -62,6 +84,8 @@ export const buildNowPlayingMessage = ({
   );
   const row2 = new ActionRowBuilder<ButtonBuilder>().addComponents(
     isBossQueue ? victoryButton : bossMusicButton,
+    loopTrack,
+    loopQueue,
     addTrackButton.setDisabled(isTrackInDB)
   );
 

@@ -6,6 +6,8 @@ import * as resume from "./resume";
 import * as queue from "./queue";
 import * as next from "./next";
 import * as previous from "./previous";
+import * as loopTrack from "./loopTrack";
+import * as loopQueue from "./loopQueue";
 import * as addTrack from "./addTrack";
 
 export const buttons = {
@@ -18,4 +20,6 @@ export const buttons = {
   next,
   previous,
   addTrack,
+  loopTrack,
+  loopQueue,
 };
