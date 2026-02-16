@@ -23,6 +23,7 @@ import { buildMessage } from "@/utils/bot-message/buildMessage";
 import { SEARCH_QUERIES } from "@/src/utils/constants/music-quiz-search-queries";
 import { delay } from "@/src/utils/helpers/utils";
 import { ColorType } from "@/src/utils/constants/colors";
+import { updateUserQuizStats } from "@/src/utils/helpers/updateUserQuizStats";
 
 const TIME_TO_PLAY_SONG = 45000;
 
@@ -389,6 +390,13 @@ const declareWinner = async (
       sortedScores
         .map(([id, s], idx) => `${idx + 1}. <@${id}>: ${s} pts`)
         .join("\n");
+
+    for (const [id, score] of sortedScores) {
+      await updateUserQuizStats(thread.guildId, id, {
+        won: id === winnerId,
+        correctAnswers: score,
+      });
+    }
   }
 
   await thread.send(

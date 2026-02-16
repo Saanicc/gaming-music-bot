@@ -9,10 +9,13 @@ export type PlayerData = {
   xp: number;
   rank: number;
   rankTitle: string;
+  quizStats?: {
+    totalWins: number;
+    totalCorrectAnswers: number;
+  };
 };
 
 export type LeaderboardHeader = {
-  leaderBoardType: "xp" | "music_quiz";
   leaderBoardTitle: string;
   title: string;
   image: string;
@@ -20,6 +23,7 @@ export type LeaderboardHeader = {
 };
 
 export class LeaderboardBuilder extends Builder {
+  private leaderBoardType: "xp" | "music_quiz" | null = null;
   private header: LeaderboardHeader | null = null;
   private players: PlayerData[] = [];
   private backgroundColor: string = "#120a1f";
@@ -29,6 +33,11 @@ export class LeaderboardBuilder extends Builder {
 
   constructor() {
     super(600, 960);
+  }
+
+  setLeaderBoardType(type: "xp" | "music_quiz") {
+    this.leaderBoardType = type;
+    return this;
   }
 
   setHeader(header: LeaderboardHeader) {
@@ -85,11 +94,6 @@ export class LeaderboardBuilder extends Builder {
           "span",
           { style: { fontSize: "20px", color: "#fff" } },
           JSX.Fragment({ children: player.displayName })
-        ),
-        JSX.createElement(
-          "span",
-          { style: { fontSize: "16px", color: "#7b7b7b" } },
-          JSX.Fragment({ children: player.username })
         )
       ),
       // Rank title & Level/XP
@@ -103,30 +107,54 @@ export class LeaderboardBuilder extends Builder {
             gap: "4px",
           },
         },
-        JSX.createElement(
-          "span",
-          {
-            style: {
-              fontSize: "16px",
-              color: "#feffefff",
-              display: "flex",
-              alignItems: "center",
-              gap: "6px",
-            },
-          },
-          JSX.createElement("img", {
-            src: getRankImage(player.level),
-            style: {
-              width: "24px",
-              height: "24px",
-            },
-          }),
-          JSX.Fragment({ children: player.rankTitle })
-        ),
+        this.leaderBoardType !== "music_quiz"
+          ? JSX.createElement(
+              "span",
+              {
+                style: {
+                  fontSize: "16px",
+                  color: "#feffefff",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "6px",
+                },
+              },
+              JSX.createElement("img", {
+                src: getRankImage(player.level),
+                style: {
+                  width: "24px",
+                  height: "24px",
+                },
+              }),
+              JSX.Fragment({ children: player.rankTitle })
+            )
+          : JSX.createElement(
+              "span",
+              {
+                style: {
+                  fontSize: "16px",
+                  color: "#feffefff",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "6px",
+                },
+              },
+              JSX.Fragment({
+                children: `Total wins: ${player.quizStats?.totalWins ?? 0}`,
+              })
+            ),
         JSX.createElement(
           "span",
           { style: { fontSize: "14px", color: "#7b7b7b" } },
-          JSX.Fragment({ children: `Level ${player.level} - ${player.xp} XP` })
+          this.leaderBoardType === "music_quiz"
+            ? JSX.Fragment({
+                children: `Correct answers:  ${
+                  player.quizStats?.totalCorrectAnswers ?? 0
+                }`,
+              })
+            : JSX.Fragment({
+                children: `Level ${player.level} - ${player.xp} XP`,
+              })
         )
       )
     );
@@ -203,26 +231,28 @@ export class LeaderboardBuilder extends Builder {
             },
             JSX.Fragment({ children: player.displayName })
           ),
-          JSX.createElement(
-            "span",
-            {
-              style: {
-                color: "#7b7b7b",
-                fontSize: "14px",
-                display: "flex",
-                alignItems: "center",
-                gap: "6px",
-              },
-            },
-            JSX.createElement("img", {
-              src: getRankImage(player.level),
-              style: {
-                width: "24px",
-                height: "24px",
-              },
-            }),
-            JSX.Fragment({ children: player.rankTitle })
-          ),
+          this.leaderBoardType !== "music_quiz"
+            ? JSX.createElement(
+                "span",
+                {
+                  style: {
+                    color: "#7b7b7b",
+                    fontSize: "14px",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "6px",
+                  },
+                },
+                JSX.createElement("img", {
+                  src: getRankImage(player.level),
+                  style: {
+                    width: "24px",
+                    height: "24px",
+                  },
+                }),
+                JSX.Fragment({ children: player.rankTitle })
+              )
+            : JSX.Fragment({ children: [] }),
           JSX.createElement(
             "span",
             {
@@ -232,13 +262,31 @@ export class LeaderboardBuilder extends Builder {
                 marginTop: "8px",
               },
             },
-            JSX.Fragment({ children: `Level ${player.level}` })
+            this.leaderBoardType !== "music_quiz"
+              ? JSX.Fragment({ children: `Level ${player.level}` })
+              : JSX.Fragment({
+                  children: `Total wins: ${player.quizStats?.totalWins ?? 0}`,
+                })
           ),
-          JSX.createElement(
-            "span",
-            { style: { color: getTop3PlayerColor(index), fontSize: "14px" } },
-            JSX.Fragment({ children: `${player.xp} XP` })
-          )
+          this.leaderBoardType !== "music_quiz"
+            ? JSX.createElement(
+                "span",
+                {
+                  style: { color: getTop3PlayerColor(index), fontSize: "14px" },
+                },
+                JSX.Fragment({ children: `${player.xp} XP` })
+              )
+            : JSX.createElement(
+                "span",
+                {
+                  style: { color: getTop3PlayerColor(index), fontSize: "14px" },
+                },
+                JSX.Fragment({
+                  children: `Correct answers: ${
+                    player.quizStats?.totalCorrectAnswers ?? 0
+                  }`,
+                })
+              )
         )
       )
     );
@@ -246,6 +294,8 @@ export class LeaderboardBuilder extends Builder {
 
   async render() {
     if (!this.header) throw new Error("Header is required!");
+    if (!this.leaderBoardType) throw new Error("Leaderboard type is required!");
+
     const bgImage = await loadImage(this.header.image);
     const topThree = await this.renderTopThree();
     const otherPlayers = await Promise.all(
