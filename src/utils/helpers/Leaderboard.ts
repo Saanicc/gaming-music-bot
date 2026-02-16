@@ -12,6 +12,8 @@ export type PlayerData = {
 };
 
 export type LeaderboardHeader = {
+  leaderBoardType: "xp" | "music_quiz";
+  leaderBoardTitle: string;
   title: string;
   image: string;
   subtitle: string;
@@ -20,7 +22,10 @@ export type LeaderboardHeader = {
 export class LeaderboardBuilder extends Builder {
   private header: LeaderboardHeader | null = null;
   private players: PlayerData[] = [];
-  private backgroundColor: string = "#1c112b";
+  private backgroundColor: string = "#120a1f";
+  private cardBackgroundColor: string = "rgba(255, 255, 255, 0.05)";
+  private border: string = "1px solid rgba(255,255,255,0.1)";
+  private boxShadow: string = "0 4px 6px rgba(0,0,0,0.3)";
 
   constructor() {
     super(600, 960);
@@ -55,8 +60,10 @@ export class LeaderboardBuilder extends Builder {
           gap: "12px",
           marginTop: "12px",
           padding: "8px 16px",
-          backgroundColor: "#ffffff08",
+          backgroundColor: this.cardBackgroundColor,
           borderRadius: "12px",
+          border: this.border,
+          boxShadow: this.boxShadow,
         },
       },
       JSX.createElement(
@@ -143,6 +150,7 @@ export class LeaderboardBuilder extends Builder {
           alignItems: "flex-end",
           marginBottom: "24px",
           marginTop: "24px",
+          boxShadow: this.boxShadow,
         },
       },
       ...top3.map((player, index) =>
@@ -154,11 +162,18 @@ export class LeaderboardBuilder extends Builder {
               flexDirection: "column",
               alignItems: "center",
               flex: 1,
-              backgroundColor: index === 1 ? "#FFFFFF12" : "#FFFFFF08",
+              backgroundColor:
+                index === 1 ? "#FFFFFF18" : this.cardBackgroundColor,
               padding: "12px",
               borderRadius: "12px",
               borderBottomRightRadius: index !== 2 ? "0px" : "12px",
               borderBottomLeftRadius: index !== 0 ? "0px" : "12px",
+              borderTop: this.border,
+              borderBottom: this.border,
+              borderLeft: index === 0 ? this.border : "none",
+              borderRight: index === 2 ? this.border : "none",
+              borderTopLeftRadius: index === 2 ? "0px" : "12px",
+              borderTopRightRadius: index === 0 ? "0px" : "12px",
             },
             key: player.username,
           },
@@ -263,6 +278,21 @@ export class LeaderboardBuilder extends Builder {
             marginBottom: "24px",
           },
         },
+        JSX.createElement(
+          "span",
+          {
+            style: {
+              fontSize: "26px",
+              color: "#fff",
+              backgroundColor: this.cardBackgroundColor,
+              padding: "12px",
+              borderRadius: "12px",
+              border: this.border,
+              boxShadow: this.boxShadow,
+            },
+          },
+          JSX.Fragment({ children: this.header.leaderBoardTitle })
+        ),
         JSX.createElement("img", {
           src: bgImage.toDataURL(),
           style: { width: "64px", height: "64px", borderRadius: "12px" },

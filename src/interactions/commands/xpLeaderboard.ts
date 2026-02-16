@@ -6,8 +6,8 @@ import { LeaderboardBuilder } from "@/utils/helpers/Leaderboard";
 import { getRankTitle } from "@/modules/rankSystem";
 
 export const data = new SlashCommandBuilder()
-  .setName("leaderboard")
-  .setDescription("View the DJ leaderboard");
+  .setName("xp_leaderboard")
+  .setDescription("View the XP leaderboard");
 
 export async function execute(interaction: ChatInputCommandInteraction) {
   await interaction.deferReply();
@@ -79,6 +79,8 @@ export async function execute(interaction: ChatInputCommandInteraction) {
 
     const lb = new LeaderboardBuilder()
       .setHeader({
+        leaderBoardType: "xp",
+        leaderBoardTitle: "XP Leaderboard",
         title: guild.name,
         image: guild.iconURL() ?? "",
         subtitle: `${guildMembers.size} members`,

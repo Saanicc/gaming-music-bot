@@ -5,7 +5,7 @@ import * as help from "./help";
 import * as queue from "./queue";
 import * as skip from "./skip";
 import * as rank from "./rank";
-import * as leaderboard from "./leaderboard";
+import * as xp_leaderboard from "./xpLeaderboard";
 import * as autoplay from "./autoplay";
 import * as loop_all from "./loop-all";
 import * as loop_current from "./loop-current";
@@ -27,7 +27,7 @@ export const commands = {
   queue,
   skip,
   rank,
-  leaderboard,
+  xp_leaderboard,
   autoplay,
   loop_all,
   loop_current,
