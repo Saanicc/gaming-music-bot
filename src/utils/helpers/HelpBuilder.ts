@@ -20,7 +20,7 @@ export class HelpBuilder extends Builder {
   private secondaryColor: string = "#00d9ff";
 
   constructor() {
-    super(900, 1200);
+    super(900, 1300);
   }
 
   setHeader(header: HelpHeader) {
@@ -163,7 +163,11 @@ export class HelpBuilder extends Builder {
     const headerNode = await this.renderHeader();
     if (!headerNode) throw new Error("Failed to render header!");
 
-    const commandNodes = this.commands.map((cmd, i) =>
+    const sortedCommands = this.commands.sort((a, b) =>
+      a.name.localeCompare(b.name)
+    );
+
+    const commandNodes = sortedCommands.map((cmd, i) =>
       this.renderCommandItem(cmd, i)
     );
 
