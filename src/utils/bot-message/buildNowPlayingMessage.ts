@@ -101,7 +101,9 @@ ${getFormattedTrackDescription(track, queue)}
 ${progressBar}
 `);
 
-  const requestedByText = new TextDisplayBuilder().setContent(footerText);
+  const requestedByText = new TextDisplayBuilder().setContent(
+    `-# ${footerText}`
+  );
 
   const thumbnail = new ThumbnailBuilder().setURL(getThumbnail(track));
 
