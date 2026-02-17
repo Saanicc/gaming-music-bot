@@ -89,8 +89,8 @@ export async function execute(interaction: ChatInputCommandInteraction) {
     });
 
     const lb = new LeaderboardBuilder()
+      .setLeaderBoardType("music_quiz")
       .setHeader({
-        leaderBoardType: "music_quiz",
         leaderBoardTitle: "Music Quiz Leaderboard",
         title: guild.name,
         image: guild.iconURL() ?? "",

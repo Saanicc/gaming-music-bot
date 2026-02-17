@@ -5,22 +5,24 @@ export const updateUserQuizStats = async (
   userId: string,
   quizStats: { won: boolean; correctAnswers: number }
 ) => {
-  let user = await User.findOne({ guildId, userId });
-
-  if (!user) {
-    user = await User.create({ guildId, userId });
-  }
-
-  if (!user.quizStats) {
-    user.quizStats = {
-      totalWins: 0,
-      totalCorrectAnswers: 0,
-    };
-  }
-
-  if (quizStats.won) {
-    user.quizStats.totalWins++;
-  }
-  user.quizStats.totalCorrectAnswers += quizStats.correctAnswers;
-  await user.save();
+  await User.updateOne(
+    { guildId, userId },
+    {
+      $inc: {
+        "quizStats.totalWins": quizStats.won ? 1 : 0,
+        "quizStats.totalCorrectAnswers": quizStats.correctAnswers,
+      },
+      $setOnInsert: {
+        guildId,
+        userId,
+        lastXP: null,
+        xp: 0,
+        level: 1,
+        totalXp: 0,
+        totalPlays: 0,
+        totalBossPlays: 0,
+      },
+    },
+    { upsert: true }
+  );
 };

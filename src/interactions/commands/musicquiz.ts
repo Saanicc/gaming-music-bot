@@ -391,12 +391,14 @@ const declareWinner = async (
         .map(([id, s], idx) => `${idx + 1}. <@${id}>: ${s} pts`)
         .join("\n");
 
-    for (const [id, score] of sortedScores) {
-      await updateUserQuizStats(thread.guildId, id, {
+    const updatePromises = sortedScores.map(([id, score]) =>
+      updateUserQuizStats(thread.guildId, id, {
         won: id === winnerId,
         correctAnswers: score,
-      });
-    }
+      })
+    );
+
+    await Promise.allSettled(updatePromises);
   }
 
   await thread.send(
