@@ -1,9 +1,4 @@
-import {
-  ButtonBuilder,
-  ButtonInteraction,
-  ButtonStyle,
-  ComponentType,
-} from "discord.js";
+import { ButtonBuilder, ButtonInteraction, ButtonStyle } from "discord.js";
 import { execute as showQueue, renderQueue } from "../commands/queue";
 import { emoji } from "@/utils/constants/emojis";
 
@@ -33,5 +28,5 @@ export const execute = async (interaction: ButtonInteraction) => {
   }
 
   const targetPage = parseInt(parts[2], 10) || 1;
-  await renderQueue(interaction, targetPage);
+  await renderQueue(interaction, targetPage, "update");
 };

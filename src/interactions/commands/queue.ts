@@ -22,12 +22,13 @@ const TRACKS_PER_PAGE = 10;
 export async function execute(
   interaction: ChatInputCommandInteraction | ButtonInteraction
 ) {
-  await renderQueue(interaction, 1);
+  await renderQueue(interaction, 1, "reply");
 }
 
 export async function renderQueue(
   interaction: ChatInputCommandInteraction | ButtonInteraction,
-  page: number
+  page: number,
+  mode: "reply" | "update" = "reply"
 ) {
   const queue = useQueue();
 
@@ -106,10 +107,7 @@ ${tracksList}
     actionRowButtons: [row],
   });
 
-  if (interaction.isButton() && interaction.customId.startsWith("queue")) {
-    if (interaction.customId === "queue") {
-      return interaction.reply(data);
-    }
+  if (mode === "update" && interaction.isButton()) {
     return interaction.update(data as InteractionUpdateOptions);
   }
 
