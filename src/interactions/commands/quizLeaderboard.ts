@@ -19,7 +19,7 @@ export async function execute(interaction: ChatInputCommandInteraction) {
   }
 
   const guildMembers = await guild.members.fetch();
-  if (!guildMembers) {
+  if (!guildMembers || guildMembers.size === 0) {
     const message = buildMessage({ title: "No guild members found." });
     return interaction.editReply(message);
   }
