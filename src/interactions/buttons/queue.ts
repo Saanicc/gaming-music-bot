@@ -1,5 +1,10 @@
-import { ButtonBuilder, ButtonInteraction, ButtonStyle } from "discord.js";
-import { execute as showQueue } from "../commands/queue";
+import {
+  ButtonBuilder,
+  ButtonInteraction,
+  ButtonStyle,
+  ComponentType,
+} from "discord.js";
+import { execute as showQueue, renderQueue } from "../commands/queue";
 import { emoji } from "@/utils/constants/emojis";
 
 export const queueButton = new ButtonBuilder()
@@ -14,5 +19,19 @@ export const execute = async (interaction: ButtonInteraction) => {
     return;
   }
 
-  showQueue(interaction);
+  const customId = interaction.customId;
+
+  if (customId === "queue") {
+    return showQueue(interaction);
+  }
+
+  const parts = customId.split(":");
+  const action = parts[1];
+
+  if (action === "stop") {
+    return interaction.message.delete();
+  }
+
+  const targetPage = parseInt(parts[2], 10) || 1;
+  await renderQueue(interaction, targetPage);
 };
