@@ -11,7 +11,7 @@ import { useQueue } from "discord-player";
 import { buildMessage } from "@/utils/bot-message/buildMessage";
 import { getFormattedTrackDescription } from "@/utils/helpers/getFormattedTrackDescription";
 import { emoji } from "@/utils/constants/emojis";
-import { getThumbnail } from "@/src/utils/helpers/utils";
+import { getThumbnail } from "@/utils/helpers/utils";
 
 export const data = new SlashCommandBuilder()
   .setName("queue")
