@@ -16,6 +16,7 @@ import * as playNow from "./playNow";
 import * as stop from "./stop";
 import * as musicquiz from "./musicquiz";
 import * as playRandom from "./playRandom";
+import * as quiz_leaderboard from "./quizLeaderboard";
 
 export const commands = {
   help,
@@ -36,4 +37,5 @@ export const commands = {
   stop,
   musicquiz,
   play_random: playRandom,
+  quiz_leaderboard,
 };

@@ -6,8 +6,8 @@ import { LeaderboardBuilder } from "@/utils/helpers/Leaderboard";
 import { getRankTitle } from "@/modules/rankSystem";
 
 export const data = new SlashCommandBuilder()
-  .setName("xp_leaderboard")
-  .setDescription("View the XP leaderboard");
+  .setName("quiz_leaderboard")
+  .setDescription("View the Music Quiz leaderboard");
 
 export async function execute(interaction: ChatInputCommandInteraction) {
   await interaction.deferReply();
@@ -19,7 +19,7 @@ export async function execute(interaction: ChatInputCommandInteraction) {
   }
 
   const guildMembers = await guild.members.fetch();
-  if (!guildMembers) {
+  if (!guildMembers || guildMembers.size === 0) {
     const message = buildMessage({ title: "No guild members found." });
     return interaction.editReply(message);
   }
@@ -57,9 +57,16 @@ export async function execute(interaction: ChatInputCommandInteraction) {
   };
 
   const buildLeaderboard = (users: any[]) => {
-    const sorted = [...users].sort((a, b) =>
-      b.level === a.level ? b.xp - a.xp : b.level - a.level
-    );
+    const sorted = [...users].sort((a, b) => {
+      const winsA = a.quizStats?.totalWins ?? 0;
+      const winsB = b.quizStats?.totalWins ?? 0;
+      if (winsA !== winsB) {
+        return winsB - winsA;
+      }
+      const correctA = a.quizStats?.totalCorrectAnswers ?? 0;
+      const correctB = b.quizStats?.totalCorrectAnswers ?? 0;
+      return correctB - correctA;
+    });
 
     const mappedUsers = sorted.map((user, index) => {
       const discordUser = guildMembers.find(
@@ -74,13 +81,17 @@ export async function execute(interaction: ChatInputCommandInteraction) {
         xp: user.totalXp,
         rank: index + 1,
         rankTitle: getRankTitle(user.level),
+        quizStats: {
+          totalWins: user.quizStats?.totalWins ?? 0,
+          totalCorrectAnswers: user.quizStats?.totalCorrectAnswers ?? 0,
+        },
       };
     });
 
     const lb = new LeaderboardBuilder()
-      .setLeaderBoardType("xp")
+      .setLeaderBoardType("music_quiz")
       .setHeader({
-        leaderBoardTitle: "XP Leaderboard",
+        leaderBoardTitle: "Music Quiz Leaderboard",
         title: guild.name,
         image: guild.iconURL() ?? "",
         subtitle: `${guildMembers.size} members`,

@@ -33,6 +33,16 @@ const userSchema = new mongoose.Schema({
     type: Number,
     default: 0,
   },
+  quizStats: {
+    totalWins: {
+      type: Number,
+      default: 0,
+    },
+    totalCorrectAnswers: {
+      type: Number,
+      default: 0,
+    },
+  },
 });
 
 userSchema.index({ guildId: 1, userId: 1 }, { unique: true });
