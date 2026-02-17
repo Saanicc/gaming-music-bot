@@ -14,6 +14,8 @@ import {
 } from "discord.js";
 import { colors as colorConstant, ColorType } from "../constants/colors";
 
+type FontSize = "lg" | "md" | "sm";
+
 export const buildMessage = ({
   title,
   titleFontSize = "sm",
@@ -26,7 +28,7 @@ export const buildMessage = ({
   actionRowButtons,
 }: {
   title: string;
-  titleFontSize?: "lg" | "md" | "sm";
+  titleFontSize?: FontSize;
   color?: ColorType;
   ephemeral?: boolean;
   description?: string;
@@ -35,7 +37,7 @@ export const buildMessage = ({
   footerText?: string;
   actionRowButtons?: ActionRowBuilder<ButtonBuilder>[];
 }): BaseMessageOptions => {
-  const getFontSize = () => {
+  const getTitleFontSize = () => {
     switch (titleFontSize) {
       case "lg":
         return "#";
@@ -51,7 +53,7 @@ export const buildMessage = ({
   const headerSection = new SectionBuilder();
 
   const textDisplay = new TextDisplayBuilder().setContent(
-    `${getFontSize()} ${title}\n${description ?? ""}`
+    `${getTitleFontSize()} ${title}\n${description ?? ""}`
   );
 
   if (thumbnail) {
@@ -70,19 +72,21 @@ export const buildMessage = ({
     container.addMediaGalleryComponents(gallery);
   }
 
+  if (actionRowButtons) {
+    container.addSeparatorComponents(new SeparatorBuilder());
+    container.addActionRowComponents(actionRowButtons);
+  }
+
   if (footerText) {
     container.addSeparatorComponents(new SeparatorBuilder());
-    const footerDisplay = new TextDisplayBuilder().setContent(footerText);
+    const footerDisplay = new TextDisplayBuilder().setContent(
+      `-# ${footerText}`
+    );
     container.addTextDisplayComponents(footerDisplay);
   }
 
   if (color) {
     container.setAccentColor(colorConstant[color]);
-  }
-
-  if (actionRowButtons) {
-    container.addSeparatorComponents(new SeparatorBuilder());
-    container.addActionRowComponents(actionRowButtons);
   }
 
   const getFlags = () => {

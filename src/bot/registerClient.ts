@@ -40,7 +40,7 @@ export const registerDiscordClient = () => {
       await handleInteraction(interaction, commands, commandName);
     }
     if (interaction.isButton()) {
-      const button = interaction.customId;
+      const button = interaction.customId.split(":")[0];
       await handleInteraction(interaction, buttons, button);
     }
   });
