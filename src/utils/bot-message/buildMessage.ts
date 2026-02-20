@@ -11,6 +11,7 @@ import {
   BaseMessageOptions,
   ButtonBuilder,
   ActionRowBuilder,
+  StringSelectMenuBuilder,
 } from "discord.js";
 import { colors as colorConstant, ColorType } from "../constants/colors";
 
@@ -25,7 +26,7 @@ export const buildMessage = ({
   imageUrl,
   thumbnail,
   footerText,
-  actionRowButtons,
+  actionRowBuilder,
 }: {
   title: string;
   titleFontSize?: FontSize;
@@ -35,7 +36,9 @@ export const buildMessage = ({
   imageUrl?: string;
   thumbnail?: string;
   footerText?: string;
-  actionRowButtons?: ActionRowBuilder<ButtonBuilder>[];
+  actionRowBuilder?: ActionRowBuilder<
+    ButtonBuilder | StringSelectMenuBuilder
+  >[];
 }): BaseMessageOptions => {
   const getTitleFontSize = () => {
     switch (titleFontSize) {
@@ -72,9 +75,9 @@ export const buildMessage = ({
     container.addMediaGalleryComponents(gallery);
   }
 
-  if (actionRowButtons) {
+  if (actionRowBuilder) {
     container.addSeparatorComponents(new SeparatorBuilder());
-    container.addActionRowComponents(actionRowButtons);
+    container.addActionRowComponents(actionRowBuilder);
   }
 
   if (footerText) {

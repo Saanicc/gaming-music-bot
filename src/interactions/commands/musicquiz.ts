@@ -10,6 +10,8 @@ import {
   PublicThreadChannel,
   VoiceBasedChannel,
   ButtonInteraction,
+  StringSelectMenuBuilder,
+  MessageFlags,
 } from "discord.js";
 import {
   useMainPlayer,
@@ -20,12 +22,16 @@ import {
   Player,
 } from "discord-player";
 import { buildMessage } from "@/utils/bot-message/buildMessage";
-import { SEARCH_QUERIES } from "@/src/utils/constants/music-quiz-search-queries";
+import {
+  GENRES,
+  SEARCH_QUERIES,
+} from "@/src/utils/constants/music-quiz-search-queries";
 import { delay } from "@/src/utils/helpers/utils";
 import { ColorType } from "@/src/utils/constants/colors";
 import { updateUserQuizStats } from "@/src/utils/helpers/updateUserQuizStats";
+import { searchSpotifyPlaylists } from "@/src/api/spotify";
 
-const TIME_TO_PLAY_SONG = 10000;
+const TIME_TO_PLAY_SONG = 45000;
 const QUESTION_TIME = 15000;
 
 const truncateLabelIfNeeded = (label: string): string =>
@@ -103,40 +109,98 @@ export async function execute(interaction: ChatInputCommandInteraction) {
     );
   }
 
+  const numberOfRoundsSelect = new StringSelectMenuBuilder()
+    .setCustomId("quiz_rounds_select")
+    .setPlaceholder("Number of rounds (optional)")
+    .addOptions(
+      [3, 4, 5, 6, 7, 8, 9, 10].map((number) => ({
+        label: number === 5 ? "5 (Default)" : number.toString(),
+        value: number.toString(),
+      }))
+    );
+
+  const musicQuizGenreSelect = new StringSelectMenuBuilder()
+    .setCustomId("quiz_genre_select")
+    .setPlaceholder("Select a genre (optional)")
+    .addOptions(
+      GENRES.map((genre) => ({
+        label: genre,
+        value: genre,
+      }))
+    );
+
   const startBtn = new ButtonBuilder()
     .setCustomId("start_quiz_btn")
     .setLabel("Start Quiz")
     .setStyle(ButtonStyle.Success);
 
-  const row = new ActionRowBuilder<ButtonBuilder>().addComponents(startBtn);
+  const roundsSelectRow =
+    new ActionRowBuilder<StringSelectMenuBuilder>().addComponents(
+      numberOfRoundsSelect
+    );
+  const genreSelectRow =
+    new ActionRowBuilder<StringSelectMenuBuilder>().addComponents(
+      musicQuizGenreSelect
+    );
+  const buttonRow = new ActionRowBuilder<ButtonBuilder>().addComponents(
+    startBtn
+  );
 
   const lobbyMessage = buildMessage({
     title: "🎵 Music Quiz Ready",
-    description:
-      "Join a voice channel and click the button below to start!\nWe will play 5 rounds.",
+    description: `Join a voice channel, select a genre, and click the button below to start!`,
     color: "info",
-    actionRowButtons: [row],
+    actionRowBuilder: [roundsSelectRow, genreSelectRow, buttonRow],
   });
 
   const lobbyMsg = await thread.send(lobbyMessage);
 
-  const collector = lobbyMsg.createMessageComponentCollector({
+  let selectedRounds: number | null = null;
+  let selectedGenre: string | null = null;
+
+  const selectCollector = lobbyMsg.createMessageComponentCollector({
+    componentType: ComponentType.StringSelect,
+    time: 60000 * 5,
+  });
+
+  selectCollector.on("collect", async (i) => {
+    await i.deferUpdate();
+
+    if (i.customId === "quiz_rounds_select") {
+      selectedRounds = Number(i.values[0]);
+    }
+    if (i.customId === "quiz_genre_select") {
+      selectedGenre = i.values[0];
+    }
+  });
+
+  const buttonCollector = lobbyMsg.createMessageComponentCollector({
     componentType: ComponentType.Button,
     time: 60000 * 5,
     max: 1,
   });
 
-  collector.on("collect", async (i) => {
+  buttonCollector.on("collect", async (i) => {
     if (i.customId === "start_quiz_btn") {
       await i.deferUpdate();
+      selectCollector.stop();
 
       const quizStartedMessage = buildMessage({
         title: "🎵 Music Quiz Started",
-        description: "Playing 5 rounds. Get ready!",
+        description: selectedGenre
+          ? `Genre: **${selectedGenre}**.\n\nPlaying ${selectedRounds} rounds. Get ready!`
+          : `Genre: **Random**.\n\nPlaying ${selectedRounds} rounds. Get ready!`,
       });
       await lobbyMsg.edit(quizStartedMessage);
 
-      await runGameLoop(thread, member.voice.channel!, player, interaction);
+      await runGameLoop(
+        thread,
+        member.voice.channel!,
+        player,
+        interaction,
+        selectedGenre,
+        selectedRounds
+      );
     }
   });
 }
@@ -145,7 +209,9 @@ async function runGameLoop(
   thread: PublicThreadChannel,
   voiceChannel: VoiceBasedChannel,
   player: Player,
-  interaction: ChatInputCommandInteraction
+  interaction: ChatInputCommandInteraction,
+  selectedGenre: string | null,
+  selectedRounds: number | null
 ) {
   const scores = new Map<string, number>();
   const correctAnswers = new Map<string, number>();
@@ -189,61 +255,83 @@ async function runGameLoop(
     })
   );
 
-  const randomTheme =
+  const searchTheme =
+    selectedGenre ??
     SEARCH_QUERIES[Math.floor(Math.random() * SEARCH_QUERIES.length)];
 
-  const searchResult = await player.search(randomTheme, {
-    requestedBy: undefined,
-    searchEngine: QueryType.SPOTIFY_PLAYLIST,
-  });
+  const spotifyPlaylists = await searchSpotifyPlaylists(searchTheme);
 
-  if (!searchResult || !searchResult.tracks.length) {
+  if (!spotifyPlaylists.length) {
     return thread.send(
       buildMessage({
         title: "Error",
-        description: `Could not find tracks for theme: ${randomTheme}.`,
+        description: `Could not find playlists for theme: ${searchTheme}.`,
         color: "error",
       })
     );
   }
 
-  const allTracks = shuffleArray<Track>(searchResult.tracks);
-  const quizTracks = allTracks.slice(0, 5);
-  await playQuizRounds(
-    quizTracks,
-    allTracks,
+  await playQuiz(
+    spotifyPlaylists,
+    player,
     thread,
     queue,
     scores,
-    correctAnswers
+    correctAnswers,
+    selectedRounds
   );
   await delay(3000);
   await declareWinner(scores, correctAnswers, thread);
   queue.delete();
 }
 
-const playQuizRounds = async (
-  quizTracks: Track[],
-  allTracks: Track[],
+const playQuiz = async (
+  spotifyPlaylists: string[],
+  player: Player,
   thread: PublicThreadChannel,
   queue: GuildQueue,
   scores: Map<string, number>,
-  correctAnswers: Map<string, number>
+  correctAnswers: Map<string, number>,
+  selectedRounds: number | null
 ) => {
-  for (let i = 0; i < quizTracks.length; i++) {
-    const track = quizTracks[i];
+  const getRandomPlaylistTracks = async () => {
+    const randomPlaylist =
+      spotifyPlaylists[Math.floor(Math.random() * spotifyPlaylists.length)];
+
+    const searchResult = await player.search(randomPlaylist, {
+      requestedBy: undefined,
+      searchEngine: QueryType.SPOTIFY_PLAYLIST,
+    });
+
+    if (!searchResult || !searchResult.tracks.length) {
+      await thread.send(
+        buildMessage({
+          title: "Error",
+          description: `Could not find tracks for playlist: ${randomPlaylist}. Trying another playlist...`,
+          color: "error",
+        })
+      );
+      return getRandomPlaylistTracks();
+    }
+
+    return shuffleArray(searchResult.tracks);
+  };
+
+  for (let i = 0; i < (selectedRounds ?? 5); i++) {
+    const allTracks = await getRandomPlaylistTracks();
+    const randomTrack = allTracks[Math.floor(Math.random() * allTracks.length)];
     const roundNum = i + 1;
 
     await thread.send(
       buildMessage({
-        title: `Round ${roundNum}/5`,
+        title: `Round ${roundNum}/${selectedRounds}`,
         description: `Listen carefully! Playing for ${TIME_TO_PLAY_SONG / 1000} seconds...`,
         color: "info",
       })
     );
 
     try {
-      await queue.node.play(track, { seek: 30, transitionMode: false });
+      await queue.node.play(randomTrack, { seek: 30, transitionMode: false });
     } catch (error) {
       await thread.send(
         buildMessage({
@@ -260,7 +348,7 @@ const playQuizRounds = async (
 
     await askQuestion(
       thread,
-      track,
+      randomTrack,
       allTracks,
       scores,
       correctAnswers,
@@ -272,7 +360,7 @@ const playQuizRounds = async (
 
     await askQuestion(
       thread,
-      track,
+      randomTrack,
       allTracks,
       scores,
       correctAnswers,
@@ -318,7 +406,7 @@ const askQuestion = async (
       description: `**${questionText}**`,
       footerText: "You have 15 seconds!",
       color: "info",
-      actionRowButtons: [row],
+      actionRowBuilder: [row],
     })
   );
 
@@ -334,7 +422,10 @@ const askQuestion = async (
 
   collector.on("collect", async (i: ButtonInteraction) => {
     if (answeredUserIds.has(i.user.id)) {
-      await i.reply({ content: "You already guessed!", ephemeral: true });
+      await i.reply({
+        content: "You already guessed!",
+        flags: MessageFlags.Ephemeral,
+      });
       return;
     }
 
@@ -358,9 +449,12 @@ const askQuestion = async (
       correctAnswers.set(i.user.id, currentCorrect + 1);
 
       correctUserIds.push(i.user.id);
-      await i.reply({ content: `✅ Correct! +${points} pts`, ephemeral: true });
+      await i.reply({
+        content: `✅ Correct! +${points} pts`,
+        flags: MessageFlags.Ephemeral,
+      });
     } else {
-      await i.reply({ content: "❌ Wrong!", ephemeral: true });
+      await i.reply({ content: "❌ Wrong!", flags: MessageFlags.Ephemeral });
     }
   });
 
