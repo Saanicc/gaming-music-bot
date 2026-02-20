@@ -1,5 +1,13 @@
-import { useMainPlayer } from "discord-player";
+import { useMainPlayer, useQueue } from "discord-player";
 import { Interaction } from "discord.js";
+import { buildMessage } from "../bot-message/buildMessage";
+
+const ALLOWED_COMMANDS_DURING_QUIZ = [
+  "help",
+  "rank",
+  "xp_leaderboard",
+  "quiz_leaderboard",
+];
 
 export const handleInteraction = async (
   interaction: Interaction,
@@ -12,6 +20,25 @@ export const handleInteraction = async (
   if (!handler) return;
 
   const player = useMainPlayer();
+  const queue = useQueue(interaction.guild.id);
+
+  if (
+    (queue?.metadata as any)?.musicQuiz &&
+    !ALLOWED_COMMANDS_DURING_QUIZ.includes(key)
+  ) {
+    if (interaction.isRepliable()) {
+      await interaction.reply(
+        buildMessage({
+          title: "❌ Music Quiz in Progress",
+          description:
+            "You cannot use this command while a music quiz is ongoing in this server.",
+          color: "error",
+          ephemeral: true,
+        })
+      );
+    }
+    return;
+  }
 
   const context = {
     guild: interaction.guild,
