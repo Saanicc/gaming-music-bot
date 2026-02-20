@@ -25,7 +25,8 @@ import { delay } from "@/src/utils/helpers/utils";
 import { ColorType } from "@/src/utils/constants/colors";
 import { updateUserQuizStats } from "@/src/utils/helpers/updateUserQuizStats";
 
-const TIME_TO_PLAY_SONG = 45000;
+const TIME_TO_PLAY_SONG = 10000;
+const QUESTION_TIME = 15000;
 
 const truncateLabelIfNeeded = (label: string): string =>
   label.length > 80 ? label.substring(0, 77) + "..." : label;
@@ -147,6 +148,7 @@ async function runGameLoop(
   interaction: ChatInputCommandInteraction
 ) {
   const scores = new Map<string, number>();
+  const correctAnswers = new Map<string, number>();
 
   let queue = useQueue(voiceChannel.guild.id);
   if (!queue) {
@@ -207,9 +209,16 @@ async function runGameLoop(
 
   const allTracks = shuffleArray<Track>(searchResult.tracks);
   const quizTracks = allTracks.slice(0, 5);
-  await playQuizRounds(quizTracks, allTracks, thread, queue, scores);
+  await playQuizRounds(
+    quizTracks,
+    allTracks,
+    thread,
+    queue,
+    scores,
+    correctAnswers
+  );
   await delay(3000);
-  await declareWinner(scores, thread);
+  await declareWinner(scores, correctAnswers, thread);
   queue.delete();
 }
 
@@ -218,7 +227,8 @@ const playQuizRounds = async (
   allTracks: Track[],
   thread: PublicThreadChannel,
   queue: GuildQueue,
-  scores: Map<string, number>
+  scores: Map<string, number>,
+  correctAnswers: Map<string, number>
 ) => {
   for (let i = 0; i < quizTracks.length; i++) {
     const track = quizTracks[i];
@@ -253,6 +263,7 @@ const playQuizRounds = async (
       track,
       allTracks,
       scores,
+      correctAnswers,
       "author",
       "Who is the Artist?"
     );
@@ -264,6 +275,7 @@ const playQuizRounds = async (
       track,
       allTracks,
       scores,
+      correctAnswers,
       "cleanTitle",
       "What is the Track Name?"
     );
@@ -277,6 +289,7 @@ const askQuestion = async (
   track: Track,
   allTracks: Track[],
   scores: Map<string, number>,
+  correctAnswers: Map<string, number>,
   property: "author" | "cleanTitle",
   questionText: string
 ) => {
@@ -309,12 +322,14 @@ const askQuestion = async (
     })
   );
 
+  const questionStartTime = Date.now();
+
   const correctUserIds: string[] = [];
   const answeredUserIds = new Set<string>();
 
   const collector = questionMsg.createMessageComponentCollector({
     componentType: ComponentType.Button,
-    time: 15000,
+    time: QUESTION_TIME,
   });
 
   collector.on("collect", async (i: ButtonInteraction) => {
@@ -330,10 +345,20 @@ const askQuestion = async (
     const isCorrect = selectedAnswer === targetAnswer;
 
     if (isCorrect) {
+      const elapsed = Date.now() - questionStartTime;
+      const points = Math.max(
+        0,
+        Math.round(1000 * (1 - elapsed / QUESTION_TIME))
+      );
+
       const currentScore = scores.get(i.user.id) || 0;
-      scores.set(i.user.id, currentScore + 1);
+      scores.set(i.user.id, currentScore + points);
+
+      const currentCorrect = correctAnswers.get(i.user.id) || 0;
+      correctAnswers.set(i.user.id, currentCorrect + 1);
+
       correctUserIds.push(i.user.id);
-      await i.reply({ content: "✅ Correct!", ephemeral: true });
+      await i.reply({ content: `✅ Correct! +${points} pts`, ephemeral: true });
     } else {
       await i.reply({ content: "❌ Wrong!", ephemeral: true });
     }
@@ -348,11 +373,21 @@ const askQuestion = async (
       await questionMsg.edit({ components: [disabledRow] });
 
       if (correctUserIds.length > 0) {
-        const names = correctUserIds.map((id) => `<@${id}>`).join(", ");
+        const names = correctUserIds
+          .map((id) => {
+            const pts = scores.get(id) ?? 0;
+            return `<@${id}> (${pts} pts)`;
+          })
+          .sort((a, b) => {
+            const aScore = parseInt(a.match(/\((\d+) pts\)/)?.[1] || "0");
+            const bScore = parseInt(b.match(/\((\d+) pts\)/)?.[1] || "0");
+            return bScore - aScore;
+          })
+          .join(`\n`);
         await thread.send(
           buildMessage({
             title: "Time's Up!",
-            description: `The answer was **${correctAnswer}**.\nCorrect: ${names}`,
+            description: `The answer was **${correctAnswer}**.\nCorrect:\n${names}`,
             color: "success",
           })
         );
@@ -372,6 +407,7 @@ const askQuestion = async (
 
 const declareWinner = async (
   scores: Map<string, number>,
+  correctAnswers: Map<string, number>,
   thread: PublicThreadChannel
 ) => {
   const sortedScores = [...scores.entries()].sort((a, b) => b[1] - a[1]);
@@ -391,10 +427,10 @@ const declareWinner = async (
         .map(([id, s], idx) => `${idx + 1}. <@${id}>: ${s} pts`)
         .join("\n");
 
-    const updatePromises = sortedScores.map(([id, score]) =>
+    const updatePromises = sortedScores.map(([id]) =>
       updateUserQuizStats(thread.guildId, id, {
         won: id === winnerId,
-        correctAnswers: score,
+        correctAnswers: correctAnswers.get(id) ?? 0,
       })
     );
 
