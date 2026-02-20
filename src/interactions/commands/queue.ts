@@ -104,7 +104,7 @@ ${tracksList}
     `,
     color: "queue",
     footerText,
-    actionRowButtons: [row],
+    actionRowBuilder: [row],
   });
 
   if (mode === "update" && interaction.isButton()) {
