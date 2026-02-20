@@ -287,30 +287,32 @@ async function runGameLoop(
     })
   );
 
-  let spotifyPlaylists: string[];
   try {
-    spotifyPlaylists = await searchSpotifyPlaylists(genre);
-  } catch (e) {
-    return thread.send(
-      buildMessage({
-        title: "Error",
-        description: "Failed to reach Spotify. Please try again later.",
-        color: "error",
-      })
-    );
-  }
+    let spotifyPlaylists: string[];
+    try {
+      spotifyPlaylists = await searchSpotifyPlaylists(genre);
+    } catch (e) {
+      await thread.send(
+        buildMessage({
+          title: "Error",
+          description: "Failed to reach Spotify. Please try again later.",
+          color: "error",
+        })
+      );
+      return;
+    }
 
-  if (!spotifyPlaylists.length) {
-    return thread.send(
-      buildMessage({
-        title: "Error",
-        description: `Could not find playlists for theme: ${genre}.`,
-        color: "error",
-      })
-    );
-  }
+    if (!spotifyPlaylists.length) {
+      await thread.send(
+        buildMessage({
+          title: "Error",
+          description: `Could not find playlists for theme: ${genre}.`,
+          color: "error",
+        })
+      );
+      return;
+    }
 
-  try {
     await playQuiz(
       spotifyPlaylists,
       player,
