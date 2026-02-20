@@ -310,18 +310,21 @@ async function runGameLoop(
     );
   }
 
-  await playQuiz(
-    spotifyPlaylists,
-    player,
-    thread,
-    queue,
-    scores,
-    correctAnswers,
-    rounds
-  );
-  await delay(3000);
-  await declareWinner(scores, correctAnswers, thread);
-  queue.delete();
+  try {
+    await playQuiz(
+      spotifyPlaylists,
+      player,
+      thread,
+      queue,
+      scores,
+      correctAnswers,
+      rounds
+    );
+    await delay(3000);
+    await declareWinner(scores, correctAnswers, thread);
+  } finally {
+    queue.delete();
+  }
 }
 
 const playQuiz = async (
