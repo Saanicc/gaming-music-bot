@@ -33,6 +33,8 @@ import { searchSpotifyPlaylists } from "@/src/api/spotify";
 
 const TIME_TO_PLAY_SONG = 45000;
 const QUESTION_TIME = 15000;
+const DEFAULT_ROUNDS = 5;
+const MAX_PLAYLIST_RETRIES = 5;
 
 const truncateLabelIfNeeded = (label: string): string =>
   label.length > 80 ? label.substring(0, 77) + "..." : label;
@@ -174,6 +176,19 @@ export async function execute(interaction: ChatInputCommandInteraction) {
     }
   });
 
+  selectCollector.on("end", async (_collected, reason) => {
+    if (reason === "time") {
+      await lobbyMsg.edit(
+        buildMessage({
+          title: "🎵 Music Quiz",
+          description:
+            "The quiz lobby timed out. Run `/musicquiz` again to start a new quiz.",
+          color: "error",
+        })
+      );
+    }
+  });
+
   const buttonCollector = lobbyMsg.createMessageComponentCollector({
     componentType: ComponentType.Button,
     time: 60000 * 5,
@@ -185,21 +200,38 @@ export async function execute(interaction: ChatInputCommandInteraction) {
       await i.deferUpdate();
       selectCollector.stop();
 
+      const freshMember = i.member as GuildMember;
+      const voiceChannel = freshMember.voice.channel;
+      if (!voiceChannel) {
+        await thread.send(
+          buildMessage({
+            title: "Error",
+            description: "You must be in a voice channel to start the quiz.",
+            color: "error",
+          })
+        );
+        return;
+      }
+
+      const rounds = selectedRounds ?? DEFAULT_ROUNDS;
+
+      const genre =
+        selectedGenre ??
+        SEARCH_QUERIES[Math.floor(Math.random() * SEARCH_QUERIES.length)];
+
       const quizStartedMessage = buildMessage({
         title: "🎵 Music Quiz Started",
-        description: selectedGenre
-          ? `Genre: **${selectedGenre}**.\n\nPlaying ${selectedRounds} rounds. Get ready!`
-          : `Genre: **Random**.\n\nPlaying ${selectedRounds} rounds. Get ready!`,
+        description: `Genre: **${genre}**.\n\nPlaying ${rounds} rounds. Get ready!`,
       });
       await lobbyMsg.edit(quizStartedMessage);
 
       await runGameLoop(
         thread,
-        member.voice.channel!,
+        voiceChannel,
         player,
         interaction,
-        selectedGenre,
-        selectedRounds
+        genre,
+        rounds
       );
     }
   });
@@ -210,8 +242,8 @@ async function runGameLoop(
   voiceChannel: VoiceBasedChannel,
   player: Player,
   interaction: ChatInputCommandInteraction,
-  selectedGenre: string | null,
-  selectedRounds: number | null
+  genre: string,
+  rounds: number
 ) {
   const scores = new Map<string, number>();
   const correctAnswers = new Map<string, number>();
@@ -255,17 +287,13 @@ async function runGameLoop(
     })
   );
 
-  const searchTheme =
-    selectedGenre ??
-    SEARCH_QUERIES[Math.floor(Math.random() * SEARCH_QUERIES.length)];
-
-  const spotifyPlaylists = await searchSpotifyPlaylists(searchTheme);
+  const spotifyPlaylists = await searchSpotifyPlaylists(genre);
 
   if (!spotifyPlaylists.length) {
     return thread.send(
       buildMessage({
         title: "Error",
-        description: `Could not find playlists for theme: ${searchTheme}.`,
+        description: `Could not find playlists for theme: ${genre}.`,
         color: "error",
       })
     );
@@ -278,7 +306,7 @@ async function runGameLoop(
     queue,
     scores,
     correctAnswers,
-    selectedRounds
+    rounds
   );
   await delay(3000);
   await declareWinner(scores, correctAnswers, thread);
@@ -292,9 +320,21 @@ const playQuiz = async (
   queue: GuildQueue,
   scores: Map<string, number>,
   correctAnswers: Map<string, number>,
-  selectedRounds: number | null
+  rounds: number
 ) => {
-  const getRandomPlaylistTracks = async () => {
+  const getRandomPlaylistTracks = async (attempt = 0): Promise<Track[]> => {
+    if (attempt >= MAX_PLAYLIST_RETRIES) {
+      await thread.send(
+        buildMessage({
+          title: "Error",
+          description:
+            "Failed to find playable tracks after multiple attempts.",
+          color: "error",
+        })
+      );
+      return [];
+    }
+
     const randomPlaylist =
       spotifyPlaylists[Math.floor(Math.random() * spotifyPlaylists.length)];
 
@@ -311,20 +351,21 @@ const playQuiz = async (
           color: "error",
         })
       );
-      return getRandomPlaylistTracks();
+      return getRandomPlaylistTracks(attempt + 1);
     }
 
     return shuffleArray(searchResult.tracks);
   };
 
-  for (let i = 0; i < (selectedRounds ?? 5); i++) {
+  for (let i = 0; i < rounds; i++) {
     const allTracks = await getRandomPlaylistTracks();
+    if (!allTracks.length) continue;
     const randomTrack = allTracks[Math.floor(Math.random() * allTracks.length)];
     const roundNum = i + 1;
 
     await thread.send(
       buildMessage({
-        title: `Round ${roundNum}/${selectedRounds}`,
+        title: `Round ${roundNum}/${rounds}`,
         description: `Listen carefully! Playing for ${TIME_TO_PLAY_SONG / 1000} seconds...`,
         color: "info",
       })
@@ -438,7 +479,7 @@ const askQuestion = async (
     if (isCorrect) {
       const elapsed = Date.now() - questionStartTime;
       const points = Math.max(
-        0,
+        1,
         Math.round(1000 * (1 - elapsed / QUESTION_TIME))
       );
 
@@ -460,23 +501,29 @@ const askQuestion = async (
 
   await new Promise<void>((resolve) => {
     collector.on("end", async () => {
+      const disabledButtons = buttons.map((b) =>
+        ButtonBuilder.from(b.toJSON())
+          .setDisabled(true)
+          .setStyle(ButtonStyle.Secondary)
+      );
       const disabledRow = new ActionRowBuilder<ButtonBuilder>().addComponents(
-        buttons.map((b) => b.setDisabled(true).setStyle(ButtonStyle.Secondary))
+        disabledButtons
       );
 
-      await questionMsg.edit({ components: [disabledRow] });
+      await questionMsg.edit(
+        buildMessage({
+          title: "Guess Now!",
+          description: `**${questionText}**`,
+          footerText: "Time's up!",
+          color: "info",
+          actionRowBuilder: [disabledRow],
+        })
+      );
 
       if (correctUserIds.length > 0) {
         const names = correctUserIds
-          .map((id) => {
-            const pts = scores.get(id) ?? 0;
-            return `<@${id}> (${pts} pts)`;
-          })
-          .sort((a, b) => {
-            const aScore = parseInt(a.match(/\((\d+) pts\)/)?.[1] || "0");
-            const bScore = parseInt(b.match(/\((\d+) pts\)/)?.[1] || "0");
-            return bScore - aScore;
-          })
+          .sort((a, b) => (scores.get(b) ?? 0) - (scores.get(a) ?? 0))
+          .map((id) => `<@${id}> (${scores.get(id) ?? 0} pts)`)
           .join(`\n`);
         await thread.send(
           buildMessage({
