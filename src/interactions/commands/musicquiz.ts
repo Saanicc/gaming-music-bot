@@ -287,7 +287,18 @@ async function runGameLoop(
     })
   );
 
-  const spotifyPlaylists = await searchSpotifyPlaylists(genre);
+  let spotifyPlaylists: string[];
+  try {
+    spotifyPlaylists = await searchSpotifyPlaylists(genre);
+  } catch (e) {
+    return thread.send(
+      buildMessage({
+        title: "Error",
+        description: "Failed to reach Spotify. Please try again later.",
+        color: "error",
+      })
+    );
+  }
 
   if (!spotifyPlaylists.length) {
     return thread.send(
@@ -338,10 +349,15 @@ const playQuiz = async (
     const randomPlaylist =
       spotifyPlaylists[Math.floor(Math.random() * spotifyPlaylists.length)];
 
-    const searchResult = await player.search(randomPlaylist, {
-      requestedBy: undefined,
-      searchEngine: QueryType.SPOTIFY_PLAYLIST,
-    });
+    let searchResult;
+    try {
+      searchResult = await player.search(randomPlaylist, {
+        requestedBy: undefined,
+        searchEngine: QueryType.SPOTIFY_PLAYLIST,
+      });
+    } catch (e) {
+      return getRandomPlaylistTracks(attempt + 1);
+    }
 
     if (!searchResult || !searchResult.tracks.length) {
       await thread.send(
@@ -372,7 +388,10 @@ const playQuiz = async (
     );
 
     try {
-      await queue.node.play(randomTrack, { seek: 30, transitionMode: false });
+      await queue.node.play(randomTrack, {
+        seek: 20000,
+        transitionMode: false,
+      });
     } catch (error) {
       await thread.send(
         buildMessage({
