@@ -126,7 +126,7 @@ export async function execute(interaction: ChatInputCommandInteraction) {
     .setPlaceholder("Select a genre (optional)")
     .addOptions(
       GENRES.map((genre) => ({
-        label: genre,
+        label: truncateLabelIfNeeded(genre),
         value: genre,
       }))
     );
@@ -270,24 +270,14 @@ async function runGameLoop(
 
   try {
     if (!queue.connection) await queue.connect(voiceChannel);
-  } catch (e) {
-    return thread.send(
+
+    await thread.send(
       buildMessage({
-        title: "Error",
-        description: "Could not join voice channel.",
-        color: "error",
+        title: "Loading Tracks...",
+        description: "Fetching random songs from Spotify...",
       })
     );
-  }
 
-  await thread.send(
-    buildMessage({
-      title: "Loading Tracks...",
-      description: "Fetching random songs from Spotify...",
-    })
-  );
-
-  try {
     let spotifyPlaylists: string[];
     try {
       spotifyPlaylists = await searchSpotifyPlaylists(genre);
@@ -324,6 +314,8 @@ async function runGameLoop(
     );
     await delay(3000);
     await declareWinner(scores, correctAnswers, thread);
+  } catch (e) {
+    console.error(e);
   } finally {
     queue.delete();
   }
@@ -525,47 +517,50 @@ const askQuestion = async (
 
   await new Promise<void>((resolve) => {
     collector.on("end", async () => {
-      const disabledButtons = buttons.map((b) =>
-        ButtonBuilder.from(b.toJSON())
-          .setDisabled(true)
-          .setStyle(ButtonStyle.Secondary)
-      );
-      const disabledRow = new ActionRowBuilder<ButtonBuilder>().addComponents(
-        disabledButtons
-      );
+      try {
+        const disabledButtons = buttons.map((b) =>
+          ButtonBuilder.from(b.toJSON())
+            .setDisabled(true)
+            .setStyle(ButtonStyle.Secondary)
+        );
+        const disabledRow = new ActionRowBuilder<ButtonBuilder>().addComponents(
+          disabledButtons
+        );
 
-      await questionMsg.edit(
-        buildMessage({
-          title: "Guess Now!",
-          description: `**${questionText}**`,
-          footerText: "Time's up!",
-          color: "info",
-          actionRowBuilder: [disabledRow],
-        })
-      );
-
-      if (correctUserIds.length > 0) {
-        const names = correctUserIds
-          .sort((a, b) => (scores.get(b) ?? 0) - (scores.get(a) ?? 0))
-          .map((id) => `<@${id}> (${scores.get(id) ?? 0} pts)`)
-          .join(`\n`);
-        await thread.send(
+        await questionMsg.edit(
           buildMessage({
-            title: "Time's Up!",
-            description: `The answer was **${correctAnswer}**.\nCorrect:\n${names}`,
-            color: "success",
+            title: "Guess Now!",
+            description: `**${questionText}**`,
+            footerText: "Time's up!",
+            color: "info",
+            actionRowBuilder: [disabledRow],
           })
         );
-      } else {
-        await thread.send(
-          buildMessage({
-            title: "Time's Up!",
-            description: `No one got it! The answer was **${correctAnswer}**.`,
-            color: "error",
-          })
-        );
+
+        if (correctUserIds.length > 0) {
+          const names = correctUserIds
+            .sort((a, b) => (scores.get(b) ?? 0) - (scores.get(a) ?? 0))
+            .map((id) => `<@${id}> (${scores.get(id) ?? 0} pts)`)
+            .join(`\n`);
+          await thread.send(
+            buildMessage({
+              title: "Time's Up!",
+              description: `The answer was **${correctAnswer}**.\nCorrect:\n${names}`,
+              color: "success",
+            })
+          );
+        } else {
+          await thread.send(
+            buildMessage({
+              title: "Time's Up!",
+              description: `No one got it! The answer was **${correctAnswer}**.`,
+              color: "error",
+            })
+          );
+        }
+      } finally {
+        resolve();
       }
-      resolve();
     });
   });
 };
