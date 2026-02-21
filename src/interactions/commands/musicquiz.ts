@@ -281,10 +281,10 @@ const handleLobbyInteractions = async (
 
       await i.deferUpdate();
       selectCollector.stop();
+      buttonCollector.stop();
       const rounds = selectedRounds ?? QUIZ_CONFIG.DEFAULT_ROUNDS;
       const genre =
-        selectedGenre ??
-        SEARCH_QUERIES[Math.floor(Math.random() * SEARCH_QUERIES.length)];
+        selectedGenre ?? GENRES[Math.floor(Math.random() * GENRES.length)];
 
       await lobbyMsg.edit(
         buildMessage({
@@ -539,7 +539,9 @@ const playQuizRounds = async (
     }
 
     await delay(QUIZ_CONFIG.TIME_TO_PLAY_SONG);
-    context.queue.node.stop();
+    if (context.queue.node.isPlaying()) {
+      context.queue.node.stop();
+    }
 
     await askQuestion(context, randomTrack, allTracks, {
       property: "author",

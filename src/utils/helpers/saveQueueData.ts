@@ -2,8 +2,7 @@ import { queueManager } from "@/services/queueManager";
 import { GuildQueue } from "discord-player";
 
 export const savePreviousQueue = async (queue: GuildQueue, guildId: string) => {
-  const progress = queue.node.getTimestamp()?.current.value ?? 0;
-
+  const position = queue.node.getTimestamp()?.current.value ?? 0;
   const voiceChannel = (queue.metadata as any).voiceChannel;
   const textChannel = (queue.metadata as any).channel;
 
@@ -11,7 +10,7 @@ export const savePreviousQueue = async (queue: GuildQueue, guildId: string) => {
     tracks: queue.tracks.toArray(),
     queueType: "normal",
     currentTrack: queue.currentTrack ?? undefined,
-    position: progress,
+    position,
     voiceChannel,
     textChannel,
   });
