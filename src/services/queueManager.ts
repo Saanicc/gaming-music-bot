@@ -12,27 +12,21 @@ export interface StoredQueue {
   textChannel?: TextChannel;
 }
 
+interface StoreOptions {
+  tracks: Track[];
+  queueType: QueueType;
+  currentTrack?: Track;
+  position?: number;
+  voiceChannel?: VoiceChannel;
+  textChannel?: TextChannel;
+}
+
 const storedQueues = new Map<string, StoredQueue>();
 let queueType: QueueType = "normal";
 
 export const queueManager = {
-  store(
-    guildId: string,
-    tracks: Track[],
-    queueType: QueueType,
-    currentTrack?: Track,
-    position?: number,
-    voiceChannel?: VoiceChannel,
-    textChannel?: TextChannel
-  ) {
-    storedQueues.set(guildId, {
-      tracks,
-      queueType,
-      currentTrack,
-      position,
-      voiceChannel,
-      textChannel,
-    });
+  store(guildId: string, options: StoreOptions) {
+    storedQueues.set(guildId, { ...options });
   },
 
   retrieve(guildId: string): StoredQueue | undefined {

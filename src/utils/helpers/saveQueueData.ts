@@ -7,13 +7,12 @@ export const savePreviousQueue = async (queue: GuildQueue, guildId: string) => {
   const voiceChannel = (queue.metadata as any).voiceChannel;
   const textChannel = (queue.metadata as any).channel;
 
-  queueManager.store(
-    guildId,
-    queue.tracks.toArray(),
-    "normal",
-    queue.currentTrack ?? undefined,
-    progress,
+  queueManager.store(guildId, {
+    tracks: queue.tracks.toArray(),
+    queueType: "normal",
+    currentTrack: queue.currentTrack ?? undefined,
+    position: progress,
     voiceChannel,
-    textChannel
-  );
+    textChannel,
+  });
 };

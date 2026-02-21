@@ -57,6 +57,8 @@ const UI_STRINGS = {
   NO_QUEUE: "No queue found.",
   SPOTIFY_ERROR: "Failed to reach Spotify. Please try again later.",
   TRACK_PLAY_FAIL: "Failed to play track. Skipping.",
+  VOICE_CONNECT_ERROR:
+    "Could not join the voice channel. Check my permissions.",
 };
 
 interface GameLoopOptions {
@@ -258,28 +260,27 @@ const handleLobbyInteractions = async (
   const buttonCollector = lobbyMsg.createMessageComponentCollector({
     componentType: ComponentType.Button,
     time: QUIZ_CONFIG.LOBBY_TIMEOUT,
-    max: 1,
   });
 
   buttonCollector.on("collect", async (i) => {
     if (i.customId === "start_quiz_btn") {
-      await i.deferUpdate();
-      selectCollector.stop();
-
       const member = i.member as GuildMember;
       const voiceChannel = member.voice.channel;
 
       if (!voiceChannel) {
-        await thread.send(
+        await i.reply(
           buildMessage({
             title: UI_STRINGS.ERROR_TITLE,
             description: UI_STRINGS.NO_VOICE_CHANNEL,
             color: "error",
+            ephemeral: true,
           })
         );
         return;
       }
 
+      await i.deferUpdate();
+      selectCollector.stop();
       const rounds = selectedRounds ?? QUIZ_CONFIG.DEFAULT_ROUNDS;
       const genre =
         selectedGenre ??
@@ -371,7 +372,21 @@ async function runGameLoop({
       return;
     }
 
-    if (!queue.connection) await queue.connect(voiceChannel);
+    if (!queue.connection) {
+      try {
+        await queue.connect(voiceChannel);
+      } catch (error) {
+        await thread.send(
+          buildMessage({
+            title: UI_STRINGS.ERROR_TITLE,
+            description: UI_STRINGS.VOICE_CONNECT_ERROR,
+            color: "error",
+          })
+        );
+        return;
+      }
+    }
+
     await playQuizRounds(spotifyPlaylists, context, rounds);
     await delay(3000);
     await declareWinner(context.scores, context.correctAnswers, thread);
@@ -386,11 +401,11 @@ async function runGameLoop({
     );
   } finally {
     const guild = voiceChannel.guild;
-    const previousQueue = await getPreviousQueue(guild, interaction, thread);
-
     queue.metadata.isSwitching = true;
     queue.metadata.musicQuiz = false;
     queue.delete();
+
+    const previousQueue = await getPreviousQueue(guild, interaction, thread);
 
     if (previousQueue) {
       await restorePreviousQueue(previousQueue, interaction, guild, thread);
@@ -409,7 +424,9 @@ const getPreviousQueue = async (
       title:
         "Nothing to restore, leaving voice chat. Please queue some new track(s) to resume playback!",
     });
-    await musicPlayerMessage.delete();
+    await musicPlayerMessage.delete().catch(() => {
+      // Already deleted, ignore
+    });
     queueManager.setQueueType("normal");
     const channel = (interaction.channel ?? thread) as TextChannel;
     await channel.send(data as MessageCreateOptions);
@@ -699,6 +716,8 @@ const askQuestion = async (
             color: resultColor,
           })
         );
+      } catch (error) {
+        console.error("Error rendering question result:", error);
       } finally {
         resolve();
       }
