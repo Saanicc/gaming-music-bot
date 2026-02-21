@@ -147,13 +147,14 @@ const setupQuizThread = async (
     })
   );
 
-  const initialQuizMessage = await interaction.fetchReply();
-  const thread = await initialQuizMessage.startThread({
-    name: "Music Quiz",
-    autoArchiveDuration: ThreadAutoArchiveDuration.OneHour,
-  });
-
-  if (!thread) {
+  let thread: PublicThreadChannel;
+  try {
+    const initialQuizMessage = await interaction.fetchReply();
+    thread = await initialQuizMessage.startThread({
+      name: "Music Quiz",
+      autoArchiveDuration: ThreadAutoArchiveDuration.OneHour,
+    });
+  } catch {
     await interaction.followUp(
       buildMessage({
         title: UI_STRINGS.ERROR_TITLE,
@@ -385,21 +386,22 @@ async function runGameLoop({
     );
   } finally {
     const guild = voiceChannel.guild;
-    const previousQueue = await getPreviousQueue(guild, interaction);
+    const previousQueue = await getPreviousQueue(guild, interaction, thread);
 
     queue.metadata.isSwitching = true;
     queue.metadata.musicQuiz = false;
     queue.delete();
 
     if (previousQueue) {
-      await restorePreviousQueue(previousQueue, interaction, guild);
+      await restorePreviousQueue(previousQueue, interaction, guild, thread);
     }
   }
 }
 
 const getPreviousQueue = async (
   guild: Guild,
-  interaction: ChatInputCommandInteraction
+  interaction: ChatInputCommandInteraction,
+  thread: PublicThreadChannel
 ) => {
   const stored = queueManager.retrieve(guild.id);
   if (!stored) {
@@ -409,9 +411,8 @@ const getPreviousQueue = async (
     });
     await musicPlayerMessage.delete();
     queueManager.setQueueType("normal");
-    await (interaction.channel as TextChannel).send(
-      data as MessageCreateOptions
-    );
+    const channel = (interaction.channel ?? thread) as TextChannel;
+    await channel.send(data as MessageCreateOptions);
     return;
   }
 
@@ -421,16 +422,16 @@ const getPreviousQueue = async (
 const restorePreviousQueue = async (
   storedQueue: StoredQueue,
   interaction: ChatInputCommandInteraction,
-  guild: Guild
+  guild: Guild,
+  thread: PublicThreadChannel
 ) => {
   const data = buildMessage({
     title: "Restoring old queue...",
     color: "info",
   });
 
-  const msg = await (interaction.channel as TextChannel).send(
-    data as MessageCreateOptions
-  );
+  const channel = (interaction.channel ?? thread) as TextChannel;
+  const msg = await channel.send(data as MessageCreateOptions);
 
   await delay(1250);
 
@@ -453,7 +454,7 @@ const fetchPlaylistTracks = async (
   if (attempt >= QUIZ_CONFIG.MAX_PLAYLIST_RETRIES) {
     await thread.send(
       buildMessage({
-        title: "Error",
+        title: UI_STRINGS.ERROR_TITLE,
         description: "Failed to find playable tracks after multiple attempts.",
         color: "error",
       })
@@ -733,7 +734,13 @@ const declareWinner = async (
       })
     );
 
-    Promise.allSettled(updatePromises).catch(console.error);
+    Promise.allSettled(updatePromises).then((results) => {
+      results
+        .filter((r): r is PromiseRejectedResult => r.status === "rejected")
+        .forEach((r) =>
+          console.error("updateUserQuizStats failed: ", r.reason)
+        );
+    });
   }
 
   await thread.send(
