@@ -89,7 +89,7 @@ export const registerPlayerEvents = (player: Player) => {
   });
 
   player.events.on(GuildQueueEvent.QueueDelete, async (queue) => {
-    if (queue.metadata.isSwithing) return;
+    if (queue.metadata.isSwitching) return;
 
     await musicPlayerMessage.delete();
     musicPlayerMessage.set(undefined);

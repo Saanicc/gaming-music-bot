@@ -13,6 +13,9 @@ import {
   StringSelectMenuBuilder,
   MessageFlags,
   Message,
+  Guild,
+  TextChannel,
+  MessageCreateOptions,
 } from "discord.js";
 import {
   useMainPlayer,
@@ -31,6 +34,10 @@ import { delay } from "@/src/utils/helpers/utils";
 import { ColorType } from "@/src/utils/constants/colors";
 import { updateUserQuizStats } from "@/src/utils/helpers/updateUserQuizStats";
 import { searchSpotifyPlaylists } from "@/src/api/spotify";
+import { savePreviousQueue } from "@/src/utils/helpers/saveQueueData";
+import { queueManager, StoredQueue } from "@/src/services/queueManager";
+import { musicPlayerMessage } from "@/src/services/musicPlayerMessage";
+import { restoreOldQueue } from "@/src/utils/helpers/restoreOldQueue";
 
 const QUIZ_CONFIG = {
   TIME_TO_PLAY_SONG: 45000,
@@ -296,24 +303,28 @@ const handleLobbyInteractions = async (
   });
 };
 
-const getOrCreateQueue = (
+const savePreviousAndCreateNewQueue = async (
   voiceChannel: VoiceBasedChannel,
   player: Player,
   thread: PublicThreadChannel
-): GuildQueue | null => {
+) => {
   const guildId = voiceChannel.guild.id;
   let queue = useQueue(guildId);
 
-  if (!queue) {
-    queue = player.nodes.create(voiceChannel.guild, {
-      metadata: { channel: thread, isSwitching: true, musicQuiz: true },
-      leaveOnEmpty: false,
-      leaveOnEnd: false,
-      volume: 100,
-    });
+  if (queue) {
+    await savePreviousQueue(queue, guildId);
+    (queue.metadata as any).isSwitching = true;
+    queue.delete();
   }
 
-  return queue;
+  const newQueue = player.nodes.create(voiceChannel.guild, {
+    metadata: { channel: thread, isSwitching: true, musicQuiz: true },
+    leaveOnEmpty: false,
+    leaveOnEnd: false,
+    volume: 100,
+  });
+
+  return newQueue;
 };
 
 async function runGameLoop({
@@ -324,17 +335,11 @@ async function runGameLoop({
   genre,
   rounds,
 }: GameLoopOptions) {
-  const queue = getOrCreateQueue(voiceChannel, player, thread);
-
-  if (!queue) {
-    return interaction.followUp(
-      buildMessage({
-        title: UI_STRINGS.ERROR_TITLE,
-        description: UI_STRINGS.NO_QUEUE,
-        color: "error",
-      })
-    );
-  }
+  const queue = await savePreviousAndCreateNewQueue(
+    voiceChannel,
+    player,
+    thread
+  );
 
   const context: QuizContext = {
     thread,
@@ -345,8 +350,6 @@ async function runGameLoop({
   };
 
   try {
-    if (!queue.connection) await queue.connect(voiceChannel);
-
     await thread.send(
       buildMessage({
         title: "Loading Tracks...",
@@ -367,6 +370,7 @@ async function runGameLoop({
       return;
     }
 
+    if (!queue.connection) await queue.connect(voiceChannel);
     await playQuizRounds(spotifyPlaylists, context, rounds);
     await delay(3000);
     await declareWinner(context.scores, context.correctAnswers, thread);
@@ -380,9 +384,65 @@ async function runGameLoop({
       })
     );
   } finally {
+    const guild = voiceChannel.guild;
+    const previousQueue = await getPreviousQueue(guild, interaction);
+
+    queue.metadata.isSwitching = true;
+    queue.metadata.musicQuiz = false;
     queue.delete();
+
+    if (previousQueue) {
+      await restorePreviousQueue(previousQueue, interaction, guild);
+    }
   }
 }
+
+const getPreviousQueue = async (
+  guild: Guild,
+  interaction: ChatInputCommandInteraction
+) => {
+  const stored = queueManager.retrieve(guild.id);
+  if (!stored) {
+    const data = buildMessage({
+      title:
+        "Nothing to restore, leaving voice chat. Please queue some new track(s) to resume playback!",
+    });
+    await musicPlayerMessage.delete();
+    queueManager.setQueueType("normal");
+    await (interaction.channel as TextChannel).send(
+      data as MessageCreateOptions
+    );
+    return;
+  }
+
+  return stored;
+};
+
+const restorePreviousQueue = async (
+  storedQueue: StoredQueue,
+  interaction: ChatInputCommandInteraction,
+  guild: Guild
+) => {
+  const data = buildMessage({
+    title: "Restoring old queue...",
+    color: "info",
+  });
+
+  const msg = await (interaction.channel as TextChannel).send(
+    data as MessageCreateOptions
+  );
+
+  await delay(1250);
+
+  await restoreOldQueue({
+    guild,
+    storedQueue,
+    textChannel: storedQueue.textChannel,
+    voiceChannel: storedQueue.voiceChannel,
+  });
+
+  await msg.delete();
+};
 
 const fetchPlaylistTracks = async (
   player: Player,

@@ -5,6 +5,7 @@ export const savePreviousQueue = async (queue: GuildQueue, guildId: string) => {
   const progress = queue.node.getTimestamp()?.current.value ?? 0;
 
   const voiceChannel = (queue.metadata as any).voiceChannel;
+  const textChannel = (queue.metadata as any).channel;
 
   queueManager.store(
     guildId,
@@ -12,6 +13,7 @@ export const savePreviousQueue = async (queue: GuildQueue, guildId: string) => {
     "normal",
     queue.currentTrack ?? undefined,
     progress,
-    voiceChannel
+    voiceChannel,
+    textChannel
   );
 };
