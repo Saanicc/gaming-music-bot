@@ -31,7 +31,7 @@ export const execute = async (interaction: ButtonInteraction) => {
   if (!queue) return;
 
   queue.node.stop();
-  (queue.metadata as any).isSwithing = true;
+  (queue.metadata as any).isSwitching = true;
   queue.delete();
 
   const stored = queueManager.retrieve(guild.id);

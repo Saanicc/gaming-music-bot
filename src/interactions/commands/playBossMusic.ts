@@ -43,7 +43,7 @@ export const execute = async (
   if (queue) {
     await savePreviousQueue(queue, guild.id);
     queue.node.stop();
-    (queue.metadata as any).isSwithing = true;
+    (queue.metadata as any).isSwitching = true;
     queue.delete();
   }
 

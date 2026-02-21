@@ -1,5 +1,5 @@
 import { Track } from "discord-player";
-import { VoiceChannel } from "discord.js";
+import { TextChannel, VoiceChannel } from "discord.js";
 
 export type QueueType = "normal" | "boss";
 
@@ -9,27 +9,15 @@ export interface StoredQueue {
   currentTrack?: Track;
   position?: number;
   voiceChannel?: VoiceChannel;
+  textChannel?: TextChannel;
 }
 
 const storedQueues = new Map<string, StoredQueue>();
 let queueType: QueueType = "normal";
 
 export const queueManager = {
-  store(
-    guildId: string,
-    tracks: Track[],
-    queueType: QueueType,
-    currentTrack?: Track,
-    position?: number,
-    voiceChannel?: VoiceChannel
-  ) {
-    storedQueues.set(guildId, {
-      tracks,
-      queueType,
-      currentTrack,
-      position,
-      voiceChannel,
-    });
+  store(guildId: string, options: StoredQueue) {
+    storedQueues.set(guildId, options);
   },
 
   retrieve(guildId: string): StoredQueue | undefined {
