@@ -26,10 +26,7 @@ import {
   Player,
 } from "discord-player";
 import { buildMessage } from "@/utils/bot-message/buildMessage";
-import {
-  GENRES,
-  SEARCH_QUERIES,
-} from "@/src/utils/constants/music-quiz-search-queries";
+import { GENRES } from "@/src/utils/constants/music-quiz-search-queries";
 import { delay } from "@/src/utils/helpers/utils";
 import { ColorType } from "@/src/utils/constants/colors";
 import { updateUserQuizStats } from "@/src/utils/helpers/updateUserQuizStats";
@@ -59,6 +56,7 @@ const UI_STRINGS = {
   TRACK_PLAY_FAIL: "Failed to play track. Skipping.",
   VOICE_CONNECT_ERROR:
     "Could not join the voice channel. Check my permissions.",
+  GENERIC_ERROR: "Something went wrong during the quiz. Please try again.",
 };
 
 interface GameLoopOptions {
@@ -337,21 +335,18 @@ async function runGameLoop({
   genre,
   rounds,
 }: GameLoopOptions) {
-  const queue = await savePreviousAndCreateNewQueue(
-    voiceChannel,
-    player,
-    thread
-  );
-
-  const context: QuizContext = {
-    thread,
-    player,
-    queue,
-    scores: new Map<string, number>(),
-    correctAnswers: new Map<string, number>(),
-  };
-
+  let queue: GuildQueue | undefined;
   try {
+    queue = await savePreviousAndCreateNewQueue(voiceChannel, player, thread);
+
+    const context: QuizContext = {
+      thread,
+      player,
+      queue,
+      scores: new Map<string, number>(),
+      correctAnswers: new Map<string, number>(),
+    };
+
     await thread.send(
       buildMessage({
         title: "Loading Tracks...",
@@ -395,20 +390,25 @@ async function runGameLoop({
     await thread.send(
       buildMessage({
         title: UI_STRINGS.ERROR_TITLE,
-        description: UI_STRINGS.SPOTIFY_ERROR,
+        description: UI_STRINGS.GENERIC_ERROR,
         color: "error",
       })
     );
   } finally {
+    if (!queue) return;
+
     const guild = voiceChannel.guild;
-    queue.metadata.isSwitching = true;
-    queue.metadata.musicQuiz = false;
+    (queue.metadata as any).isSwitching = true;
+    (queue.metadata as any).musicQuiz = false;
     queue.delete();
 
-    const previousQueue = await getPreviousQueue(guild, interaction, thread);
-
-    if (previousQueue) {
-      await restorePreviousQueue(previousQueue, interaction, guild, thread);
+    try {
+      const previousQueue = await getPreviousQueue(guild, interaction, thread);
+      if (previousQueue) {
+        await restorePreviousQueue(previousQueue, interaction, guild, thread);
+      }
+    } catch (restoreError) {
+      console.error("Failed to restore previous queue:", restoreError);
     }
   }
 }
@@ -459,7 +459,7 @@ const restorePreviousQueue = async (
     voiceChannel: storedQueue.voiceChannel,
   });
 
-  await msg.delete();
+  await msg.delete().catch(() => {});
 };
 
 const fetchPlaylistTracks = async (
@@ -596,6 +596,10 @@ const handleAnswerSubmission = async (
 
   answeredUserIds.add(interaction.user.id);
 
+  if (!context.scores.has(interaction.user.id)) {
+    context.scores.set(interaction.user.id, 0);
+  }
+
   const selectedAnswer = answerMap.get(interaction.customId);
   const isCorrect = selectedAnswer === targetAnswer;
 
@@ -655,6 +659,7 @@ const askQuestion = async (
   const questionStartTime = Date.now();
   const correctUserIds: string[] = [];
   const answeredUserIds = new Set<string>();
+  const preQuestionScores = new Map(context.scores);
 
   const collector = questionMsg.createMessageComponentCollector({
     componentType: ComponentType.Button,
@@ -698,22 +703,30 @@ const askQuestion = async (
         const resultColor = correctUserIds.length > 0 ? "success" : "error";
         let resultDesc = `The answer was **${correctAnswer}**.`;
 
-        if (correctUserIds.length > 0) {
-          const names = correctUserIds
+        if (correctUserIds.length === 0) {
+          resultDesc = `No one got it! ${resultDesc}`;
+        }
+
+        const allPlayers = Array.from(context.scores.keys());
+        if (allPlayers.length > 0) {
+          const names = allPlayers
             .sort(
               (a, b) =>
                 (context.scores.get(b) ?? 0) - (context.scores.get(a) ?? 0)
             )
-            .map((id) => `<@${id}> (${context.scores.get(id) ?? 0} pts)`)
-            .join(`\n`);
-          resultDesc += `\nCorrect:\n${names}`;
-        } else {
-          resultDesc = `No one got it! ${resultDesc}`;
+            .map((id, idx) => {
+              const current = context.scores.get(id) ?? 0;
+              const prev = preQuestionScores.get(id) ?? 0;
+              const gained = current - prev;
+              return `${idx + 1}. <@${id}>: ${current} ${gained > 0 ? `(+${gained}pts)` : ""}`;
+            })
+            .join("\n");
+          resultDesc += `\n\nScore Table:\n${names}`;
         }
 
         await context.thread.send(
           buildMessage({
-            title: "Time's Up!",
+            title: "Time's up!",
             description: resultDesc,
             color: resultColor,
           })
