@@ -26,26 +26,27 @@ Summon it anytime to power up your gameplay with cinematic, high-energy music.
 
 ## Commands
 
-| Command            | Description                                                                             |
-| ------------------ | --------------------------------------------------------------------------------------- |
-| `/play`            | Plays a track from a URL or search term.                                                |
-| `/play_now`        | Plays a track from a url or search term, then plays it instantly.                       |
-| `/play_next`       | Enqueues a track from a url or search term, then plays it after the current track ends. |
-| `/play_boss_music` | Loads, shuffles and plays all boss tracks                                               |
-| `/add_track`       | Add new track to the boss music collection                                              |
-| `/help`            | Shows info about available commands                                                     |
-| `/queue`           | Displays the next five upcoming tracks in the queue                                     |
-| `/skip`            | Skip the currently playing song.                                                        |
-| `/stop`            | Stops and disconnects the player.                                                       |
-| `/rank`            | Check your (or another users) current DJ rank                                           |
-| `/leaderboard`     | View the DJ leaderboard (top 8 DJs)                                                     |
-| `/autoplay`        | Turn on/off autoplay                                                                    |
-| `/loop-all`        | loops the current queue                                                                 |
-| `/loop-current`    | loops the playing track                                                                 |
-| `/loop-disable`    | Disables the loop mode                                                                  |
-| `/nightcore`       | Turns on/off the nightcore audio filter                                                 |
-| `/musicquiz`       | Start a music quiz in a thread!                                                         |
-| `/play_random`     | Play a random track or playlist from a genre                                            |
+| Command             | Description                                                                             |
+| ------------------- | --------------------------------------------------------------------------------------- |
+| `/play`             | Plays a track from a URL or search term.                                                |
+| `/play_now`         | Plays a track from a url or search term, then plays it instantly.                       |
+| `/play_next`        | Enqueues a track from a url or search term, then plays it after the current track ends. |
+| `/play_boss_music`  | Loads, shuffles and plays all boss tracks                                               |
+| `/add_track`        | Add new track to the boss music collection                                              |
+| `/help`             | Shows info about available commands                                                     |
+| `/queue`            | Displays the next five upcoming tracks in the queue                                     |
+| `/skip`             | Skip the currently playing song.                                                        |
+| `/stop`             | Stops and disconnects the player.                                                       |
+| `/rank`             | Check your (or another users) current DJ rank                                           |
+| `/xp_leaderboard`   | View the DJ XP leaderboard (top 8 DJs)                                                  |
+| `/quiz_leaderboard` | View the Music Quiz leaderboard (top 8 players)                                         |
+| `/autoplay`         | Turn on/off autoplay                                                                    |
+| `/loop-all`         | loops the current queue                                                                 |
+| `/loop-current`     | loops the playing track                                                                 |
+| `/loop-disable`     | Disables the loop mode                                                                  |
+| `/nightcore`        | Turns on/off the nightcore audio filter                                                 |
+| `/musicquiz`        | Start a music quiz in a thread!                                                         |
+| `/play_random`      | Play a random track or playlist from a genre                                            |
 
 ---
 
@@ -87,6 +88,10 @@ npm install
 Create a .env file in the root folder:
 
 ```
+# Development mode
+NODE_ENV=dev
+DISCORD_GUILD_ID=your-guild-id
+
 # Discord bot
 DISCORD_TOKEN=your-bot-token
 CLIENT_ID=your-client-id
