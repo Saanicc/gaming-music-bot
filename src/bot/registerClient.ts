@@ -28,7 +28,6 @@ export const registerDiscordClient = (): Client => {
   client.once(Events.ClientReady, async (readyClient) => {
     if (isDev) {
       await deployCommands({ guildId: config.DISCORD_GUILD_ID });
-      readyClient.user.setStatus(PresenceUpdateStatus.Idle);
       await setBotActivity({
         client: readyClient,
         status: PresenceUpdateStatus.Idle,
