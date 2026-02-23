@@ -1,16 +1,23 @@
 import { ChatInputCommandInteraction, SlashCommandBuilder } from "discord.js";
-import { buildMessage } from "@/utils/bot-message/buildMessage";
-import { User } from "@/models/User";
+import { buildXpLeaderboard } from "./xp";
+import { buildQuizLeaderboard } from "./quiz";
+import { buildMessage } from "@/src/utils/bot-message/buildMessage";
 import { Font } from "canvacord";
-import { LeaderboardBuilder } from "@/utils/helpers/Leaderboard";
-import { getRankTitle } from "@/modules/rankSystem";
+import { User } from "@/src/models/User";
 
 export const data = new SlashCommandBuilder()
-  .setName("xp_leaderboard")
-  .setDescription("View the XP leaderboard");
+  .setName("leaderboard")
+  .setDescription("View the leaderboard")
+  .addSubcommand((subcommand) =>
+    subcommand.setName("xp").setDescription("View XP leaderboard")
+  )
+  .addSubcommand((subcommand) =>
+    subcommand.setName("quiz").setDescription("View Music Quiz leaderboard")
+  );
 
 export async function execute(interaction: ChatInputCommandInteraction) {
   await interaction.deferReply();
+  const subcommand = interaction.options.getSubcommand(true);
 
   const guild = interaction.guild;
   if (!guild) {
@@ -19,7 +26,7 @@ export async function execute(interaction: ChatInputCommandInteraction) {
   }
 
   const guildMembers = await guild.members.fetch();
-  if (!guildMembers) {
+  if (!guildMembers || guildMembers.size === 0) {
     const message = buildMessage({ title: "No guild members found." });
     return interaction.editReply(message);
   }
@@ -56,42 +63,15 @@ export async function execute(interaction: ChatInputCommandInteraction) {
     }
   };
 
-  const buildLeaderboard = (users: any[]) => {
-    const sorted = [...users].sort((a, b) =>
-      b.level === a.level ? b.xp - a.xp : b.level - a.level
-    );
-
-    const mappedUsers = sorted.map((user, index) => {
-      const discordUser = guildMembers.find(
-        (dUser) => dUser.id === user.userId
-      );
-
-      return {
-        avatar: discordUser?.user.displayAvatarURL({ size: 128 }) ?? "",
-        username: discordUser?.user.username ?? "",
-        displayName: discordUser?.displayName ?? "",
-        level: user.level,
-        xp: user.totalXp,
-        rank: index + 1,
-        rankTitle: getRankTitle(user.level),
-      };
-    });
-
-    const lb = new LeaderboardBuilder()
-      .setLeaderBoardType("xp")
-      .setHeader({
-        leaderBoardTitle: "XP Leaderboard",
-        title: guild.name,
-        image: guild.iconURL() ?? "",
-        subtitle: `${guildMembers.size} members`,
-      })
-      .setPlayers(mappedUsers);
-
-    return lb;
-  };
-
   const users = await findOrCreateUserInDB();
-  const leaderboard = await buildLeaderboard(users).build();
+
+  let leaderboard: string | Buffer<ArrayBufferLike> = "";
+
+  if (subcommand === "xp") {
+    leaderboard = await buildXpLeaderboard({ users, guild, guildMembers });
+  } else if (subcommand === "quiz") {
+    leaderboard = await buildQuizLeaderboard({ users, guild, guildMembers });
+  }
 
   await interaction.editReply({ files: [leaderboard] });
 }

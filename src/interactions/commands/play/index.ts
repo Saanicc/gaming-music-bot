@@ -11,13 +11,15 @@ import { execute as executePlayRandomTrack } from "./random/track";
 
 export const data = new SlashCommandBuilder()
   .setName("play")
-  .setDescription("Play commands")
+  .setDescription("All available play commands")
   .addSubcommandGroup((group) =>
     group
       .setName("boss")
       .setDescription("Boss command group")
       .addSubcommand((subcommand) =>
-        subcommand.setName("music").setDescription("Play boss music")
+        subcommand
+          .setName("music")
+          .setDescription("Start playing your self curated boss music!")
       )
   )
   .addSubcommandGroup((group) =>
@@ -74,7 +76,7 @@ export const data = new SlashCommandBuilder()
   .addSubcommand((subcommand) =>
     subcommand
       .setName("query")
-      .setDescription("Play a track")
+      .setDescription("Plays a track from a url or search query")
       .addStringOption((option) =>
         option
           .setName("query")
