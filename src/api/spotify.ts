@@ -88,6 +88,11 @@ export const searchSpotifyPlaylists = async (
     }
   );
   const data = await response.json();
+
+  if (!response.ok || !data.playlists?.items) {
+    return [];
+  }
+
   const playlists = data.playlists.items as (SpotifyPlaylist | null)[];
   const lowerQuery = query.toLowerCase();
 
@@ -113,7 +118,7 @@ export const searchSpotifyPlaylists = async (
     })
     .map((p) => p!.external_urls.spotify);
 
-  if (result.length === 0) {
+  if (result.length === 0 && offset !== 0) {
     return searchSpotifyPlaylists(query, 0);
   }
 

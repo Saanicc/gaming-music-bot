@@ -111,6 +111,17 @@ export async function execute(interaction: ChatInputCommandInteraction) {
     : GENRES[Math.floor(Math.random() * GENRES.length)];
 
   const spotifyPlaylists = await searchSpotifyPlaylists(searchGenre);
+
+  if (!spotifyPlaylists.length) {
+    return interaction.followUp(
+      buildMessage({
+        title: "Error",
+        description: `Could not find any playlists for genre: ${searchGenre}.`,
+        color: "error",
+      })
+    );
+  }
+
   const playlistUrl =
     spotifyPlaylists[Math.floor(Math.random() * spotifyPlaylists.length)];
 
@@ -136,17 +147,19 @@ export async function execute(interaction: ChatInputCommandInteraction) {
 
   if (subcommand === "playlist") {
     if (amountOfTracks) {
-      const randomStart = Math.floor(
-        Math.random() * (tracks.length - amountOfTracks)
-      );
-      tracks = tracks.slice(randomStart, randomStart + amountOfTracks);
+      if (amountOfTracks > tracks.length) {
+        const randomStart = Math.floor(
+          Math.random() * (tracks.length - amountOfTracks)
+        );
+        tracks = tracks.slice(randomStart, randomStart + amountOfTracks);
+      }
     }
 
     queue.addTrack(tracks);
     queue.tracks.shuffle();
 
     const tracksText = amountOfTracks
-      ? `${amountOfTracks} randomly selected tracks`
+      ? `${tracks.length} randomly selected tracks`
       : `${tracks.length} tracks`;
 
     message = buildMessage({
