@@ -1,19 +1,12 @@
-import { ActivityType, Client, GatewayIntentBits } from "discord.js";
+import { ActivityType, Client, Events, GatewayIntentBits } from "discord.js";
+import { config } from "../config";
 import { deployCommands } from "../deploy-commands";
-import { setBotActivity } from "../utils/helpers/setBotActivity";
 import { buttons } from "../interactions/buttons";
 import { commands } from "../interactions/commands";
 import { handleInteraction } from "../utils/helpers/handleInteraction";
+import { setBotActivity } from "../utils/helpers/setBotActivity";
 
-const checkIfDevClient = async () => {
-  if (process.env.NODE_ENV === "dev") {
-    await deployCommands({
-      guildId: process.env.DISCORD_GUILD_ID ?? "",
-    });
-  }
-};
-
-export const registerDiscordClient = () => {
+export const registerDiscordClient = (): Client => {
   const client = new Client({
     intents: [
       GatewayIntentBits.Guilds,
@@ -24,29 +17,40 @@ export const registerDiscordClient = () => {
     ],
   });
 
-  client.once("clientReady", async () => {
-    await checkIfDevClient();
-    console.log(`🤖 Logged in as ${client.user?.tag}`);
-    await setBotActivity(client, "/help", ActivityType.Listening);
+  const isDev = config.NODE_ENV === "dev";
+
+  client.once(Events.ClientReady, async (readyClient) => {
+    if (isDev) {
+      await deployCommands({ guildId: config.DISCORD_GUILD_ID });
+      await setBotActivity(
+        readyClient,
+        "🚧 Under Development 🚧",
+        ActivityType.Custom
+      );
+    } else {
+      await setBotActivity(readyClient, "/help", ActivityType.Listening);
+    }
+
+    const environment = isDev ? "DEV" : "PROD";
+    console.log(`[${environment}] 🤖 Logged in as ${readyClient.user.tag}`);
   });
 
-  client.on("guildCreate", async (guild) => {
+  client.on(Events.GuildCreate, async (guild) => {
     await deployCommands({ guildId: guild.id });
   });
 
-  client.on("interactionCreate", async (interaction) => {
+  client.on(Events.InteractionCreate, async (interaction) => {
     if (interaction.isChatInputCommand()) {
       const { commandName } = interaction;
       await handleInteraction(interaction, commands, commandName);
-    }
-    if (interaction.isButton()) {
+    } else if (interaction.isButton()) {
       const button = interaction.customId.split(":")[0];
       await handleInteraction(interaction, buttons, button);
     }
   });
 
-  client.on("error", (error) => {
-    console.error(error);
+  client.on(Events.Error, (error) => {
+    console.error("Discord Client Error:", error);
   });
 
   return client;

@@ -9,6 +9,8 @@ const {
   SPOTIFY_CLIENT_SECRET,
   YOUTUBE_COOKIE,
   MONGO_URI,
+  NODE_ENV,
+  DISCORD_GUILD_ID,
 } = process.env;
 
 if (
@@ -29,4 +31,6 @@ export const config = {
   SPOTIFY_CLIENT_SECRET,
   YOUTUBE_COOKIE,
   MONGO_URI,
+  NODE_ENV: NODE_ENV || "production",
+  DISCORD_GUILD_ID: DISCORD_GUILD_ID || "",
 };
