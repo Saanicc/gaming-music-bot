@@ -146,13 +146,11 @@ export async function execute(interaction: ChatInputCommandInteraction) {
   let message;
 
   if (subcommand === "playlist") {
-    if (amountOfTracks) {
-      if (amountOfTracks > tracks.length) {
-        const randomStart = Math.floor(
-          Math.random() * (tracks.length - amountOfTracks)
-        );
-        tracks = tracks.slice(randomStart, randomStart + amountOfTracks);
-      }
+    if (amountOfTracks && amountOfTracks < tracks.length) {
+      const randomStart = Math.floor(
+        Math.random() * (tracks.length - amountOfTracks)
+      );
+      tracks = tracks.slice(randomStart, randomStart + amountOfTracks);
     }
 
     queue.addTrack(tracks);

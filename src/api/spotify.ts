@@ -97,16 +97,18 @@ export const searchSpotifyPlaylists = async (
   const lowerQuery = query.toLowerCase();
 
   const conflictingGenres = GENRES.filter(
-    (g) => g.toLowerCase() !== lowerQuery
+    (g) =>
+      g.toLowerCase() !== lowerQuery && !lowerQuery.includes(g.toLowerCase())
   ).map((g) => g.toLowerCase());
 
   const result = playlists
     .filter((p) => {
       if (p === null) return false;
 
-      const description = p.description.toLowerCase();
-
-      const matchesQuery = description.includes(lowerQuery);
+      const description = (p.description ?? "").toLowerCase();
+      const matchesQuery =
+        p.name.toLowerCase().includes(lowerQuery) ||
+        description.includes(lowerQuery);
       if (!matchesQuery) return false;
 
       const hasConflictingGenre = conflictingGenres.some((genre) =>
