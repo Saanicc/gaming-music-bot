@@ -1,22 +1,22 @@
 export const GENRES = [
-  "Latin Hits",
   "Rock",
   "Pop",
   "Hip Hop",
   "Country",
   "Disco",
-  "Motown",
   "Indie",
-  "Jazz",
   "Metal",
-  "Heavy Metal",
   "Reggae",
   "R&B",
   "Latin",
-  "Pop Punk",
-  "Electronic Dance Music",
+  "Punk",
+  "EDM",
   "Hardstyle",
   "House",
+  "Techno",
+  "Trance",
+  "Dance",
+  "Electronic",
 ];
 
 const ARTIST_SPECIFIC = [

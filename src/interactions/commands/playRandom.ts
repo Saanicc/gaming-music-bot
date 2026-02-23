@@ -13,33 +13,59 @@ import { searchSpotifyPlaylists } from "@/src/api/spotify";
 export const data = new SlashCommandBuilder()
   .setName("play_random")
   .setDescription("Play a random track or playlist")
-  .addStringOption((option) =>
-    option
-      .setName("type")
-      .setDescription("Playlist or single track")
-      .setRequired(true)
-      .addChoices(
-        { name: "Playlist", value: "playlist" },
-        { name: "Track", value: "track" }
+  .addSubcommand((subcommand) =>
+    subcommand
+      .setName("playlist")
+      .setDescription("Play a random playlist")
+      .addStringOption((option) =>
+        option
+          .setName("genre")
+          .setDescription("The genre of music to play.")
+          .setRequired(false)
+          .addChoices(
+            ...GENRES.map((query) => ({
+              name: query,
+              value: query,
+            }))
+          )
+      )
+      .addIntegerOption((option) =>
+        option
+          .setName("amount")
+          .setDescription("Number of tracks to play.")
+          .setRequired(false)
+          .addChoices(
+            ...[10, 20, 30, 40, 50].map((query) => ({
+              name: query.toString(),
+              value: query,
+            }))
+          )
       )
   )
-  .addStringOption((option) =>
-    option
-      .setName("genre")
-      .setDescription("The genre of music to play.")
-      .addChoices(
-        ...GENRES.map((query) => ({
-          name: query,
-          value: query,
-        }))
+  .addSubcommand((subcommand) =>
+    subcommand
+      .setName("track")
+      .setDescription("Play a random track")
+      .addStringOption((option) =>
+        option
+          .setName("genre")
+          .setDescription("The genre of music to play.")
+          .setRequired(false)
+          .addChoices(
+            ...GENRES.map((query) => ({
+              name: query,
+              value: query,
+            }))
+          )
       )
   );
 
 export async function execute(interaction: ChatInputCommandInteraction) {
   const member = interaction.member as GuildMember;
   const voiceChannel = member.voice.channel;
-  const type = interaction.options.getString("type", true);
+  const subcommand = interaction.options.getSubcommand(true);
   const genre = interaction.options.getString("genre", false);
+  const amountOfTracks = interaction.options.getInteger("amount", false);
 
   const player = useMainPlayer();
   let queue = useQueue();
@@ -78,58 +104,84 @@ export async function execute(interaction: ChatInputCommandInteraction) {
 
   await interaction.deferReply();
 
-  const searchTheme = genre
+  const searchGenre = genre
     ? genre
     : GENRES[Math.floor(Math.random() * GENRES.length)];
 
-  const spotifyPlaylists = await searchSpotifyPlaylists(searchTheme);
-  const playlistUrl =
-    spotifyPlaylists[Math.floor(Math.random() * spotifyPlaylists.length)];
+  let message;
 
-  const searchResult = await player.search(playlistUrl, {
-    requestedBy: interaction.user,
-    searchEngine: QueryType.SPOTIFY_PLAYLIST,
-  });
-  const playlist = searchResult.playlist;
+  if (subcommand === "playlist") {
+    const spotifyPlaylists = await searchSpotifyPlaylists(searchGenre);
 
-  let message = undefined;
+    if (!spotifyPlaylists.length) {
+      return interaction.followUp(
+        buildMessage({
+          title: "Error",
+          description: `Could not find any playlists for genre: ${searchGenre}.`,
+          color: "error",
+        })
+      );
+    }
 
-  if (type === "playlist") {
-    const tracks = playlist?.tracks || [];
+    const playlistUrl =
+      spotifyPlaylists[Math.floor(Math.random() * spotifyPlaylists.length)];
+
+    const searchResult = await player.search(playlistUrl, {
+      requestedBy: interaction.user,
+      searchEngine: QueryType.SPOTIFY_PLAYLIST,
+    });
+
+    const playlist = searchResult.playlist;
+    let tracks = playlist?.tracks || [];
 
     if (!tracks.length) {
       return interaction.followUp(
         buildMessage({
           title: "Error",
-          description: `Could not find playlist for theme: ${searchTheme}.`,
+          description: `Could not find any track(s) to play with genre: ${searchGenre}.`,
           color: "error",
         })
       );
+    }
+
+    if (amountOfTracks && amountOfTracks < tracks.length) {
+      const maxStart = tracks.length - amountOfTracks;
+      const randomStart = Math.floor(Math.random() * (maxStart + 1));
+      tracks = tracks.slice(randomStart, randomStart + amountOfTracks);
     }
 
     queue.addTrack(tracks);
     queue.tracks.shuffle();
 
+    const tracksText = amountOfTracks
+      ? `${tracks.length} randomly selected tracks`
+      : `${tracks.length} tracks`;
+
     message = buildMessage({
       title: `Queued`,
-      description: `[${playlist?.title}](${playlist?.url}) with ${tracks.length} tracks`,
+      description: `[${playlist?.title}](${playlist?.url}) with ${tracksText}`,
       thumbnail: getThumbnail(playlist),
       color: "queue",
     });
   } else {
-    const track =
-      playlist?.tracks[Math.floor(Math.random() * playlist.tracks.length)];
+    const searchResult = await player.search(searchGenre, {
+      requestedBy: interaction.user,
+      searchEngine: QueryType.SPOTIFY_SONG,
+    });
 
-    if (!track) {
+    const tracks = searchResult.tracks || [];
+
+    if (!tracks.length) {
       return interaction.followUp(
         buildMessage({
           title: "Error",
-          description: `Could not find a track for theme: ${searchTheme}.`,
+          description: `Could not find any track(s) to play for query: ${searchGenre}.`,
           color: "error",
         })
       );
     }
 
+    const track = tracks[Math.floor(Math.random() * tracks.length)];
     queue.addTrack(track);
 
     message = buildMessage({
