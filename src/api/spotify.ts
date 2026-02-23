@@ -1,4 +1,5 @@
 import { config } from "../config";
+import { GENRES } from "../utils/constants/music-quiz-search-queries";
 
 type SpotifyPlaylist = {
   collaborative: boolean;
@@ -67,7 +68,8 @@ const getSpotifyToken = async (): Promise<string> => {
 };
 
 export const searchSpotifyPlaylists = async (
-  query: string
+  query: string,
+  offset: number = Math.floor(Math.random() * 100)
 ): Promise<string[]> => {
   const token = await getSpotifyToken();
 
@@ -76,7 +78,8 @@ export const searchSpotifyPlaylists = async (
       new URLSearchParams({
         q: query,
         type: "playlist",
-        limit: "20",
+        limit: "50",
+        offset: offset.toString(),
       }),
     {
       headers: {
@@ -84,10 +87,35 @@ export const searchSpotifyPlaylists = async (
       },
     }
   );
-
   const data = await response.json();
   const playlists = data.playlists.items as (SpotifyPlaylist | null)[];
-  return playlists
-    .filter((p) => p !== null)
-    .map((p) => p.external_urls.spotify);
+  const lowerQuery = query.toLowerCase();
+
+  const conflictingGenres = GENRES.filter(
+    (g) => g.toLowerCase() !== lowerQuery
+  ).map((g) => g.toLowerCase());
+
+  const result = playlists
+    .filter((p) => {
+      if (p === null) return false;
+
+      const description = p.description.toLowerCase();
+
+      const matchesQuery = description.includes(lowerQuery);
+      if (!matchesQuery) return false;
+
+      const hasConflictingGenre = conflictingGenres.some((genre) =>
+        description.includes(genre)
+      );
+      if (hasConflictingGenre) return false;
+
+      return true;
+    })
+    .map((p) => p!.external_urls.spotify);
+
+  if (result.length === 0) {
+    return searchSpotifyPlaylists(query, 0);
+  }
+
+  return result;
 };
