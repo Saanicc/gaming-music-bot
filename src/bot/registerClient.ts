@@ -1,4 +1,10 @@
-import { ActivityType, Client, Events, GatewayIntentBits } from "discord.js";
+import {
+  ActivityType,
+  Client,
+  Events,
+  GatewayIntentBits,
+  PresenceUpdateStatus,
+} from "discord.js";
 import { config } from "../config";
 import { deployCommands } from "../deploy-commands";
 import { buttons } from "../interactions/buttons";
@@ -22,13 +28,20 @@ export const registerDiscordClient = (): Client => {
   client.once(Events.ClientReady, async (readyClient) => {
     if (isDev) {
       await deployCommands({ guildId: config.DISCORD_GUILD_ID });
-      await setBotActivity(
-        readyClient,
-        "🚧 Under Development 🚧",
-        ActivityType.Custom
-      );
+      readyClient.user.setStatus(PresenceUpdateStatus.Idle);
+      await setBotActivity({
+        client: readyClient,
+        status: PresenceUpdateStatus.Idle,
+        activityText: "🚧 Under Development 🚧",
+        activityType: ActivityType.Custom,
+      });
     } else {
-      await setBotActivity(readyClient, "/help", ActivityType.Listening);
+      await setBotActivity({
+        client: readyClient,
+        status: PresenceUpdateStatus.Online,
+        activityText: "/help",
+        activityType: ActivityType.Listening,
+      });
     }
 
     const environment = isDev ? "DEV" : "PROD";
