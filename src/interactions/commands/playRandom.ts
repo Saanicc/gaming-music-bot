@@ -145,9 +145,8 @@ export async function execute(interaction: ChatInputCommandInteraction) {
     }
 
     if (amountOfTracks && amountOfTracks < tracks.length) {
-      const randomStart = Math.floor(
-        Math.random() * (tracks.length - amountOfTracks)
-      );
+      const maxStart = tracks.length - amountOfTracks;
+      const randomStart = Math.floor(Math.random() * (maxStart + 1));
       tracks = tracks.slice(randomStart, randomStart + amountOfTracks);
     }
 
