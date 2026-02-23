@@ -1,44 +1,43 @@
 import {
   ButtonInteraction,
-  CommandInteraction,
-  SlashCommandBuilder,
+  ChatInputCommandInteraction,
+  Guild,
   TextChannel,
+  VoiceBasedChannel,
 } from "discord.js";
 import { buildMessage } from "@/utils/bot-message/buildMessage";
 import { getRandomFightGif } from "@/utils/helpers/getRandomFightingGif";
 import { queueManager } from "@/services/queueManager";
 import { savePreviousQueue } from "@/utils/helpers/saveQueueData";
 import { getBossTracks } from "@/utils/helpers/getBossTracks";
-import { useMainPlayer, useQueue } from "discord-player";
 import { delay } from "@/utils/helpers/utils";
 import { updateUserLevel } from "@/utils/helpers/updateUserLevel";
 import { emoji } from "@/utils/constants/emojis";
+import { GuildQueue, Player } from "discord-player";
+import { joinVoiceChannel } from "@/src/utils/helpers/joinVoiceChannel";
 
-export const data = new SlashCommandBuilder()
-  .setName("play_boss_music")
-  .setDescription("Start playing EPIC boss battle music!");
+interface ExecuteBossMusicArgs {
+  interaction: ChatInputCommandInteraction | ButtonInteraction;
+  player: Player;
+  queue: GuildQueue;
+  voiceChannel: VoiceBasedChannel;
+}
 
-export const execute = async (
-  interaction: CommandInteraction | ButtonInteraction
-) => {
+export const execute = async ({
+  interaction,
+  player,
+  queue,
+  voiceChannel,
+}: ExecuteBossMusicArgs) => {
+  await joinVoiceChannel({
+    interaction,
+    queue,
+    voiceChannel,
+  });
+
   await interaction.deferReply();
-  const player = useMainPlayer();
-  const queue = useQueue();
-  const guildMember = await interaction.guild?.members.fetch(
-    interaction.user.id
-  );
-  const channel = guildMember?.voice.channel;
 
-  if (!channel) {
-    const data = buildMessage({
-      title: "❌ You must be in a voice channel.",
-      color: "error",
-      ephemeral: true,
-    });
-    return interaction.followUp(data);
-  }
-
-  const guild = guildMember.guild;
+  const guild = voiceChannel.guild;
 
   if (queue) {
     await savePreviousQueue(queue, guild.id);
@@ -49,8 +48,8 @@ export const execute = async (
 
   const newQueue = player.nodes.create(guild, {
     metadata: {
-      channel: interaction.channel,
-      voiceChannel: channel,
+      textChannel: interaction.channel,
+      voiceChannel,
     },
     leaveOnEnd: false,
     leaveOnEmpty: true,
@@ -83,7 +82,6 @@ export const execute = async (
 
     await delay(500);
 
-    if (!newQueue.connection) await newQueue.connect(channel);
     if (!newQueue.isPlaying()) await newQueue.node.play();
 
     await interaction.followUp(data);

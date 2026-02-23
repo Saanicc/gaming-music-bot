@@ -1,6 +1,12 @@
 import { queueManager, StoredQueue } from "@/services/queueManager";
-import { Guild, TextBasedChannel, VoiceBasedChannel } from "discord.js";
+import {
+  Guild,
+  TextBasedChannel,
+  TextChannel,
+  VoiceBasedChannel,
+} from "discord.js";
 import { Player, Track, useMainPlayer } from "discord-player";
+import { joinVoiceChannel } from "./joinVoiceChannel";
 
 const reSearch = async (track: Track, player: Player) => {
   try {
@@ -34,13 +40,17 @@ export const restoreOldQueue = async ({
   const player = useMainPlayer();
 
   const newQueue = player.nodes.create(guild, {
-    metadata: { channel: textChannel, voiceChannel },
+    metadata: { textChannel, voiceChannel },
     leaveOnEnd: false,
     leaveOnEmpty: true,
     leaveOnEmptyCooldown: 15000,
   });
 
-  if (!newQueue.connection) await newQueue.connect(voiceChannel);
+  await joinVoiceChannel({
+    queue: newQueue,
+    voiceChannel,
+    textChannel: textChannel as TextChannel,
+  });
 
   let currentTrack = undefined;
   if (storedQueue.currentTrack) {
