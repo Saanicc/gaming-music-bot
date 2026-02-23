@@ -1,11 +1,20 @@
-import { ActivityType, Client } from "discord.js";
+import { ActivityType, Client, PresenceStatusData } from "discord.js";
 
-export const setBotActivity = async (
-  client: Client,
-  statusText: string,
-  statusType?: ActivityType
-) => {
-  client.user?.setActivity(statusText, {
-    type: statusType ? statusType : undefined,
+interface BotActivity {
+  client: Client;
+  status: PresenceStatusData;
+  activityText: string;
+  activityType?: ActivityType;
+}
+
+export const setBotActivity = ({
+  client,
+  status,
+  activityText,
+  activityType,
+}: BotActivity) => {
+  client.user?.setActivity(activityText, {
+    type: activityType ?? undefined,
   });
+  client.user?.setStatus(status);
 };
