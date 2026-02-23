@@ -24,6 +24,16 @@ if (
   throw new Error("Missing environment variables");
 }
 
+if (!NODE_ENV || NODE_ENV !== "dev") {
+  console.warn("Development NODE_ENV is not set! Defaulting to 'production'.");
+}
+
+if (NODE_ENV === "dev" && !DISCORD_GUILD_ID) {
+  throw new Error(
+    "DISCORD_GUILD_ID is not set! It is required for guild command deployment in dev mode."
+  );
+}
+
 export const config = {
   DISCORD_TOKEN,
   DISCORD_CLIENT_ID,

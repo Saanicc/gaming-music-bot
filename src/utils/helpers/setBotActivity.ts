@@ -7,14 +7,14 @@ interface BotActivity {
   activityType?: ActivityType;
 }
 
-export const setBotActivity = async ({
+export const setBotActivity = ({
   client,
   status,
   activityText,
   activityType,
 }: BotActivity) => {
   client.user?.setActivity(activityText, {
-    type: activityType ? activityType : undefined,
+    type: activityType ?? undefined,
   });
   client.user?.setStatus(status);
 };

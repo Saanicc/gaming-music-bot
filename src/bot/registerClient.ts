@@ -27,15 +27,15 @@ export const registerDiscordClient = (): Client => {
 
   client.once(Events.ClientReady, async (readyClient) => {
     if (isDev) {
-      await deployCommands({ guildId: config.DISCORD_GUILD_ID });
-      await setBotActivity({
+      setBotActivity({
         client: readyClient,
         status: PresenceUpdateStatus.Idle,
         activityText: "🚧 Under Development 🚧",
         activityType: ActivityType.Custom,
       });
+      await deployCommands({ guildId: config.DISCORD_GUILD_ID });
     } else {
-      await setBotActivity({
+      setBotActivity({
         client: readyClient,
         status: PresenceUpdateStatus.Online,
         activityText: "/help",
