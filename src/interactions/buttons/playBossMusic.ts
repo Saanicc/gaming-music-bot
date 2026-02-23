@@ -1,5 +1,5 @@
 import { ButtonBuilder, ButtonInteraction, ButtonStyle } from "discord.js";
-import { execute as playBossMusic } from "../commands/play/playBossMusic";
+import { execute as playBossMusic } from "../commands/play/bossMusic";
 import { emoji } from "@/utils/constants/emojis";
 import { useMainPlayer, useQueue } from "discord-player";
 import { buildMessage } from "@/src/utils/bot-message/buildMessage";

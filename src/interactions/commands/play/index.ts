@@ -2,10 +2,10 @@ import { ChatInputCommandInteraction, SlashCommandBuilder } from "discord.js";
 import { GENRES } from "@/src/utils/constants/music-quiz-search-queries";
 import { useMainPlayer, useQueue } from "discord-player";
 import { buildMessage } from "@/src/utils/bot-message/buildMessage";
-import { execute as executePlayQuery } from "./play";
-import { execute as executePlayNow } from "./playNow";
-import { execute as executePlayNext } from "./playnext";
-import { execute as executePlayBossMusic } from "./playBossMusic";
+import { execute as executePlayQuery } from "./query";
+import { execute as executePlayNow } from "./now";
+import { execute as executePlayNext } from "./next";
+import { execute as executePlayBossMusic } from "./bossMusic";
 import { execute as executePlayRandomPlaylist } from "./random/playlist";
 import { execute as executePlayRandomTrack } from "./random/track";
 
