@@ -2,8 +2,6 @@ import {
   ChatInputCommandInteraction,
   SlashCommandBuilder,
   GuildMember,
-  BaseMessageOptions,
-  InteractionReplyOptions,
 } from "discord.js";
 import { useMainPlayer, QueryType, useQueue } from "discord-player";
 import { buildMessage } from "@/utils/bot-message/buildMessage";
@@ -110,42 +108,42 @@ export async function execute(interaction: ChatInputCommandInteraction) {
     ? genre
     : GENRES[Math.floor(Math.random() * GENRES.length)];
 
-  const spotifyPlaylists = await searchSpotifyPlaylists(searchGenre);
-
-  if (!spotifyPlaylists.length) {
-    return interaction.followUp(
-      buildMessage({
-        title: "Error",
-        description: `Could not find any playlists for genre: ${searchGenre}.`,
-        color: "error",
-      })
-    );
-  }
-
-  const playlistUrl =
-    spotifyPlaylists[Math.floor(Math.random() * spotifyPlaylists.length)];
-
-  const searchResult = await player.search(playlistUrl, {
-    requestedBy: interaction.user,
-    searchEngine: QueryType.SPOTIFY_PLAYLIST,
-  });
-
-  const playlist = searchResult.playlist;
-  let tracks = playlist?.tracks || [];
-
-  if (!tracks.length) {
-    return interaction.followUp(
-      buildMessage({
-        title: "Error",
-        description: `Could not find any track(s) to play with genre: ${searchGenre}.`,
-        color: "error",
-      })
-    );
-  }
-
   let message;
 
   if (subcommand === "playlist") {
+    const spotifyPlaylists = await searchSpotifyPlaylists(searchGenre);
+
+    if (!spotifyPlaylists.length) {
+      return interaction.followUp(
+        buildMessage({
+          title: "Error",
+          description: `Could not find any playlists for genre: ${searchGenre}.`,
+          color: "error",
+        })
+      );
+    }
+
+    const playlistUrl =
+      spotifyPlaylists[Math.floor(Math.random() * spotifyPlaylists.length)];
+
+    const searchResult = await player.search(playlistUrl, {
+      requestedBy: interaction.user,
+      searchEngine: QueryType.SPOTIFY_PLAYLIST,
+    });
+
+    const playlist = searchResult.playlist;
+    let tracks = playlist?.tracks || [];
+
+    if (!tracks.length) {
+      return interaction.followUp(
+        buildMessage({
+          title: "Error",
+          description: `Could not find any track(s) to play with genre: ${searchGenre}.`,
+          color: "error",
+        })
+      );
+    }
+
     if (amountOfTracks && amountOfTracks < tracks.length) {
       const randomStart = Math.floor(
         Math.random() * (tracks.length - amountOfTracks)
@@ -167,6 +165,23 @@ export async function execute(interaction: ChatInputCommandInteraction) {
       color: "queue",
     });
   } else {
+    const searchResult = await player.search(searchGenre, {
+      requestedBy: interaction.user,
+      searchEngine: QueryType.SPOTIFY_SONG,
+    });
+
+    const tracks = searchResult.tracks || [];
+
+    if (!tracks.length) {
+      return interaction.followUp(
+        buildMessage({
+          title: "Error",
+          description: `Could not find any track(s) to play for query: ${searchGenre}.`,
+          color: "error",
+        })
+      );
+    }
+
     const track = tracks[Math.floor(Math.random() * tracks.length)];
     queue.addTrack(track);
 
