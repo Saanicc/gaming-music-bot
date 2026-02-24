@@ -26,15 +26,15 @@ import {
   Player,
 } from "discord-player";
 import { buildMessage } from "@/utils/bot-message/buildMessage";
-import { GENRES } from "@/src/utils/constants/music-quiz-search-queries";
-import { delay } from "@/src/utils/helpers/utils";
-import { ColorType } from "@/src/utils/constants/colors";
-import { updateUserQuizStats } from "@/src/utils/helpers/updateUserQuizStats";
+import { GENRES } from "@/utils/constants/music-quiz-search-queries";
+import { delay } from "@/utils/helpers/utils";
+import { ColorType } from "@/utils/constants/colors";
+import { updateUserQuizStats } from "@/utils/helpers/updateUserQuizStats";
 import { searchSpotifyPlaylists } from "@/src/api/spotify";
-import { savePreviousQueue } from "@/src/utils/helpers/saveQueueData";
+import { savePreviousQueue } from "@/utils/helpers/saveQueueData";
 import { queueManager, StoredQueue } from "@/src/services/queueManager";
 import { musicPlayerMessage } from "@/src/services/musicPlayerMessage";
-import { restoreOldQueue } from "@/src/utils/helpers/restoreOldQueue";
+import { restoreOldQueue } from "@/utils/helpers/restoreOldQueue";
 
 const QUIZ_CONFIG = {
   TIME_TO_PLAY_SONG: 45000,
@@ -318,7 +318,7 @@ const savePreviousAndCreateNewQueue = async (
   }
 
   const newQueue = player.nodes.create(voiceChannel.guild, {
-    metadata: { channel: thread, isSwitching: true, musicQuiz: true },
+    metadata: { textChannel: thread, isSwitching: true, musicQuiz: true },
     leaveOnEmpty: false,
     leaveOnEnd: false,
     volume: 100,

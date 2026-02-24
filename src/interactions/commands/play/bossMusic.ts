@@ -1,44 +1,32 @@
 import {
   ButtonInteraction,
-  CommandInteraction,
-  SlashCommandBuilder,
-  TextChannel,
+  ChatInputCommandInteraction,
+  VoiceBasedChannel,
 } from "discord.js";
 import { buildMessage } from "@/utils/bot-message/buildMessage";
 import { getRandomFightGif } from "@/utils/helpers/getRandomFightingGif";
 import { queueManager } from "@/services/queueManager";
 import { savePreviousQueue } from "@/utils/helpers/saveQueueData";
 import { getBossTracks } from "@/utils/helpers/getBossTracks";
-import { useMainPlayer, useQueue } from "discord-player";
-import { delay } from "@/utils/helpers/utils";
 import { updateUserLevel } from "@/utils/helpers/updateUserLevel";
 import { emoji } from "@/utils/constants/emojis";
+import { Player, useQueue } from "discord-player";
+import { joinVoiceChannel } from "@/utils/helpers/joinVoiceChannel";
 
-export const data = new SlashCommandBuilder()
-  .setName("play_boss_music")
-  .setDescription("Start playing EPIC boss battle music!");
+interface ExecuteBossMusicArgs {
+  interaction: ChatInputCommandInteraction | ButtonInteraction;
+  player: Player;
+  voiceChannel: VoiceBasedChannel;
+}
 
-export const execute = async (
-  interaction: CommandInteraction | ButtonInteraction
-) => {
-  await interaction.deferReply();
-  const player = useMainPlayer();
+export const execute = async ({
+  interaction,
+  player,
+  voiceChannel,
+}: ExecuteBossMusicArgs) => {
+  const guild = voiceChannel.guild;
+
   const queue = useQueue();
-  const guildMember = await interaction.guild?.members.fetch(
-    interaction.user.id
-  );
-  const channel = guildMember?.voice.channel;
-
-  if (!channel) {
-    const data = buildMessage({
-      title: "❌ You must be in a voice channel.",
-      color: "error",
-      ephemeral: true,
-    });
-    return interaction.followUp(data);
-  }
-
-  const guild = guildMember.guild;
 
   if (queue) {
     await savePreviousQueue(queue, guild.id);
@@ -49,8 +37,8 @@ export const execute = async (
 
   const newQueue = player.nodes.create(guild, {
     metadata: {
-      channel: interaction.channel,
-      voiceChannel: channel,
+      textChannel: interaction.channel,
+      voiceChannel,
     },
     leaveOnEnd: false,
     leaveOnEmpty: true,
@@ -79,18 +67,26 @@ export const execute = async (
       color: "bossMode",
     });
 
-    updateUserLevel(interaction, guild.id, "play_boss_music");
+    const joinError = await joinVoiceChannel({
+      interaction,
+      queue: newQueue,
+      voiceChannel,
+    });
+    if (joinError) return;
 
-    await delay(500);
-
-    if (!newQueue.connection) await newQueue.connect(channel);
     if (!newQueue.isPlaying()) await newQueue.node.play();
 
+    await updateUserLevel(interaction, guild.id, "play_boss_music");
+
     await interaction.followUp(data);
-  } catch (err) {
-    console.error(err);
-    await (interaction.channel as TextChannel).send(
-      "❌ Something went wrong while trying to play."
+  } catch (error) {
+    console.error(error);
+    return interaction.followUp(
+      buildMessage({
+        title: "Error",
+        description: "Something went wrong while trying to play.",
+        color: "error",
+      })
     );
   }
 };

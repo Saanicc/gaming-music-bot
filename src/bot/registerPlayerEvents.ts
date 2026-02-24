@@ -16,7 +16,7 @@ import {
 export const registerPlayerEvents = (player: Player) => {
   player.events.on(GuildQueueEvent.PlayerStart, async (queue, track) => {
     if (queue.metadata.musicQuiz) return;
-    const channel = queue.metadata.channel as TextChannel;
+    const channel = queue.metadata.textChannel as TextChannel;
 
     musicPlayerMessage.clearProgressInterval();
     try {
@@ -99,14 +99,14 @@ export const registerPlayerEvents = (player: Player) => {
       color: "default",
     });
 
-    const channel = queue.metadata.channel;
+    const channel = queue.metadata.textChannel;
     await channel.send(data as MessageCreateOptions);
   });
 
   player.events.on(GuildQueueEvent.EmptyQueue, async (queue) => {
     if (queue.metadata.musicQuiz) return;
 
-    const channel = queue.metadata.channel as TextChannel;
+    const channel = queue.metadata.textChannel as TextChannel;
 
     queue.history.clear();
 
@@ -120,7 +120,7 @@ export const registerPlayerEvents = (player: Player) => {
   });
 
   player.events.on(GuildQueueEvent.PlayerError, async (queue, error, track) => {
-    const channel = queue.metadata.channel as TextChannel;
+    const channel = queue.metadata.textChannel as TextChannel;
 
     const extractorName = track.extractor?.identifier ?? "Unknown";
     const streamUrl =
@@ -144,7 +144,7 @@ export const registerPlayerEvents = (player: Player) => {
   });
 
   player.events.on(GuildQueueEvent.Error, async (queue, error) => {
-    const channel = queue.metadata.channel as TextChannel;
+    const channel = queue.metadata.textChannel as TextChannel;
 
     const embed = buildMessage({
       title: `⚠️ ${error.name} ⚠️`,

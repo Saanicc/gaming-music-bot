@@ -14,13 +14,11 @@ export const execute = async (interaction: ButtonInteraction) => {
   const { guildId } = interaction;
 
   if (!guildId) {
-    await interaction.reply("⚠️ No guild was found.");
-    return;
+    return interaction.reply("⚠️ No guild was found.");
   }
 
   if (!queue) {
-    await interaction.reply("⚠️ No active music queue.");
-    return;
+    return interaction.reply("⚠️ No active music queue.");
   }
 
   queue.delete();

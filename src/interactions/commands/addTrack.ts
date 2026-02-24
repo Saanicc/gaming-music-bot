@@ -109,7 +109,7 @@ export const execute = async (interaction: ChatInputCommandInteraction) => {
       ephemeral: true,
       color: "error",
     });
-    interaction.reply(message);
+    return interaction.reply(message);
   }
 
   const data = buildMessage({

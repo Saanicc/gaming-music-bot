@@ -11,13 +11,14 @@ export const execute = async (interaction: ButtonInteraction) => {
   await interaction.deferUpdate();
   const { guild } = interaction;
   if (!guild) {
-    await interaction.reply("⚠️ No guild was found.");
-    return;
+    return interaction.followUp("⚠️ No guild was found.");
   }
 
   const queue = useQueue();
 
-  if (!queue) return;
+  if (!queue) {
+    return interaction.followUp("⚠️ No queue was found.");
+  }
 
   queue.node.resume();
 };

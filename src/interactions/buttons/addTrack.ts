@@ -4,8 +4,8 @@ import { getFormattedTrackDescription } from "@/utils/helpers/getFormattedTrackD
 import { useQueue } from "discord-player";
 import { getThumbnail } from "@/utils/helpers/utils";
 import { BossTrack } from "@/models/BossTrack";
-import { addTrackToCache } from "@/src/utils/helpers/isTrackInCache";
-import { emoji } from "@/src/utils/constants/emojis";
+import { addTrackToCache } from "@/utils/helpers/isTrackInCache";
+import { emoji } from "@/utils/constants/emojis";
 
 export const addTrackButton = new ButtonBuilder()
   .setCustomId("addTrack")
@@ -13,6 +13,8 @@ export const addTrackButton = new ButtonBuilder()
   .setStyle(ButtonStyle.Secondary);
 
 export const execute = async (interaction: ButtonInteraction) => {
+  await interaction.deferReply();
+
   const queue = useQueue();
 
   const trackUrl = queue?.currentTrack?.url;
@@ -24,7 +26,7 @@ export const execute = async (interaction: ButtonInteraction) => {
       color: "error",
     });
 
-    return interaction.reply(message);
+    return interaction.followUp(message);
   }
 
   let trackAlreadyExist: Boolean;
@@ -42,7 +44,7 @@ export const execute = async (interaction: ButtonInteraction) => {
       ephemeral: true,
       color: "error",
     });
-    return interaction.reply(message);
+    return interaction.followUp(message);
   }
 
   if (trackAlreadyExist) {
@@ -51,7 +53,7 @@ export const execute = async (interaction: ButtonInteraction) => {
       ephemeral: true,
       color: "error",
     });
-    return interaction.reply(message);
+    return interaction.followUp(message);
   }
 
   try {
@@ -69,7 +71,7 @@ export const execute = async (interaction: ButtonInteraction) => {
       ephemeral: true,
       color: "error",
     });
-    interaction.reply(message);
+    return interaction.followUp(message);
   }
 
   if (interaction.guildId) {
@@ -86,5 +88,5 @@ export const execute = async (interaction: ButtonInteraction) => {
     color: "success",
   });
 
-  return interaction.reply(data);
+  return interaction.followUp(data);
 };
