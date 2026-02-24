@@ -15,6 +15,6 @@ export async function execute(interaction: ButtonInteraction) {
   if (!queue.isPlaying()) return guardReply(interaction, "NO_TRACK_PLAYING");
 
   await interaction.deferUpdate();
-  queue.history.next();
+  await queue.history.next();
   if (queue.node.isPaused()) queue.node.resume();
 }
