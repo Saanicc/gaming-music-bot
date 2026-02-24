@@ -11,7 +11,7 @@ export const pauseButton = new ButtonBuilder()
 export const execute = async (interaction: ButtonInteraction) => {
   await interaction.deferUpdate();
   const { guild } = interaction;
-  if (!guild) return guardReply(interaction, "NO_GUILD");
+  if (!guild) return guardReply(interaction, "NO_GUILD", "followUp");
 
   const queue = useQueue();
 

@@ -15,13 +15,13 @@ export const execute = async (interaction: ButtonInteraction) => {
   const { guild } = interaction;
   const player = useMainPlayer();
 
-  if (!guild) return guardReply(interaction, "NO_GUILD", "followUp");
+  if (!guild) return guardReply(interaction, "NO_GUILD", "editReply");
 
   const member = await guild.members.fetch(interaction.user.id);
   const voiceChannel = member?.voice.channel;
 
   if (!voiceChannel)
-    return guardReply(interaction, "NO_VOICE_CHANNEL", "followUp");
+    return guardReply(interaction, "NO_VOICE_CHANNEL", "editReply");
 
   await playBossMusic({
     interaction,

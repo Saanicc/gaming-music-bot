@@ -68,7 +68,7 @@ export const GUARD_MESSAGES = {
     color: "error",
   },
   TRACK_ALREADY_EXISTS: {
-    title: "The track already exist!",
+    title: "The track already exists!",
     ephemeral: true,
     color: "error",
   },
@@ -81,12 +81,12 @@ export const GUARD_MESSAGES = {
 
   // ── Generic errors ───────────────────────────────────────────────────
   GENERIC_ERROR: {
-    title: "An error occured. Please try again.",
+    title: "An error occurred. Please try again.",
     ephemeral: true,
     color: "error",
   },
   DB_SAVE_ERROR: {
-    title: "An error occured when saving track to database. Please try again.",
+    title: "An error occurred when saving track to database. Please try again.",
     ephemeral: true,
     color: "error",
   },
