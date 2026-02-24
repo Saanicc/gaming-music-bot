@@ -1,9 +1,9 @@
 import { ChatInputCommandInteraction, SlashCommandBuilder } from "discord.js";
 import { buildXpLeaderboard } from "./xp";
 import { buildQuizLeaderboard } from "./quiz";
-import { buildMessage } from "@/utils/bot-message/buildMessage";
 import { Font } from "canvacord";
 import { User } from "@/src/models/User";
+import { guardReply } from "@/src/utils/helpers/interactionGuard";
 
 export const data = new SlashCommandBuilder()
   .setName("leaderboard")
@@ -20,14 +20,12 @@ export async function execute(interaction: ChatInputCommandInteraction) {
 
   const guild = interaction.guild;
   if (!guild) {
-    const message = buildMessage({ title: "No guild found." });
-    return interaction.reply(message);
+    return guardReply(interaction, "NO_GUILD", "reply");
   }
 
   const guildMembers = await guild.members.fetch();
   if (!guildMembers || guildMembers.size === 0) {
-    const message = buildMessage({ title: "No guild members found." });
-    return interaction.reply(message);
+    return guardReply(interaction, "NO_GUILD_MEMBERS", "reply");
   }
 
   await interaction.deferReply();

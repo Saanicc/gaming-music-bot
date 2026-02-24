@@ -1,8 +1,4 @@
-import {
-  ChatInputCommandInteraction,
-  ButtonInteraction,
-  BaseMessageOptions,
-} from "discord.js";
+import { ChatInputCommandInteraction, ButtonInteraction } from "discord.js";
 import { buildMessage } from "../bot-message/buildMessage";
 import { ColorType } from "../constants/colors";
 
@@ -46,6 +42,10 @@ export const GUARD_MESSAGES = {
   },
   NO_VOICE_CHANNEL: {
     title: "You must be in a voice channel to play music.",
+    ephemeral: true,
+  },
+  NO_GUILD_MEMBERS: {
+    title: "No guild members found.",
     ephemeral: true,
   },
 
@@ -108,7 +108,7 @@ export const GUARD_MESSAGES = {
     color: "error",
     ephemeral: true,
   },
-} as const satisfies Record<string, BuildMessagePayload | string>;
+} as const satisfies Record<string, BuildMessagePayload>;
 
 // ---------------------------------------------------------------------------
 // Guard reply helper
@@ -122,14 +122,26 @@ type Repliable = ChatInputCommandInteraction | ButtonInteraction;
  * Build the error message for a guard key and send it via the specified
  * interaction reply method.
  *
+ * When the method is `editReply` and the message is ephemeral, Discord won't
+ * respect the ephemeral flag because it must be set on the initial `deferReply`.
+ * In that case we delete the deferred reply and fall back to `followUp`, which
+ * can independently be ephemeral.
+ *
  * @returns The interaction response promise — callers should `return guardReply(…)`.
  */
-export const guardReply = (
+export const guardReply = async (
   interaction: Repliable,
   messageKey: GuardMessageKey,
   method: ReplyMethod = "reply"
 ): Promise<unknown> => {
-  const data = buildMessage(GUARD_MESSAGES[messageKey]);
+  const message = GUARD_MESSAGES[messageKey] as BuildMessagePayload;
+  const data = buildMessage(message);
+  const isEphemeral = message.ephemeral === true;
+
+  if (method === "editReply" && isEphemeral) {
+    await interaction.deleteReply().catch(() => {});
+    return interaction.followUp(data);
+  }
 
   switch (method) {
     case "reply":

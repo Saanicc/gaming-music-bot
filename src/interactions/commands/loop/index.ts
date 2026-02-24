@@ -20,12 +20,12 @@ export const data = new SlashCommandBuilder()
   );
 
 export async function execute(interaction: ChatInputCommandInteraction) {
-  await interaction.deferReply();
   const subcommand = interaction.options.getSubcommand(true);
-
   const queue = useQueue();
 
-  if (!queue) return guardReply(interaction, "NO_QUEUE", "editReply");
+  if (!queue) return guardReply(interaction, "NO_QUEUE", "reply");
+
+  await interaction.deferReply();
 
   const modeMap: Record<string, { mode: QueueRepeatMode; title: string }> = {
     all: { mode: QueueRepeatMode.QUEUE, title: "Now looping the queue" },

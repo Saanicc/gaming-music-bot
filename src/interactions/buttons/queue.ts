@@ -10,7 +10,7 @@ export const queueButton = new ButtonBuilder()
 
 export const execute = async (interaction: ButtonInteraction) => {
   const { guild } = interaction;
-  if (!guild) return guardReply(interaction, "NO_GUILD_PLAIN");
+  if (!guild) return guardReply(interaction, "NO_GUILD");
 
   const customId = interaction.customId;
 

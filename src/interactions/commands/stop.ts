@@ -13,8 +13,8 @@ export async function execute(interaction: ChatInputCommandInteraction) {
 
   const { guildId } = interaction;
 
-  if (!guildId) return guardReply(interaction, "NO_GUILD", "followUp");
-  if (!queue) return guardReply(interaction, "PLEASE_ADD_TRACKS", "followUp");
+  if (!guildId) return guardReply(interaction, "NO_GUILD", "editReply");
+  if (!queue) return guardReply(interaction, "PLEASE_ADD_TRACKS", "editReply");
 
   queue.delete();
   queueManager.clear(guildId);
