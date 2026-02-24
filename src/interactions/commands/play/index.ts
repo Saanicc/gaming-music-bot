@@ -110,6 +110,8 @@ export const data = new SlashCommandBuilder()
   );
 
 export const execute = async (interaction: ChatInputCommandInteraction) => {
+  await interaction.deferReply();
+
   const subcommand = interaction.options.getSubcommand(true);
   const player = useMainPlayer();
   let queue = useQueue();
@@ -123,7 +125,7 @@ export const execute = async (interaction: ChatInputCommandInteraction) => {
       title: "❌ You must be in a voice channel to play music.",
       ephemeral: true,
     });
-    return interaction.reply(data);
+    return interaction.editReply(data);
   }
 
   const guild = member.guild;
@@ -136,8 +138,6 @@ export const execute = async (interaction: ChatInputCommandInteraction) => {
       leaveOnEmptyCooldown: 15000,
     });
   }
-
-  await interaction.deferReply();
 
   switch (subcommand) {
     case "music": {

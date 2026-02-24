@@ -34,12 +34,11 @@ export const execute = async ({
       const data = buildMessage({
         title: "❌ No results found.",
       });
-      return interaction.followUp(data);
+      return interaction.editReply(data);
     }
 
     const track = result.tracks[0];
     queue.insertTrack(track);
-    queue.node.skip();
 
     const message = buildMessage({
       title: `Will play instantly`,
@@ -49,8 +48,6 @@ export const execute = async ({
         "Not the correct track? Try being more specific or enter a URL",
       color: "queue",
     });
-
-    await interaction.followUp(message);
 
     const joinError = await joinVoiceChannel({
       interaction,
@@ -63,6 +60,9 @@ export const execute = async ({
     await updateUserLevel(interaction, guild.id, "play");
 
     if (!queue.isPlaying()) await queue.node.play();
+    else queue.node.skip();
+
+    await interaction.followUp(message);
   } catch (error) {
     console.error(error);
     return interaction.followUp(
