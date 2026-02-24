@@ -11,6 +11,7 @@ import { delay } from "@/utils/helpers/utils";
 import { buildMessage } from "@/utils/bot-message/buildMessage";
 import { musicPlayerMessage } from "@/services/musicPlayerMessage";
 import { useQueue } from "discord-player";
+import { guardReply } from "@/utils/helpers/interactionGuard";
 import { emoji } from "@/utils/constants/emojis";
 
 export const victoryButton = new ButtonBuilder()
@@ -22,15 +23,11 @@ export const execute = async (interaction: ButtonInteraction) => {
   await interaction.deferUpdate();
 
   const { guild } = interaction;
-  if (!guild) {
-    return interaction.followUp("⚠️ No guild was found.");
-  }
+  if (!guild) return guardReply(interaction, "NO_GUILD", "followUp");
 
   const queue = useQueue();
 
-  if (!queue) {
-    return interaction.followUp("⚠️ No active music queue.");
-  }
+  if (!queue) return guardReply(interaction, "NO_QUEUE", "followUp");
 
   queue.node.stop();
   (queue.metadata as any).isSwitching = true;

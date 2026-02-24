@@ -1,5 +1,6 @@
 import { ButtonBuilder, ButtonInteraction, ButtonStyle } from "discord.js";
 import { useQueue } from "discord-player";
+import { guardReply } from "@/utils/helpers/interactionGuard";
 import { emoji } from "@/utils/constants/emojis";
 
 export const pauseButton = new ButtonBuilder()
@@ -10,10 +11,7 @@ export const pauseButton = new ButtonBuilder()
 export const execute = async (interaction: ButtonInteraction) => {
   await interaction.deferUpdate();
   const { guild } = interaction;
-  if (!guild) {
-    await interaction.reply("⚠️ No guild was found.");
-    return;
-  }
+  if (!guild) return guardReply(interaction, "NO_GUILD_PLAIN");
 
   const queue = useQueue();
 

@@ -5,6 +5,7 @@ import { GENRES } from "@/utils/constants/music-quiz-search-queries";
 import { getFormattedTrackDescription } from "@/utils/helpers/getFormattedTrackDescription";
 import { getThumbnail } from "@/utils/helpers/utils";
 import { joinVoiceChannel } from "@/utils/helpers/joinVoiceChannel";
+import { guardReply } from "@/utils/helpers/interactionGuard";
 
 interface ExecuteParams {
   interaction: ChatInputCommandInteraction;
@@ -70,12 +71,6 @@ export async function execute({
     return interaction.followUp(message);
   } catch (error) {
     console.error(error);
-    return interaction.followUp(
-      buildMessage({
-        title: "Error",
-        description: "Something went wrong while trying to play.",
-        color: "error",
-      })
-    );
+    return guardReply(interaction, "PLAY_ERROR", "followUp");
   }
 }

@@ -1,6 +1,6 @@
 import { ButtonBuilder, ButtonInteraction, ButtonStyle } from "discord.js";
 import { QueueRepeatMode, useQueue } from "discord-player";
-import { buildMessage } from "@/utils/bot-message/buildMessage";
+import { guardReply } from "@/utils/helpers/interactionGuard";
 
 export const loopQueueButton = new ButtonBuilder()
   .setCustomId("loopQueue")
@@ -10,24 +10,8 @@ export const loopQueueButton = new ButtonBuilder()
 export async function execute(interaction: ButtonInteraction) {
   const queue = useQueue();
 
-  if (!queue) {
-    const data = buildMessage({
-      title: "This server does not have an active player session.",
-      ephemeral: true,
-      color: "info",
-    });
-    return interaction.reply(data);
-  }
-
-  if (!queue.isPlaying()) {
-    const data = buildMessage({
-      title: "There is no track playing.",
-      ephemeral: true,
-      color: "info",
-    });
-    await interaction.reply(data);
-    return;
-  }
+  if (!queue) return guardReply(interaction, "NO_QUEUE");
+  if (!queue.isPlaying()) return guardReply(interaction, "NO_TRACK_PLAYING");
 
   await interaction.deferUpdate();
 

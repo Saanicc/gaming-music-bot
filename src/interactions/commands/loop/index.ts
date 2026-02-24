@@ -1,6 +1,7 @@
 import { ChatInputCommandInteraction, SlashCommandBuilder } from "discord.js";
 import { buildMessage } from "@/utils/bot-message/buildMessage";
 import { QueueRepeatMode, useQueue } from "discord-player";
+import { guardReply } from "@/utils/helpers/interactionGuard";
 
 export const data = new SlashCommandBuilder()
   .setName("loop")
@@ -24,14 +25,7 @@ export async function execute(interaction: ChatInputCommandInteraction) {
 
   const queue = useQueue();
 
-  if (!queue) {
-    const data = buildMessage({
-      title: "This server does not have an active player session.",
-      ephemeral: true,
-      color: "info",
-    });
-    return interaction.editReply(data);
-  }
+  if (!queue) return guardReply(interaction, "NO_QUEUE", "editReply");
 
   const modeMap: Record<string, { mode: QueueRepeatMode; title: string }> = {
     all: { mode: QueueRepeatMode.QUEUE, title: "Now looping the queue" },

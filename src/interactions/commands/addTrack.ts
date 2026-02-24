@@ -5,6 +5,7 @@ import { useMainPlayer, useQueue } from "discord-player";
 import { getThumbnail } from "@/utils/helpers/utils";
 import { BossTrack, TrackType } from "@/models/BossTrack";
 import { getSearchEngine } from "@/utils/helpers/getSearchEngine";
+import { guardReply } from "@/utils/helpers/interactionGuard";
 
 export const data = new SlashCommandBuilder()
   .setName("add_track")
@@ -36,15 +37,8 @@ export const execute = async (interaction: ChatInputCommandInteraction) => {
   const url = interaction.options.getString("url", true);
   const selectedType = interaction.options.getString("type", true) as TrackType;
 
-  if (!url.match(/https:\/\/.*.*/)) {
-    const data = buildMessage({
-      title: "Not a valid url",
-      description: "Please enter a valid url",
-      ephemeral: true,
-      color: "error",
-    });
-    return interaction.reply(data);
-  }
+  if (!url.match(/https:\/\/.*.*/))
+    return guardReply(interaction, "INVALID_URL");
 
   let trackAlreadyExist: Boolean;
 
@@ -57,22 +51,10 @@ export const execute = async (interaction: ChatInputCommandInteraction) => {
       }`
     );
 
-    const message = buildMessage({
-      title: "An error occured. Please try again.",
-      ephemeral: true,
-      color: "error",
-    });
-    return interaction.reply(message);
+    return guardReply(interaction, "GENERIC_ERROR");
   }
 
-  if (trackAlreadyExist) {
-    const message = buildMessage({
-      title: "The track already exist!",
-      ephemeral: true,
-      color: "error",
-    });
-    return interaction.reply(message);
-  }
+  if (trackAlreadyExist) return guardReply(interaction, "TRACK_ALREADY_EXISTS");
 
   const player = useMainPlayer();
   const queue = useQueue();
@@ -82,17 +64,8 @@ export const execute = async (interaction: ChatInputCommandInteraction) => {
     searchEngine: getSearchEngine(url),
   });
 
-  if (result.tracks.length === 0) {
-    const data = buildMessage({
-      title: "No track found",
-      description:
-        "No track with that URL was found, please make sure the URL is valid.",
-      color: "error",
-      ephemeral: true,
-    });
-
-    return interaction.reply(data);
-  }
+  if (result.tracks.length === 0)
+    return guardReply(interaction, "NO_TRACK_FOUND");
 
   try {
     await BossTrack.create({ trackUrl: url, trackType: selectedType });
@@ -103,13 +76,7 @@ export const execute = async (interaction: ChatInputCommandInteraction) => {
       }`
     );
 
-    const message = buildMessage({
-      title:
-        "An error occured when saving track to database. Please try again.",
-      ephemeral: true,
-      color: "error",
-    });
-    return interaction.reply(message);
+    return guardReply(interaction, "DB_SAVE_ERROR");
   }
 
   const data = buildMessage({

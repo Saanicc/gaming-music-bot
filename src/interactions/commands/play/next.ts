@@ -6,6 +6,7 @@ import { updateUserLevel } from "@/utils/helpers/updateUserLevel";
 import { getSearchEngine } from "@/utils/helpers/getSearchEngine";
 import { getThumbnail } from "@/utils/helpers/utils";
 import { joinVoiceChannel } from "@/utils/helpers/joinVoiceChannel";
+import { guardReply } from "@/utils/helpers/interactionGuard";
 
 interface ExecutePlayNextQueryArgs {
   interaction: ChatInputCommandInteraction;
@@ -30,12 +31,8 @@ export const execute = async ({
       searchEngine: getSearchEngine(query),
     });
 
-    if (!result.tracks.length) {
-      const data = buildMessage({
-        title: "❌ No results found.",
-      });
-      return interaction.followUp(data);
-    }
+    if (!result.tracks.length)
+      return guardReply(interaction, "NO_RESULTS", "followUp");
 
     const track = result.tracks[0];
     queue.insertTrack(track);
@@ -64,12 +61,6 @@ export const execute = async ({
     if (!queue.isPlaying()) await queue.node.play();
   } catch (error) {
     console.error(error);
-    return interaction.followUp(
-      buildMessage({
-        title: "Error",
-        description: "Something went wrong while trying to play.",
-        color: "error",
-      })
-    );
+    return guardReply(interaction, "PLAY_ERROR", "followUp");
   }
 };
