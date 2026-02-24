@@ -160,6 +160,12 @@ export class HelpBuilder extends Builder {
     if (!this.commands.length) throw new Error("Commands are required!");
     if (!this.footerText) throw new Error("Footer text is required!");
 
+    const rows = Math.ceil(this.commands.length / 2);
+    const headerHeight = 250;
+    const footerHeight = 124;
+    const rowHeight = 100;
+    this.height = headerHeight + rows * rowHeight + footerHeight;
+
     const headerNode = await this.renderHeader();
     if (!headerNode) throw new Error("Failed to render header!");
 
@@ -229,7 +235,7 @@ export class HelpBuilder extends Builder {
         "div",
         {
           style: {
-            marginTop: "auto",
+            marginTop: "24px",
             display: "flex",
             justifyContent: "center",
             alignItems: "center",
