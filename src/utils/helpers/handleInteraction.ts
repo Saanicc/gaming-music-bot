@@ -1,6 +1,7 @@
 import { useMainPlayer, useQueue } from "discord-player";
 import { Interaction } from "discord.js";
 import { buildMessage } from "../bot-message/buildMessage";
+import { t } from "@/src/ui/translations";
 
 const ALLOWED_COMMANDS_DURING_QUIZ = [
   "help",
@@ -29,9 +30,8 @@ export const handleInteraction = async (
     if (interaction.isRepliable()) {
       await interaction.reply(
         buildMessage({
-          title: "❌ Music Quiz in Progress",
-          description:
-            "You cannot use this command while a music quiz is ongoing in this server.",
+          title: t("en-US", "commands.musicQuiz.inProgress.title"),
+          description: t("en-US", "commands.musicQuiz.inProgress.description"),
           color: "error",
           ephemeral: true,
         })

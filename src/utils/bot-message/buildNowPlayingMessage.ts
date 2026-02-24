@@ -28,6 +28,7 @@ import { getThumbnail } from "../helpers/utils";
 import { addTrackButton } from "@/interactions/buttons/addTrack";
 import { loopTrackButton } from "@/interactions/buttons/loopTrack";
 import { loopQueueButton } from "@/interactions/buttons/loopQueue";
+import { t } from "@/src/ui/translations";
 
 type NowPlayingMessageProps = {
   track: Track;
@@ -94,10 +95,10 @@ export const buildNowPlayingMessage = ({
   const container = new ContainerBuilder();
 
   const trackInfoText = new TextDisplayBuilder().setContent(`
-### ${isPlaying ? `${emoji.play} Now Playing` : `${emoji.pause} Music Paused`}  
+### ${isPlaying ? t("en-US", "player.nowPlaying", { emoji: emoji.play }) : t("en-US", "player.paused", { emoji: emoji.pause })}  
 ${getFormattedTrackDescription(track, queue)}
 
-**Progress**
+**${t("en-US", "player.progress")}**
 ${progressBar}
 `);
 
@@ -118,8 +119,8 @@ ${progressBar}
     const totalQueueNumber = queue.tracks.size + currentTrackNumber;
 
     const queueText = new TextDisplayBuilder().setContent(`
-**Track** 
-**${currentTrackNumber}** of **${totalQueueNumber}**
+${t("en-US", "player.track")}
+${t("en-US", "player.trackNumber", { current: currentTrackNumber.toString(), total: totalQueueNumber.toString() })}
     `);
 
     container.addTextDisplayComponents(queueText);

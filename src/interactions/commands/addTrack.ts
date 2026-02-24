@@ -6,20 +6,21 @@ import { getThumbnail } from "@/utils/helpers/utils";
 import { BossTrack, TrackType } from "@/models/BossTrack";
 import { getSearchEngine } from "@/utils/helpers/getSearchEngine";
 import { guardReply } from "@/utils/helpers/interactionGuard";
+import { t } from "@/src/ui/translations";
 
 export const data = new SlashCommandBuilder()
   .setName("add_track")
-  .setDescription("Add a new track to the boss music library")
+  .setDescription(t("en-US", "commands.addTrack.description"))
   .addStringOption((option) =>
     option
       .setName("url")
-      .setDescription("Enter url of track to add")
+      .setDescription(t("en-US", "commands.addTrack.messages.urlDescription"))
       .setRequired(true)
   )
   .addStringOption((option) =>
     option
       .setName("type")
-      .setDescription("Select a track type")
+      .setDescription(t("en-US", "commands.addTrack.messages.typeDescription"))
       .setRequired(true)
       .addChoices(
         {
@@ -80,13 +81,19 @@ export const execute = async (interaction: ChatInputCommandInteraction) => {
   }
 
   const data = buildMessage({
-    title: `Added successfully`,
-    description: `${interaction.user.toString()} added ${getFormattedTrackDescription(
-      result.tracks[0],
-      queue
-    )} to the ${
-      selectedType === "song" ? "boss music" : "horn sound"
-    } library!`,
+    title: t("en-US", "commands.addTrack.messages.trackAdded"),
+    description: t(
+      "en-US",
+      "commands.addTrack.messages.trackAddedDescription",
+      {
+        user: interaction.user.toString(),
+        track: getFormattedTrackDescription(result.tracks[0], queue),
+        type:
+          selectedType === "song"
+            ? t("en-US", "commands.addTrack.messages.bossMusic")
+            : t("en-US", "commands.addTrack.messages.hornSound"),
+      }
+    ),
     thumbnail: getThumbnail(result.tracks[0]),
     color: "success",
   });

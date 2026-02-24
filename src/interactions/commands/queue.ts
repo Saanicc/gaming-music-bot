@@ -13,10 +13,11 @@ import { getFormattedTrackDescription } from "@/utils/helpers/getFormattedTrackD
 import { emoji } from "@/utils/constants/emojis";
 import { getThumbnail } from "@/utils/helpers/utils";
 import { guardReply } from "@/utils/helpers/interactionGuard";
+import { t } from "@/src/ui/translations";
 
 export const data = new SlashCommandBuilder()
   .setName("queue")
-  .setDescription("Display the current queue");
+  .setDescription(t("en-US", "commands.queue.description"));
 
 const TRACKS_PER_PAGE = 10;
 
@@ -56,9 +57,14 @@ export async function renderQueue(
             )}`
         )
         .join("\n")
-    : "No upcoming tracks in queue.";
+    : t("en-US", "commands.queue.messages.noUpcomingTracks");
 
-  const footerText = `Page ${page}/${totalPages}  •  Tracks in queue: ${totalTracks}  •  Total duration: ${queue.durationFormatted}`;
+  const footerText = t("en-US", "commands.queue.messages.footerText", {
+    page: page.toString(),
+    totalPages: totalPages.toString(),
+    totalTracks: totalTracks.toString(),
+    totalDuration: queue.durationFormatted,
+  });
 
   const row = new ActionRowBuilder<ButtonBuilder>().addComponents(
     new ButtonBuilder()
@@ -88,12 +94,14 @@ export async function renderQueue(
   );
 
   const data = buildMessage({
-    title: `${emoji.play} Now Playing`,
+    title: `${emoji.play} ${t("en-US", "commands.queue.messages.nowPlaying")}`,
     thumbnail: getThumbnail(currentTrack),
     description: `
 ${getFormattedTrackDescription(currentTrack, queue)}
 
-**Upcoming Tracks:**
+### ${t("en-US", "commands.queue.messages.upcomingTracks", {
+      emoji: emoji.queue,
+    })}
 ${tracksList}
     `,
     color: "queue",

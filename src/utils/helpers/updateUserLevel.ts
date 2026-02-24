@@ -4,6 +4,7 @@ import { getRankTitleWithEmoji } from "@/modules/rankSystem";
 import { buildMessage } from "../bot-message/buildMessage";
 import { getTreasureInfo } from "./getTreasureMessage";
 import { emoji } from "../constants/emojis";
+import { t } from "@/src/ui/translations";
 
 export const updateUserLevel = async (
   interaction: CommandInteraction | ButtonInteraction,
@@ -40,14 +41,24 @@ export const updateUserLevel = async (
 
     let rankMessage = "";
     if (oldRank !== newRank) {
-      rankMessage = `\nNew rank: **${newRank}**!`;
+      rankMessage = t("en-US", "levelSystem.levelUp.rankMessage", {
+        newRank,
+      });
     }
 
     const message = buildMessage({
-      title: `${emoji.levelup} Level up! ${emoji.levelup}`,
-      description: `${interaction.user.toString()} gained **${levelsGained} ${
-        levelsGained > 1 ? "levels" : "level"
-      }** and is now **Level ${user.level}**!${rankMessage}`,
+      title: t("en-US", "levelSystem.levelUp.title", {
+        emoji: emoji.levelup,
+      }),
+      description: `${t("en-US", "levelSystem.levelUp.description", {
+        user: interaction.user.toString(),
+        levelsGained: levelsGained.toString(),
+        level: user.level.toString(),
+        levelText:
+          levelsGained > 1
+            ? t("en-US", "levelSystem.levelUp.levels")
+            : t("en-US", "levelSystem.levelUp.level"),
+      })}\n${rankMessage}`,
     });
     await (interaction.channel as TextChannel).send(message);
   }

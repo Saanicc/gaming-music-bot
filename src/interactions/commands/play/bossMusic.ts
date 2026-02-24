@@ -13,6 +13,7 @@ import { emoji } from "@/utils/constants/emojis";
 import { Player, useQueue } from "discord-player";
 import { joinVoiceChannel } from "@/utils/helpers/joinVoiceChannel";
 import { guardReply } from "@/utils/helpers/interactionGuard";
+import { t } from "@/src/ui/translations";
 
 interface ExecuteBossMusicArgs {
   interaction: ChatInputCommandInteraction | ButtonInteraction;
@@ -62,7 +63,9 @@ export const execute = async ({
     queueManager.setQueueType("boss");
 
     const data = buildMessage({
-      title: `${emoji.fight} Time to slay some enemies! ${emoji.fight}`,
+      title: t("en-US", "commands.play.boss.music.messages.title", {
+        emoji: emoji.fight,
+      }),
       titleFontSize: "lg",
       imageUrl: await getRandomFightGif(),
       color: "bossMode",

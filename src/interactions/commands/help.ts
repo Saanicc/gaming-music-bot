@@ -8,10 +8,11 @@ import {
 import { Font } from "canvacord";
 import { guardReply } from "@/src/utils/helpers/interactionGuard";
 import { HelpBuilder, CommandData } from "@/src/utils/helpers/HelpBuilder";
+import { t } from "@/src/ui/translations";
 
 export const data = new SlashCommandBuilder()
   .setName("help")
-  .setDescription("View a list of commands and how to use them.");
+  .setDescription(t("en-US", "commands.help.description"));
 
 export async function execute(interaction: ChatInputCommandInteraction) {
   const guild = interaction.guild;
@@ -64,8 +65,8 @@ export async function execute(interaction: ChatInputCommandInteraction) {
 
   const builder = new HelpBuilder()
     .setHeader({
-      title: "Command List",
-      subtitle: "Here you find all available commands",
+      title: t("en-US", "commands.help.messages.title"),
+      subtitle: t("en-US", "commands.help.messages.subtitle"),
       avatar: interaction.client.user.displayAvatarURL({
         extension: "png",
         size: 256,
@@ -73,7 +74,9 @@ export async function execute(interaction: ChatInputCommandInteraction) {
     })
     .setCommands(commandList)
     .setFooterText(
-      `${interaction.client.user.username} • Gaming music made simple`
+      t("en-US", "commands.help.messages.footerText", {
+        botName: interaction.client.user.username,
+      })
     );
 
   const image = await builder.build();

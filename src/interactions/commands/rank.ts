@@ -8,14 +8,15 @@ import { getRequiredXP } from "@/modules/xpSystem";
 import { getRankImage, getRankTitle } from "@/modules/rankSystem";
 import { Font } from "canvacord";
 import { LevelCardBuilder } from "@/utils/helpers/LevelCard";
+import { t } from "@/src/ui/translations";
 
 export const data = new SlashCommandBuilder()
   .setName("rank")
-  .setDescription("Check your current DJ rank")
+  .setDescription(t("en-US", "commands.rank.description"))
   .addUserOption((option) =>
     option
       .setName("target")
-      .setDescription("Check another user's rank")
+      .setDescription(t("en-US", "commands.rank.options.target.description"))
       .setRequired(false)
   );
 

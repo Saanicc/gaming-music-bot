@@ -12,6 +12,7 @@ import {
   checkIfTrackInDB,
   isTrackInCache,
 } from "../utils/helpers/isTrackInCache";
+import { t } from "../ui/translations";
 
 export const registerPlayerEvents = (player: Player) => {
   player.events.on(GuildQueueEvent.PlayerStart, async (queue, track) => {
@@ -95,7 +96,7 @@ export const registerPlayerEvents = (player: Player) => {
     musicPlayerMessage.set(undefined);
 
     const data = buildMessage({
-      title: "Left the voice channel",
+      title: t("en-US", "common.leftVoiceChat"),
       color: "default",
     });
 
@@ -111,8 +112,7 @@ export const registerPlayerEvents = (player: Player) => {
     queue.history.clear();
 
     const data = buildMessage({
-      title:
-        "Reached the end of the queue. Please queue new track(s) to continue playback.",
+      title: t("en-US", "common.emptyQueue"),
       color: "info",
     });
 

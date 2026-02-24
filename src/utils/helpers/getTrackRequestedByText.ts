@@ -1,5 +1,6 @@
 import { User } from "@/models/User";
 import { getRankTitleWithEmoji } from "@/modules/rankSystem";
+import { t } from "@/src/ui/translations";
 import { User as DiscordUser } from "discord.js";
 
 export const getTrackRequestedByFooterText = async (
@@ -9,7 +10,8 @@ export const getTrackRequestedByFooterText = async (
   const user = await User.findOne({ userId: discordUser?.id, guildId });
   const userRank = getRankTitleWithEmoji(user?.level ?? 0);
 
-  return `Track requested by ${
-    discordUser?.toString() ?? "Unknown"
-  } — ${userRank}`;
+  return t("en-US", "common.trackRequestedBy", {
+    user: discordUser?.toString() ?? "Unknown",
+    userRank,
+  });
 };

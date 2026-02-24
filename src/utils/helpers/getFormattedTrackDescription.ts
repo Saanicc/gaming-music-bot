@@ -11,7 +11,7 @@ export const getFormattedTrackDescription = (
   let desc: string;
 
   if (track.url.match(/https:\/\/open.spotify.com\/track\/.*/)) {
-    desc = `[${track.title}](${track.url}) by ${track.author}`;
+    desc = `[${track.title}](${track.url}) - ${track.author}`;
   } else if (track.title.includes(".mp3")) {
     desc = track.title;
   } else {

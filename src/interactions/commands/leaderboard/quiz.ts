@@ -1,6 +1,7 @@
 import { LeaderboardBuilder } from "@/utils/helpers/Leaderboard";
 import { getRankTitle } from "@/modules/rankSystem";
 import { Collection, Guild, GuildMember } from "discord.js";
+import { t } from "@/src/ui/translations";
 
 interface BuildQuizLeaderboardParams {
   users: any[];
@@ -45,10 +46,12 @@ export const buildQuizLeaderboard = ({
   const lb = new LeaderboardBuilder()
     .setLeaderBoardType("music_quiz")
     .setHeader({
-      leaderBoardTitle: "Music Quiz Leaderboard",
+      leaderBoardTitle: t("en-US", "commands.leaderboard.quiz.title"),
       title: guild.name,
       image: guild.iconURL() ?? "",
-      subtitle: `${guildMembers.size} members`,
+      subtitle: t("en-US", "commands.leaderboard.quiz.subtitle", {
+        members: guildMembers.size.toString(),
+      }),
     })
     .setPlayers(mappedUsers);
 

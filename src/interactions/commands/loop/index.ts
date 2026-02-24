@@ -2,21 +2,26 @@ import { ChatInputCommandInteraction, SlashCommandBuilder } from "discord.js";
 import { buildMessage } from "@/utils/bot-message/buildMessage";
 import { QueueRepeatMode, useQueue } from "discord-player";
 import { guardReply } from "@/utils/helpers/interactionGuard";
+import { t } from "@/src/ui/translations";
 
 export const data = new SlashCommandBuilder()
   .setName("loop")
-  .setDescription("Change the loop settings on the player")
+  .setDescription(t("en-US", "commands.loop.description"))
 
   .addSubcommand((subcommand) =>
-    subcommand.setName("all").setDescription("Loops the whole queue")
+    subcommand
+      .setName("all")
+      .setDescription(t("en-US", "commands.loop.all.description"))
   )
   .addSubcommand((subcommand) =>
-    subcommand.setName("current").setDescription("Loops the current track")
+    subcommand
+      .setName("current")
+      .setDescription(t("en-US", "commands.loop.current.description"))
   )
   .addSubcommand((subcommand) =>
     subcommand
       .setName("disable")
-      .setDescription("Disables the loop mode for this playback")
+      .setDescription(t("en-US", "commands.loop.disable.description"))
   );
 
 export async function execute(interaction: ChatInputCommandInteraction) {
@@ -28,12 +33,18 @@ export async function execute(interaction: ChatInputCommandInteraction) {
   await interaction.deferReply();
 
   const modeMap: Record<string, { mode: QueueRepeatMode; title: string }> = {
-    all: { mode: QueueRepeatMode.QUEUE, title: "Now looping the queue" },
+    all: {
+      mode: QueueRepeatMode.QUEUE,
+      title: t("en-US", "commands.loop.all.title"),
+    },
     current: {
       mode: QueueRepeatMode.TRACK,
-      title: "Now looping the current track",
+      title: t("en-US", "commands.loop.current.title"),
     },
-    disable: { mode: QueueRepeatMode.OFF, title: "Looping has been disabled" },
+    disable: {
+      mode: QueueRepeatMode.OFF,
+      title: t("en-US", "commands.loop.disable.title"),
+    },
   };
 
   const entry = modeMap[subcommand];

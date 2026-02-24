@@ -6,6 +6,7 @@ import { getFormattedTrackDescription } from "@/utils/helpers/getFormattedTrackD
 import { getThumbnail } from "@/utils/helpers/utils";
 import { joinVoiceChannel } from "@/utils/helpers/joinVoiceChannel";
 import { guardReply } from "@/utils/helpers/interactionGuard";
+import { t } from "@/src/ui/translations";
 
 interface ExecuteParams {
   interaction: ChatInputCommandInteraction;
@@ -39,8 +40,10 @@ export async function execute({
     if (!tracks.length) {
       return interaction.followUp(
         buildMessage({
-          title: "Error",
-          description: `Could not find any track(s) to play for query: ${searchGenre}.`,
+          title: t("en-US", "commands.play.random.track.messages.errorTitle"),
+          description: t("en-US", "commands.play.random.track.messages.error", {
+            searchGenre,
+          }),
           color: "error",
         })
       );
@@ -50,8 +53,10 @@ export async function execute({
     queue.addTrack(track);
 
     message = buildMessage({
-      title: `Queued at position #${queue.tracks.size}`,
-      description: `${getFormattedTrackDescription(track, queue)}`,
+      title: t("en-US", "commands.play.random.track.messages.title", {
+        position: queue.tracks.size.toString(),
+      }),
+      description: getFormattedTrackDescription(track, queue),
       thumbnail: getThumbnail(track),
       color: "queue",
     });

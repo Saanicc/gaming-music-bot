@@ -7,6 +7,7 @@ import { getSearchEngine } from "@/utils/helpers/getSearchEngine";
 import { getThumbnail } from "@/utils/helpers/utils";
 import { joinVoiceChannel } from "@/utils/helpers/joinVoiceChannel";
 import { guardReply } from "@/utils/helpers/interactionGuard";
+import { t } from "@/src/ui/translations";
 
 interface ExecutePlayNextQueryArgs {
   interaction: ChatInputCommandInteraction;
@@ -38,11 +39,12 @@ export const execute = async ({
     queue.insertTrack(track);
 
     const message = buildMessage({
-      title: `Queued at position #1`,
-      description: `${getFormattedTrackDescription(track, queue)}`,
+      title: t("en-US", "commands.play.next.messages.title", {
+        position: queue.tracks.size.toString(),
+      }),
+      description: getFormattedTrackDescription(track, queue),
       thumbnail: getThumbnail(result.tracks[0]),
-      footerText:
-        "Not the correct track? Try being more specific or enter a URL",
+      footerText: t("en-US", "commands.play.next.messages.footerText"),
       color: "queue",
     });
 

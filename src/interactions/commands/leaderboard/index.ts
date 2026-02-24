@@ -4,15 +4,20 @@ import { buildQuizLeaderboard } from "./quiz";
 import { Font } from "canvacord";
 import { User } from "@/src/models/User";
 import { guardReply } from "@/src/utils/helpers/interactionGuard";
+import { t } from "@/src/ui/translations";
 
 export const data = new SlashCommandBuilder()
   .setName("leaderboard")
-  .setDescription("View the leaderboard")
+  .setDescription(t("en-US", "commands.leaderboard.description"))
   .addSubcommand((subcommand) =>
-    subcommand.setName("xp").setDescription("View XP leaderboard")
+    subcommand
+      .setName("xp")
+      .setDescription(t("en-US", "commands.leaderboard.xp.description"))
   )
   .addSubcommand((subcommand) =>
-    subcommand.setName("quiz").setDescription("View Music Quiz leaderboard")
+    subcommand
+      .setName("quiz")
+      .setDescription(t("en-US", "commands.leaderboard.quiz.description"))
   );
 
 export async function execute(interaction: ChatInputCommandInteraction) {

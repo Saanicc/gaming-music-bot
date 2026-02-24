@@ -13,6 +13,7 @@ import { musicPlayerMessage } from "@/services/musicPlayerMessage";
 import { useQueue } from "discord-player";
 import { guardReply } from "@/utils/helpers/interactionGuard";
 import { emoji } from "@/utils/constants/emojis";
+import { t } from "@/src/ui/translations";
 
 export const victoryButton = new ButtonBuilder()
   .setCustomId("victory")
@@ -37,8 +38,7 @@ export const execute = async (interaction: ButtonInteraction) => {
 
   if (!stored) {
     const data = buildMessage({
-      title:
-        "Nothing to restore, leaving voice chat. Please queue some new track(s) to resume playback!",
+      title: t("en-US", "buttons.utility.queueManager.nothingToRestore"),
     });
     await musicPlayerMessage.delete();
     queueManager.setQueueType("normal");
@@ -48,7 +48,7 @@ export const execute = async (interaction: ButtonInteraction) => {
   }
 
   const data = buildMessage({
-    title: "Restoring old queue...",
+    title: t("en-US", "buttons.utility.queueManager.restore.title"),
     color: "info",
   });
 

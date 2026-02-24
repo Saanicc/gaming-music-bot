@@ -2,11 +2,21 @@ import { ChatInputCommandInteraction, SlashCommandBuilder } from "discord.js";
 import { useQueue } from "discord-player";
 import { buildMessage } from "@/utils/bot-message/buildMessage";
 import { guardReply } from "@/utils/helpers/interactionGuard";
-import { t } from "@/src/ui/translations";
 
 export const data = new SlashCommandBuilder()
-  .setName("skip")
-  .setDescription(t("en-US", "commands.skip.description"));
+  .setName("set")
+  .setDescription("Set the language for the bot")
+  .addSubcommand((subcommand) =>
+    subcommand
+      .setName("language")
+      .setDescription("Set the language for the bot")
+      .addStringOption((option) =>
+        option
+          .setName("language")
+          .setDescription("The language to set")
+          .setRequired(true)
+      )
+  );
 
 export async function execute(interaction: ChatInputCommandInteraction) {
   const queue = useQueue();
@@ -18,7 +28,7 @@ export async function execute(interaction: ChatInputCommandInteraction) {
   if (queue.node.isPaused()) queue.node.resume();
 
   const data = buildMessage({
-    title: t("en-US", "commands.skip.messages.title"),
+    title: "Skipped to the next track in queue.",
     color: "info",
   });
   return interaction.reply(data);

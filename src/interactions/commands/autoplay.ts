@@ -2,12 +2,11 @@ import { ChatInputCommandInteraction, SlashCommandBuilder } from "discord.js";
 import { buildMessage } from "@/utils/bot-message/buildMessage";
 import { GuildQueue, QueueRepeatMode, useQueue } from "discord-player";
 import { guardReply } from "@/utils/helpers/interactionGuard";
+import { t } from "@/src/ui/translations";
 
 export const data = new SlashCommandBuilder()
   .setName("autoplay")
-  .setDescription(
-    "Play related songs automatically based on your existing queue"
-  );
+  .setDescription(t("en-US", "commands.autoplay.description"));
 
 const isAutoplayEnabled = (queue: GuildQueue) => {
   return queue.repeatMode === QueueRepeatMode.AUTOPLAY;
@@ -24,10 +23,10 @@ export async function execute(interaction: ChatInputCommandInteraction) {
 
   if (!isAutoplayEnabled(queue)) {
     queue.setRepeatMode(QueueRepeatMode.AUTOPLAY);
-    title = "Autoplay has been turned on";
+    title = t("en-US", "commands.autoplay.messages.enabled");
   } else {
     queue.setRepeatMode(QueueRepeatMode.OFF);
-    title = "Autoplay has been turned off";
+    title = t("en-US", "commands.autoplay.messages.disabled");
   }
 
   const embedMessage = buildMessage({

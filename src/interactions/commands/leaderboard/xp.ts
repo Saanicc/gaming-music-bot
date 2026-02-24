@@ -1,6 +1,7 @@
 import { Collection, Guild, GuildMember } from "discord.js";
 import { LeaderboardBuilder } from "@/utils/helpers/Leaderboard";
 import { getRankTitle } from "@/modules/rankSystem";
+import { t } from "@/src/ui/translations";
 
 interface BuildXpLeaderboardParams {
   users: any[];
@@ -34,10 +35,12 @@ export const buildXpLeaderboard = ({
   const lb = new LeaderboardBuilder()
     .setLeaderBoardType("xp")
     .setHeader({
-      leaderBoardTitle: "XP Leaderboard",
+      leaderBoardTitle: t("en-US", "commands.leaderboard.xp.title"),
       title: guild.name,
       image: guild.iconURL() ?? "",
-      subtitle: `${guildMembers.size} members`,
+      subtitle: t("en-US", "commands.leaderboard.xp.subtitle", {
+        members: guildMembers.size.toString(),
+      }),
     })
     .setPlayers(mappedUsers);
 

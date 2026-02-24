@@ -6,6 +6,7 @@ import { getThumbnail } from "@/utils/helpers/utils";
 import { searchSpotifyPlaylists } from "@/src/api/spotify";
 import { joinVoiceChannel } from "@/utils/helpers/joinVoiceChannel";
 import { guardReply } from "@/utils/helpers/interactionGuard";
+import { t } from "@/src/ui/translations";
 
 interface ExecuteParams {
   interaction: ChatInputCommandInteraction;
@@ -85,12 +86,26 @@ export async function execute({
     queue.tracks.shuffle();
 
     const tracksText = amountOfTracks
-      ? `${tracks.length} randomly selected tracks`
-      : `${tracks.length} tracks`;
+      ? t(
+          "en-US",
+          "commands.play.random.playlist.messages.randomlySelectedTracks",
+          { amount: tracks.length.toString() }
+        )
+      : t("en-US", "commands.play.random.playlist.messages.tracks", {
+          amount: tracks.length.toString(),
+        });
 
     message = buildMessage({
-      title: `Queued`,
-      description: `[${playlist.title}](${playlist.url}) with ${tracksText}`,
+      title: t("en-US", "commands.play.random.playlist.messages.title"),
+      description: t(
+        "en-US",
+        "commands.play.random.playlist.messages.description",
+        {
+          playlist: playlist.title,
+          url: playlist.url,
+          tracksText,
+        }
+      ),
       thumbnail: getThumbnail(playlist),
       color: "queue",
     });
