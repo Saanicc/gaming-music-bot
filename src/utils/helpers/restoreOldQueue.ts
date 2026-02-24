@@ -56,13 +56,13 @@ export const restoreOldQueue = async ({
     if (rebuilt) newQueue.addTrack(rebuilt);
   }
 
-  const joinError = await joinVoiceChannel({
+  await joinVoiceChannel({
     queue: newQueue,
     voiceChannel,
     textChannel: textChannel as TextChannel,
   });
 
-  if (joinError) return;
+  if (!newQueue.connection) return;
 
   if (currentTrack && storedQueue.position)
     await newQueue.node.play(currentTrack, { seek: storedQueue.position });

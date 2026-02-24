@@ -64,6 +64,12 @@ export const execute = async ({
     if (!queue.isPlaying()) await queue.node.play();
   } catch (error) {
     console.error(error);
-    await interaction.followUp("❌ Something went wrong while trying to play.");
+    return interaction.followUp(
+      buildMessage({
+        title: "Error",
+        description: "Something went wrong while trying to play.",
+        color: "error",
+      })
+    );
   }
 };

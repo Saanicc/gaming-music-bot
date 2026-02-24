@@ -21,50 +21,61 @@ export async function execute({
   queue,
   voiceChannel,
 }: ExecuteParams) {
-  const searchGenre = genre
-    ? genre
-    : GENRES[Math.floor(Math.random() * GENRES.length)];
+  try {
+    const searchGenre = genre
+      ? genre
+      : GENRES[Math.floor(Math.random() * GENRES.length)];
 
-  let message;
+    let message;
 
-  const searchResult = await player.search(searchGenre, {
-    requestedBy: interaction.user,
-    searchEngine: QueryType.SPOTIFY_SONG,
-  });
+    const searchResult = await player.search(searchGenre, {
+      requestedBy: interaction.user,
+      searchEngine: QueryType.SPOTIFY_SONG,
+    });
 
-  const tracks = searchResult.tracks || [];
+    const tracks = searchResult.tracks || [];
 
-  if (!tracks.length) {
+    if (!tracks.length) {
+      return interaction.followUp(
+        buildMessage({
+          title: "Error",
+          description: `Could not find any track(s) to play for query: ${searchGenre}.`,
+          color: "error",
+        })
+      );
+    }
+
+    const track = tracks[Math.floor(Math.random() * tracks.length)];
+    queue.addTrack(track);
+
+    message = buildMessage({
+      title: `Queued at position #${queue.tracks.size}`,
+      description: `${getFormattedTrackDescription(track, queue)}`,
+      thumbnail: getThumbnail(track),
+      color: "queue",
+    });
+
+    const joinError = await joinVoiceChannel({
+      interaction,
+      queue,
+      voiceChannel,
+    });
+
+    if (joinError) return;
+
+    if (!queue.node.isPlaying()) {
+      await queue.node.play();
+    }
+
+    return interaction.followUp(message);
+  } catch (error) {
+    console.error(error);
     return interaction.followUp(
       buildMessage({
         title: "Error",
-        description: `Could not find any track(s) to play for query: ${searchGenre}.`,
+        description: "Something went wrong while trying to play.",
         color: "error",
       })
     );
   }
-
-  const track = tracks[Math.floor(Math.random() * tracks.length)];
-  queue.addTrack(track);
-
-  message = buildMessage({
-    title: `Queued at position #${queue.tracks.size}`,
-    description: `${getFormattedTrackDescription(track, queue)}`,
-    thumbnail: getThumbnail(track),
-    color: "queue",
-  });
-
-  const joinError = await joinVoiceChannel({
-    interaction,
-    queue,
-    voiceChannel,
-  });
-
-  if (joinError) return;
-
-  if (!queue.node.isPlaying()) {
-    await queue.node.play();
-  }
-
-  return interaction.followUp(message);
 }

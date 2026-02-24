@@ -1,7 +1,7 @@
 import { ButtonBuilder, ButtonInteraction, ButtonStyle } from "discord.js";
 import { execute as playBossMusic } from "../commands/play/bossMusic";
 import { emoji } from "@/utils/constants/emojis";
-import { useMainPlayer, useQueue } from "discord-player";
+import { useMainPlayer } from "discord-player";
 import { buildMessage } from "@/utils/bot-message/buildMessage";
 
 export const bossMusicButton = new ButtonBuilder()
@@ -14,7 +14,6 @@ export const execute = async (interaction: ButtonInteraction) => {
 
   const { guild } = interaction;
   const player = useMainPlayer();
-  let queue = useQueue();
 
   if (!guild) {
     const data = buildMessage({
@@ -38,7 +37,6 @@ export const execute = async (interaction: ButtonInteraction) => {
   await playBossMusic({
     interaction,
     player,
-    queue,
     voiceChannel,
   });
 };

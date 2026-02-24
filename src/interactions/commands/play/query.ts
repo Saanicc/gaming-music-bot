@@ -79,6 +79,12 @@ export const execute = async ({
     await interaction.followUp(message);
   } catch (error) {
     console.error(error);
-    await interaction.followUp("❌ Something went wrong while trying to play.");
+    return interaction.followUp(
+      buildMessage({
+        title: "Error",
+        description: "Something went wrong while trying to play.",
+        color: "error",
+      })
+    );
   }
 };

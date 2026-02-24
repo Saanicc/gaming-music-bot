@@ -10,23 +10,23 @@ import { savePreviousQueue } from "@/utils/helpers/saveQueueData";
 import { getBossTracks } from "@/utils/helpers/getBossTracks";
 import { updateUserLevel } from "@/utils/helpers/updateUserLevel";
 import { emoji } from "@/utils/constants/emojis";
-import { GuildQueue, Player } from "discord-player";
+import { Player, useQueue } from "discord-player";
 import { joinVoiceChannel } from "@/utils/helpers/joinVoiceChannel";
 
 interface ExecuteBossMusicArgs {
   interaction: ChatInputCommandInteraction | ButtonInteraction;
   player: Player;
-  queue: GuildQueue | null;
   voiceChannel: VoiceBasedChannel;
 }
 
 export const execute = async ({
   interaction,
   player,
-  queue,
   voiceChannel,
 }: ExecuteBossMusicArgs) => {
   const guild = voiceChannel.guild;
+
+  const queue = useQueue();
 
   if (queue) {
     await savePreviousQueue(queue, guild.id);
@@ -79,8 +79,14 @@ export const execute = async ({
     await updateUserLevel(interaction, guild.id, "play_boss_music");
 
     await interaction.followUp(data);
-  } catch (err) {
-    console.error(err);
-    await interaction.followUp("❌ Something went wrong while trying to play.");
+  } catch (error) {
+    console.error(error);
+    return interaction.followUp(
+      buildMessage({
+        title: "Error",
+        description: "Something went wrong while trying to play.",
+        color: "error",
+      })
+    );
   }
 };

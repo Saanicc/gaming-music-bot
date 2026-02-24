@@ -128,24 +128,13 @@ export const execute = async (interaction: ChatInputCommandInteraction) => {
 
   const guild = member.guild;
 
-  const needsQueue = subcommand !== "music";
-  if (!queue && needsQueue) {
-    console.log("Creating a new queue");
+  if (!queue) {
     queue = player.nodes.create(guild, {
       metadata: { textChannel, voiceChannel },
       leaveOnEnd: false,
       leaveOnEmpty: true,
       leaveOnEmptyCooldown: 15000,
     });
-  }
-
-  if (!queue) {
-    const data = buildMessage({
-      title: "❌ Could not create a queue. Please run the command again.",
-      ephemeral: true,
-      color: "error",
-    });
-    return interaction.reply(data);
   }
 
   await interaction.deferReply();
@@ -155,7 +144,6 @@ export const execute = async (interaction: ChatInputCommandInteraction) => {
       await executePlayBossMusic({
         interaction,
         player,
-        queue,
         voiceChannel,
       });
       break;

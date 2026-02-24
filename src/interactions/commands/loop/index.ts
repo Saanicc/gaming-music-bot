@@ -33,23 +33,21 @@ export async function execute(interaction: ChatInputCommandInteraction) {
     return interaction.editReply(data);
   }
 
-  let title = "";
+  const modeMap: Record<string, { mode: QueueRepeatMode; title: string }> = {
+    all: { mode: QueueRepeatMode.QUEUE, title: "Now looping the queue" },
+    current: {
+      mode: QueueRepeatMode.TRACK,
+      title: "Now looping the current track",
+    },
+    disable: { mode: QueueRepeatMode.OFF, title: "Looping has been disabled" },
+  };
 
-  if (subcommand === "all") {
-    queue.setRepeatMode(QueueRepeatMode.QUEUE);
-    title = "Now looping the queue";
-  } else if (subcommand === "current") {
-    queue.setRepeatMode(QueueRepeatMode.TRACK);
-    title = "Now looping the current track";
-  } else if (subcommand === "disable") {
-    queue.setRepeatMode(QueueRepeatMode.OFF);
-    title = "Looping has been disabled";
-  }
+  const entry = modeMap[subcommand];
+  if (!entry) return;
 
-  const embedMessage = buildMessage({
-    title,
-    color: "info",
-  });
+  queue.setRepeatMode(entry.mode);
 
-  await interaction.editReply(embedMessage);
+  await interaction.editReply(
+    buildMessage({ title: entry.title, color: "info" })
+  );
 }
