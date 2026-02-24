@@ -93,11 +93,13 @@ export async function execute({
     color: "queue",
   });
 
-  await joinVoiceChannel({
+  const joinError = await joinVoiceChannel({
     interaction,
     queue,
     voiceChannel,
   });
+
+  if (joinError) return;
 
   if (!queue.node.isPlaying()) {
     await queue.node.play();

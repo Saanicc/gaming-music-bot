@@ -52,11 +52,13 @@ export const execute = async ({
 
     await interaction.followUp(message);
 
-    await joinVoiceChannel({
+    const joinError = await joinVoiceChannel({
       interaction,
       queue,
       voiceChannel,
     });
+
+    if (joinError) return;
 
     await updateUserLevel(interaction, guild.id, "play");
 

@@ -10,6 +10,8 @@ export const bossMusicButton = new ButtonBuilder()
   .setStyle(ButtonStyle.Secondary);
 
 export const execute = async (interaction: ButtonInteraction) => {
+  await interaction.deferReply();
+
   const { guild } = interaction;
   const player = useMainPlayer();
   let queue = useQueue();
@@ -19,7 +21,7 @@ export const execute = async (interaction: ButtonInteraction) => {
       title: "❌ No guild was found.",
       ephemeral: true,
     });
-    return interaction.reply(data);
+    return interaction.followUp(data);
   }
 
   const member = await guild.members.fetch(interaction.user.id);
@@ -30,7 +32,7 @@ export const execute = async (interaction: ButtonInteraction) => {
       title: "❌ You must be in a voice channel to play music.",
       ephemeral: true,
     });
-    return interaction.reply(data);
+    return interaction.followUp(data);
   }
 
   await playBossMusic({

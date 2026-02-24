@@ -20,15 +20,16 @@ export const victoryButton = new ButtonBuilder()
 
 export const execute = async (interaction: ButtonInteraction) => {
   await interaction.deferUpdate();
+
   const { guild } = interaction;
   if (!guild) {
-    return interaction.reply("⚠️ No guild was found.");
+    return interaction.followUp("⚠️ No guild was found.");
   }
 
   const queue = useQueue();
 
   if (!queue) {
-    return interaction.reply("⚠️ No active music queue.");
+    return interaction.followUp("⚠️ No active music queue.");
   }
 
   queue.node.stop();

@@ -67,17 +67,18 @@ export const execute = async ({
       color: "bossMode",
     });
 
-    await interaction.followUp(data);
-
-    await joinVoiceChannel({
+    const joinError = await joinVoiceChannel({
       interaction,
       queue: newQueue,
       voiceChannel,
     });
+    if (joinError) return;
 
     if (!newQueue.isPlaying()) await newQueue.node.play();
 
     await updateUserLevel(interaction, guild.id, "play_boss_music");
+
+    await interaction.followUp(data);
   } catch (err) {
     console.error(err);
     await interaction.followUp("❌ Something went wrong while trying to play.");
