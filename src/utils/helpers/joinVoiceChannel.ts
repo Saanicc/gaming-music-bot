@@ -2,6 +2,7 @@ import { GuildQueue } from "discord-player";
 import { TextChannel, VoiceBasedChannel } from "discord.js";
 import { buildMessage } from "../bot-message/buildMessage";
 import { ChatInputCommandInteraction, ButtonInteraction } from "discord.js";
+import { guardReply } from "./interactionGuard";
 
 interface JoinVoiceChannelArgs {
   queue: GuildQueue;
@@ -20,13 +21,7 @@ export const joinVoiceChannel = async ({
     if (!queue.connection) await queue.connect(voiceChannel);
   } catch (e) {
     if (interaction) {
-      return interaction.followUp(
-        buildMessage({
-          title: "Error",
-          description: "Could not join voice channel.",
-          color: "error",
-        })
-      );
+      return guardReply(interaction, "VOICE_CHANNEL_ERROR", "followUp");
     } else if (!interaction && textChannel) {
       await textChannel.send(
         buildMessage({

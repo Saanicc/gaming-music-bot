@@ -5,6 +5,7 @@ import { useQueue } from "discord-player";
 import { getThumbnail } from "@/utils/helpers/utils";
 import { BossTrack } from "@/models/BossTrack";
 import { addTrackToCache } from "@/utils/helpers/isTrackInCache";
+import { guardReply } from "@/utils/helpers/interactionGuard";
 import { emoji } from "@/utils/constants/emojis";
 
 export const addTrackButton = new ButtonBuilder()
@@ -19,15 +20,7 @@ export const execute = async (interaction: ButtonInteraction) => {
 
   const trackUrl = queue?.currentTrack?.url;
 
-  if (!trackUrl) {
-    const message = buildMessage({
-      title: "No url found for the current track",
-      ephemeral: true,
-      color: "error",
-    });
-
-    return interaction.followUp(message);
-  }
+  if (!trackUrl) return guardReply(interaction, "NO_TRACK_URL", "followUp");
 
   let trackAlreadyExist: Boolean;
   try {
@@ -39,22 +32,11 @@ export const execute = async (interaction: ButtonInteraction) => {
       }`
     );
 
-    const message = buildMessage({
-      title: "An error occured. Please try again.",
-      ephemeral: true,
-      color: "error",
-    });
-    return interaction.followUp(message);
+    return guardReply(interaction, "GENERIC_ERROR", "followUp");
   }
 
-  if (trackAlreadyExist) {
-    const message = buildMessage({
-      title: "The track already exist!",
-      ephemeral: true,
-      color: "error",
-    });
-    return interaction.followUp(message);
-  }
+  if (trackAlreadyExist)
+    return guardReply(interaction, "TRACK_ALREADY_EXISTS", "followUp");
 
   try {
     await BossTrack.create({ trackUrl, trackType: "song" });
@@ -65,13 +47,7 @@ export const execute = async (interaction: ButtonInteraction) => {
       }`
     );
 
-    const message = buildMessage({
-      title:
-        "An error occured when saving track to database. Please try again.",
-      ephemeral: true,
-      color: "error",
-    });
-    return interaction.followUp(message);
+    return guardReply(interaction, "DB_SAVE_ERROR", "followUp");
   }
 
   if (interaction.guildId) {

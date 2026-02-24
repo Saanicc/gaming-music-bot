@@ -1,6 +1,6 @@
 import { ButtonBuilder, ButtonInteraction, ButtonStyle } from "discord.js";
 import { useQueue } from "discord-player";
-import { buildMessage } from "@/utils/bot-message/buildMessage";
+import { guardReply } from "@/utils/helpers/interactionGuard";
 import { emoji } from "@/utils/constants/emojis";
 
 export const nextButton = new ButtonBuilder()
@@ -11,26 +11,10 @@ export const nextButton = new ButtonBuilder()
 export async function execute(interaction: ButtonInteraction) {
   const queue = useQueue();
 
-  if (!queue) {
-    const data = buildMessage({
-      title: "This server does not have an active player session.",
-      ephemeral: true,
-      color: "info",
-    });
-    return interaction.reply(data);
-  }
-
-  if (!queue.isPlaying()) {
-    const data = buildMessage({
-      title: "There is no track playing.",
-      ephemeral: true,
-      color: "info",
-    });
-    await interaction.reply(data);
-    return;
-  }
+  if (!queue) return guardReply(interaction, "NO_QUEUE");
+  if (!queue.isPlaying()) return guardReply(interaction, "NO_TRACK_PLAYING");
 
   await interaction.deferUpdate();
-  queue.history.next();
+  await queue.history.next();
   if (queue.node.isPaused()) queue.node.resume();
 }

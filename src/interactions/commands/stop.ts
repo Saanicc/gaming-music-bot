@@ -1,7 +1,7 @@
 import { ChatInputCommandInteraction, SlashCommandBuilder } from "discord.js";
 import { useQueue } from "discord-player";
 import { queueManager } from "@/src/services/queueManager";
-import { buildMessage } from "@/utils/bot-message/buildMessage";
+import { guardReply } from "@/utils/helpers/interactionGuard";
 
 export const data = new SlashCommandBuilder()
   .setName("stop")
@@ -13,19 +13,8 @@ export async function execute(interaction: ChatInputCommandInteraction) {
 
   const { guildId } = interaction;
 
-  if (!guildId) {
-    const message = buildMessage({
-      title: "No guild was found",
-    });
-    return interaction.followUp(message);
-  }
-
-  if (!queue) {
-    const message = buildMessage({
-      title: "Please add some tracks first",
-    });
-    return interaction.followUp(message);
-  }
+  if (!guildId) return guardReply(interaction, "NO_GUILD", "editReply");
+  if (!queue) return guardReply(interaction, "PLEASE_ADD_TRACKS", "editReply");
 
   queue.delete();
   queueManager.clear(guildId);

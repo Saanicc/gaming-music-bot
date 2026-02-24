@@ -1,7 +1,7 @@
 import { ChatInputCommandInteraction, SlashCommandBuilder } from "discord.js";
 import { GENRES } from "@/utils/constants/music-quiz-search-queries";
 import { useMainPlayer, useQueue } from "discord-player";
-import { buildMessage } from "@/utils/bot-message/buildMessage";
+import { guardReply } from "@/utils/helpers/interactionGuard";
 import { execute as executePlayQuery } from "./query";
 import { execute as executePlayNow } from "./now";
 import { execute as executePlayNext } from "./next";
@@ -120,13 +120,8 @@ export const execute = async (interaction: ChatInputCommandInteraction) => {
   const voiceChannel = member?.voice.channel;
   const textChannel = interaction.channel;
 
-  if (!member || !voiceChannel) {
-    const data = buildMessage({
-      title: "❌ You must be in a voice channel to play music.",
-      ephemeral: true,
-    });
-    return interaction.editReply(data);
-  }
+  if (!member || !voiceChannel)
+    return guardReply(interaction, "NO_VOICE_CHANNEL", "editReply");
 
   const guild = member.guild;
 

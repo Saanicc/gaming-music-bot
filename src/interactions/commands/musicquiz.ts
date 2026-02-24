@@ -26,6 +26,7 @@ import {
   Player,
 } from "discord-player";
 import { buildMessage } from "@/utils/bot-message/buildMessage";
+import { guardReply } from "@/utils/helpers/interactionGuard";
 import { GENRES } from "@/utils/constants/music-quiz-search-queries";
 import { delay } from "@/utils/helpers/utils";
 import { ColorType } from "@/utils/constants/colors";
@@ -51,7 +52,6 @@ const UI_STRINGS = {
   THREAD_CREATE_FAIL: "Could not create a thread. Check my permissions.",
   LOBBY_TIMEOUT:
     "The quiz lobby timed out. Run `/musicquiz` again to start a new quiz.",
-  NO_QUEUE: "No queue found.",
   SPOTIFY_ERROR: "Failed to reach Spotify. Please try again later.",
   TRACK_PLAY_FAIL: "Failed to play track. Skipping.",
   VOICE_CONNECT_ERROR:
@@ -119,16 +119,8 @@ export async function execute(interaction: ChatInputCommandInteraction) {
   const member = interaction.member as GuildMember;
   const player = useMainPlayer();
 
-  if (!member.voice.channel) {
-    return interaction.reply(
-      buildMessage({
-        title: UI_STRINGS.ERROR_TITLE,
-        description: UI_STRINGS.NO_VOICE_CHANNEL,
-        color: "error",
-        ephemeral: true,
-      })
-    );
-  }
+  if (!member.voice.channel)
+    return guardReply(interaction, "QUIZ_NO_VOICE_CHANNEL");
 
   const thread = await setupQuizThread(interaction);
   if (!thread) return;
@@ -266,14 +258,7 @@ const handleLobbyInteractions = async (
       const voiceChannel = member.voice.channel;
 
       if (!voiceChannel) {
-        await i.reply(
-          buildMessage({
-            title: UI_STRINGS.ERROR_TITLE,
-            description: UI_STRINGS.NO_VOICE_CHANNEL,
-            color: "error",
-            ephemeral: true,
-          })
-        );
+        await guardReply(i, "QUIZ_NO_VOICE_CHANNEL");
         return;
       }
 

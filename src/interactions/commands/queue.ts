@@ -12,6 +12,7 @@ import { buildMessage } from "@/utils/bot-message/buildMessage";
 import { getFormattedTrackDescription } from "@/utils/helpers/getFormattedTrackDescription";
 import { emoji } from "@/utils/constants/emojis";
 import { getThumbnail } from "@/utils/helpers/utils";
+import { guardReply } from "@/utils/helpers/interactionGuard";
 
 export const data = new SlashCommandBuilder()
   .setName("queue")
@@ -32,14 +33,7 @@ export async function renderQueue(
 ) {
   const queue = useQueue();
 
-  if (!queue) {
-    const data = buildMessage({
-      title: "This server does not have an active player session.",
-      ephemeral: true,
-      color: "info",
-    });
-    return interaction.reply(data);
-  }
+  if (!queue) return guardReply(interaction, "NO_QUEUE");
 
   const tracks = queue.tracks.data;
   const currentTrack = queue.currentTrack;
