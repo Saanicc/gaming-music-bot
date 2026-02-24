@@ -1,8 +1,8 @@
 import { ChatInputCommandInteraction, VoiceBasedChannel } from "discord.js";
 import { QueryType, Player, GuildQueue } from "discord-player";
 import { buildMessage } from "@/utils/bot-message/buildMessage";
-import { GENRES } from "@/src/utils/constants/music-quiz-search-queries";
-import { getThumbnail } from "@/src/utils/helpers/utils";
+import { GENRES } from "@/utils/constants/music-quiz-search-queries";
+import { getThumbnail } from "@/utils/helpers/utils";
 import { searchSpotifyPlaylists } from "@/src/api/spotify";
 import { joinVoiceChannel } from "@/utils/helpers/joinVoiceChannel";
 
@@ -23,14 +23,6 @@ export async function execute({
   queue,
   voiceChannel,
 }: ExecuteParams) {
-  await joinVoiceChannel({
-    interaction,
-    queue,
-    voiceChannel,
-  });
-
-  await interaction.deferReply();
-
   const searchGenre = genre
     ? genre
     : GENRES[Math.floor(Math.random() * GENRES.length)];
@@ -58,7 +50,18 @@ export async function execute({
   });
 
   const playlist = searchResult.playlist;
-  let tracks = playlist?.tracks || [];
+
+  if (!playlist) {
+    return interaction.followUp(
+      buildMessage({
+        title: "Error",
+        description: `Could not find any playlist for genre: ${searchGenre}.`,
+        color: "error",
+      })
+    );
+  }
+
+  let tracks = playlist.tracks;
 
   if (!tracks.length) {
     return interaction.followUp(
@@ -85,13 +88,19 @@ export async function execute({
 
   message = buildMessage({
     title: `Queued`,
-    description: `[${playlist?.title}](${playlist?.url}) with ${tracksText}`,
+    description: `[${playlist.title}](${playlist.url}) with ${tracksText}`,
     thumbnail: getThumbnail(playlist),
     color: "queue",
   });
 
+  await joinVoiceChannel({
+    interaction,
+    queue,
+    voiceChannel,
+  });
+
   if (!queue.node.isPlaying()) {
-    queue.node.play();
+    await queue.node.play();
   }
 
   return interaction.followUp(message);

@@ -30,7 +30,7 @@ export async function execute(interaction: ChatInputCommandInteraction) {
       ephemeral: true,
       color: "info",
     });
-    return interaction.editReply(data);
+    return interaction.followUp(data);
   }
 
   let title = "";
@@ -51,5 +51,5 @@ export async function execute(interaction: ChatInputCommandInteraction) {
     color: "info",
   });
 
-  await interaction.editReply(embedMessage);
+  await interaction.followUp(embedMessage);
 }

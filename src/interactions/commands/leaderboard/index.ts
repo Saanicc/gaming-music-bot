@@ -1,7 +1,7 @@
 import { ChatInputCommandInteraction, SlashCommandBuilder } from "discord.js";
 import { buildXpLeaderboard } from "./xp";
 import { buildQuizLeaderboard } from "./quiz";
-import { buildMessage } from "@/src/utils/bot-message/buildMessage";
+import { buildMessage } from "@/utils/bot-message/buildMessage";
 import { Font } from "canvacord";
 import { User } from "@/src/models/User";
 
@@ -16,20 +16,21 @@ export const data = new SlashCommandBuilder()
   );
 
 export async function execute(interaction: ChatInputCommandInteraction) {
-  await interaction.deferReply();
   const subcommand = interaction.options.getSubcommand(true);
 
   const guild = interaction.guild;
   if (!guild) {
     const message = buildMessage({ title: "No guild found." });
-    return interaction.editReply(message);
+    return interaction.reply(message);
   }
 
   const guildMembers = await guild.members.fetch();
   if (!guildMembers || guildMembers.size === 0) {
     const message = buildMessage({ title: "No guild members found." });
-    return interaction.editReply(message);
+    return interaction.reply(message);
   }
+
+  await interaction.deferReply();
 
   Font.loadDefault();
 
@@ -73,5 +74,5 @@ export async function execute(interaction: ChatInputCommandInteraction) {
     leaderboard = await buildQuizLeaderboard({ users, guild, guildMembers });
   }
 
-  await interaction.editReply({ files: [leaderboard] });
+  return interaction.followUp({ files: [leaderboard] });
 }

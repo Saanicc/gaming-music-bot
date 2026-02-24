@@ -1,7 +1,7 @@
 import { ChatInputCommandInteraction, SlashCommandBuilder } from "discord.js";
 import { useQueue } from "discord-player";
 import { queueManager } from "@/src/services/queueManager";
-import { buildMessage } from "@/src/utils/bot-message/buildMessage";
+import { buildMessage } from "@/utils/bot-message/buildMessage";
 
 export const data = new SlashCommandBuilder()
   .setName("stop")

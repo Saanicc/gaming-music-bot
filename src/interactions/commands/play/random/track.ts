@@ -1,10 +1,10 @@
 import { ChatInputCommandInteraction, VoiceBasedChannel } from "discord.js";
 import { QueryType, Player, GuildQueue } from "discord-player";
 import { buildMessage } from "@/utils/bot-message/buildMessage";
-import { GENRES } from "@/src/utils/constants/music-quiz-search-queries";
-import { getFormattedTrackDescription } from "@/src/utils/helpers/getFormattedTrackDescription";
-import { getThumbnail } from "@/src/utils/helpers/utils";
-import { joinVoiceChannel } from "@/src/utils/helpers/joinVoiceChannel";
+import { GENRES } from "@/utils/constants/music-quiz-search-queries";
+import { getFormattedTrackDescription } from "@/utils/helpers/getFormattedTrackDescription";
+import { getThumbnail } from "@/utils/helpers/utils";
+import { joinVoiceChannel } from "@/utils/helpers/joinVoiceChannel";
 
 interface ExecuteParams {
   interaction: ChatInputCommandInteraction;
@@ -21,14 +21,6 @@ export async function execute({
   queue,
   voiceChannel,
 }: ExecuteParams) {
-  await joinVoiceChannel({
-    interaction,
-    queue,
-    voiceChannel,
-  });
-
-  await interaction.deferReply();
-
   const searchGenre = genre
     ? genre
     : GENRES[Math.floor(Math.random() * GENRES.length)];
@@ -62,8 +54,14 @@ export async function execute({
     color: "queue",
   });
 
+  await joinVoiceChannel({
+    interaction,
+    queue,
+    voiceChannel,
+  });
+
   if (!queue.node.isPlaying()) {
-    queue.node.play();
+    await queue.node.play();
   }
 
   return interaction.followUp(message);

@@ -1,15 +1,11 @@
-import {
-  ChatInputCommandInteraction,
-  Guild,
-  VoiceBasedChannel,
-} from "discord.js";
+import { ChatInputCommandInteraction, VoiceBasedChannel } from "discord.js";
 import { buildMessage } from "@/utils/bot-message/buildMessage";
 import { GuildQueue, Player } from "discord-player";
 import { getFormattedTrackDescription } from "@/utils/helpers/getFormattedTrackDescription";
 import { updateUserLevel } from "@/utils/helpers/updateUserLevel";
 import { getSearchEngine } from "@/utils/helpers/getSearchEngine";
 import { getThumbnail } from "@/utils/helpers/utils";
-import { joinVoiceChannel } from "@/src/utils/helpers/joinVoiceChannel";
+import { joinVoiceChannel } from "@/utils/helpers/joinVoiceChannel";
 
 interface ExecutePlayNowQueryArgs {
   interaction: ChatInputCommandInteraction;
@@ -26,12 +22,6 @@ export const execute = async ({
   query,
   voiceChannel,
 }: ExecutePlayNowQueryArgs) => {
-  await joinVoiceChannel({
-    interaction,
-    queue,
-    voiceChannel,
-  });
-
   const guild = voiceChannel.guild;
 
   try {
@@ -44,7 +34,7 @@ export const execute = async ({
       const data = buildMessage({
         title: "❌ No results found.",
       });
-      return interaction.reply(data);
+      return interaction.followUp(data);
     }
 
     const track = result.tracks[0];
@@ -60,12 +50,19 @@ export const execute = async ({
       color: "queue",
     });
 
-    interaction.reply(message);
+    await interaction.followUp(message);
+
+    await joinVoiceChannel({
+      interaction,
+      queue,
+      voiceChannel,
+    });
 
     await updateUserLevel(interaction, guild.id, "play");
 
     if (!queue.isPlaying()) await queue.node.play();
   } catch (error) {
     console.error(error);
+    await interaction.followUp("❌ Something went wrong while trying to play.");
   }
 };

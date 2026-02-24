@@ -46,12 +46,6 @@ export const restoreOldQueue = async ({
     leaveOnEmptyCooldown: 15000,
   });
 
-  await joinVoiceChannel({
-    queue: newQueue,
-    voiceChannel,
-    textChannel: textChannel as TextChannel,
-  });
-
   let currentTrack = undefined;
   if (storedQueue.currentTrack) {
     currentTrack = await reSearch(storedQueue.currentTrack, player);
@@ -61,6 +55,12 @@ export const restoreOldQueue = async ({
     const rebuilt = await reSearch(track, player);
     if (rebuilt) newQueue.addTrack(rebuilt);
   }
+
+  await joinVoiceChannel({
+    queue: newQueue,
+    voiceChannel,
+    textChannel: textChannel as TextChannel,
+  });
 
   if (currentTrack && storedQueue.position)
     await newQueue.node.play(currentTrack, { seek: storedQueue.position });

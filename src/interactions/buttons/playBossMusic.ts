@@ -2,7 +2,7 @@ import { ButtonBuilder, ButtonInteraction, ButtonStyle } from "discord.js";
 import { execute as playBossMusic } from "../commands/play/bossMusic";
 import { emoji } from "@/utils/constants/emojis";
 import { useMainPlayer, useQueue } from "discord-player";
-import { buildMessage } from "@/src/utils/bot-message/buildMessage";
+import { buildMessage } from "@/utils/bot-message/buildMessage";
 
 export const bossMusicButton = new ButtonBuilder()
   .setCustomId("playBossMusic")
@@ -31,15 +31,6 @@ export const execute = async (interaction: ButtonInteraction) => {
       ephemeral: true,
     });
     return interaction.reply(data);
-  }
-
-  if (!queue) {
-    queue = player.nodes.create(guild, {
-      metadata: { textChannel: interaction.channel, voiceChannel },
-      leaveOnEnd: false,
-      leaveOnEmpty: true,
-      leaveOnEmptyCooldown: 15000,
-    });
   }
 
   await playBossMusic({

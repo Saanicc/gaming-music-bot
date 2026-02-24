@@ -24,8 +24,7 @@ export async function execute(interaction: ChatInputCommandInteraction) {
       ephemeral: true,
       color: "info",
     });
-    await interaction.reply(data);
-    return;
+    return interaction.reply(data);
   }
 
   queue.node.skip();
