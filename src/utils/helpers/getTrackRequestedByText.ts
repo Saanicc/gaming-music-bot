@@ -12,7 +12,7 @@ export const getTrackRequestedByFooterText = async (
   const userRank = getRankTitleWithEmoji(user?.level ?? 0);
 
   return t("common.trackRequestedBy", {
-    user: discordUser?.toString() ?? "Unknown",
+    user: discordUser?.toString() ?? t("common.unknown"),
     userRank,
   });
 };

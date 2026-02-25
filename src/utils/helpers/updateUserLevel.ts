@@ -11,7 +11,7 @@ export const updateUserLevel = async (
   guildId: string,
   command: XPGrantingCommand
 ) => {
-  const t = useTranslations(interaction.guildId ?? "");
+  const t = useTranslations(guildId);
 
   const {
     user,

@@ -2,8 +2,14 @@ import { ChatInputCommandInteraction, SlashCommandBuilder } from "discord.js";
 import { buildMessage } from "@/utils/bot-message/buildMessage";
 import { guardReply } from "@/utils/helpers/interactionGuard";
 import { db } from "@/src/db";
-import { LanguageCode, saveBotLanguageToCache } from "@/src/ui/translations";
+import { LanguageCode, SUPPORTED_LANGUAGES } from "@/src/ui/translations";
 import { useTranslations } from "@/utils/hooks/useTranslations";
+import { saveBotLanguageToCache } from "@/src/db/language";
+
+const LANGUAGE_LABELS: Record<LanguageCode, string> = {
+  "en-US": "English",
+  "sv-SE": "Swedish",
+};
 
 export const data = new SlashCommandBuilder()
   .setName("set_language")
@@ -14,8 +20,10 @@ export const data = new SlashCommandBuilder()
       .setDescription("The language to set")
       .setRequired(true)
       .addChoices(
-        { name: "English", value: "en-US" },
-        { name: "Swedish", value: "sv-SE" }
+        ...SUPPORTED_LANGUAGES.map((code) => ({
+          name: LANGUAGE_LABELS[code],
+          value: code,
+        }))
       )
   );
 

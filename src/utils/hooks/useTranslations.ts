@@ -1,15 +1,11 @@
-import {
-  DEFAULT_LANGUAGE,
-  locales,
-  getBotLanguageFromCache,
-  LanguageCode,
-} from "@/ui/translations";
+import { getBotLanguageFromCache } from "@/src/db/language";
+import { DEFAULT_LANGUAGE, locales, LanguageCode } from "@/ui/translations";
 
-const t = (
+export function t(
   lang: LanguageCode,
   key: string,
   vars?: Record<string, string>
-): string => {
+): string {
   const translations = locales[lang] ?? locales[DEFAULT_LANGUAGE];
   const value =
     key.split(".").reduce((obj: any, k) => obj?.[k], translations) ??
@@ -18,12 +14,14 @@ const t = (
       .reduce((obj: any, k) => obj?.[k], locales[DEFAULT_LANGUAGE]) ??
     key;
 
+  if (typeof value !== "string") return key;
   if (!vars) return value;
+
   return Object.entries(vars).reduce(
-    (str, [k, v]) => str.replace(`{{${k}}}`, v),
+    (str, [k, v]) => str.split(`{{${k}}}`).join(v),
     value
   );
-};
+}
 
 export function useTranslations(guildId: string) {
   const lang = getBotLanguageFromCache(guildId) ?? DEFAULT_LANGUAGE;

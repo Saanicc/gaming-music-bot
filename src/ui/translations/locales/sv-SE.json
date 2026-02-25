@@ -4,7 +4,8 @@
     "couldNotJoinVoiceChannel": "Kunde inte ansluta till röstkanalen.",
     "leftVoiceChat": "Lämnade röstkanalen",
     "emptyQueue": "Kön är slut. Lägg till nya låtar för att fortsätta uppspelningen!",
-    "trackRequestedBy": "Låt begärd av {{user}} — {{userRank}}"
+    "trackRequestedBy": "Låt begärd av {{user}} — {{userRank}}",
+    "unknown": "Okänd"
   },
   "player": {
     "nowPlaying": "{{emoji}} Spelas nu",
@@ -39,7 +40,7 @@
     "levelUp": {
       "level": "nivå",
       "levels": "nivåer",
-      "title": "**Nivå upp!** {{emoji}}",
+      "title": "{{emoji}} **Nivå upp!** {{emoji}}",
       "description": "{{user}} gick upp **{{levelsGained}} {{levelText}}** och är nu **Nivå {{level}}**!",
       "rankMessage": "Ny rang: **{{newRank}}**!"
     }
@@ -88,7 +89,7 @@
       "boss": {
         "music": {
           "messages": {
-            "title": "{{emoji}} Dags att besegra fiender!"
+            "title": "{{emoji}} Dags att besegra fiender! {{emoji}}"
           }
         }
       },
@@ -200,6 +201,8 @@
         "winner": "**Vinnare:** {{winner}} med **{{score}}** poäng!",
         "quizResult": "Quizresultat",
         "thanksForPlaying": "Tack för att du spelade!",
+        "points": "{{points}} poäng",
+        "pointsDelta": "(+{{points}} poäng)",
         "inProgress": {
           "title": "❌ Musikquiz pågår",
           "description": "Du kan inte använda detta kommando medan ett musikquiz pågår på den här servern."

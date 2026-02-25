@@ -750,7 +750,13 @@ const askQuestion = async (
               const current = context.scores.get(id) ?? 0;
               const prev = preQuestionScores.get(id) ?? 0;
               const gained = current - prev;
-              return `${idx + 1}. <@${id}>: ${current} ${gained > 0 ? `(+${gained}pts)` : ""}`;
+              return `${idx + 1}. <@${id}>: ${current} ${
+                gained > 0
+                  ? t("commands.musicquiz.messages.pointsDelta", {
+                      points: gained.toString(),
+                    })
+                  : ""
+              }`;
             })
             .join("\n");
           resultDesc += `\n\n${t("commands.musicquiz.messages.scoreTable")}\n${names}`;
@@ -797,7 +803,12 @@ const declareWinner = async (
       t("commands.musicquiz.messages.quizResult") +
       "\n" +
       sortedScores
-        .map(([id, s], idx) => `${idx + 1}. <@${id}>: ${s} pts`)
+        .map(
+          ([id, s], idx) =>
+            `${idx + 1}. <@${id}>: ${t("commands.musicquiz.messages.points", {
+              points: s.toString(),
+            })}`
+        )
         .join("\n");
 
     const updatePromises = sortedScores.map(([id]) =>

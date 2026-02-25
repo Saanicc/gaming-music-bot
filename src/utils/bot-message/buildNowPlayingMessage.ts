@@ -55,7 +55,7 @@ export const buildNowPlayingMessage = ({
   footerText,
   isTrackInDB,
 }: NowPlayingMessageProps): MessageCreateOptions => {
-  const t = useTranslations(queue.guild.id ?? "");
+  const t = useTranslations(queue.guild.id);
 
   const isBossQueue =
     (isPlaying || !isPlaying) && queueManager.getQueueType() === "boss";

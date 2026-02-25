@@ -17,8 +17,6 @@ export const handleInteraction = async (
 ) => {
   if (!interaction.guild) return;
 
-  const t = useTranslations(interaction.guild.id);
-
   const handler = collection[key as keyof typeof collection];
   if (!handler) return;
 
@@ -30,6 +28,7 @@ export const handleInteraction = async (
     !ALLOWED_COMMANDS_DURING_QUIZ.includes(key)
   ) {
     if (interaction.isRepliable()) {
+      const t = useTranslations(interaction.guild.id);
       await interaction.reply(
         buildMessage({
           title: t("commands.musicQuiz.inProgress.title"),

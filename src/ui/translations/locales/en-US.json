@@ -4,7 +4,8 @@
     "couldNotJoinVoiceChannel": "Could not join voice channel.",
     "leftVoiceChat": "Left the voice channel",
     "emptyQueue": "Reached the end of the queue. Please queue new track(s) to continue playback!",
-    "trackRequestedBy": "Track requested by {{user}} — {{userRank}}"
+    "trackRequestedBy": "Track requested by {{user}} — {{userRank}}",
+    "unknown": "Unknown"
   },
   "player": {
     "nowPlaying": "{{emoji}} Now Playing",
@@ -39,7 +40,7 @@
     "levelUp": {
       "level": "level",
       "levels": "levels",
-      "title": "**Level Up!** {{emoji}}",
+      "title": "{{emoji}} **Level Up!** {{emoji}}",
       "description": "{{user}} gained **{{levelsGained}} {{levelText}}** and is now **Level {{level}}**!",
       "rankMessage": "New rank: **{{newRank}}**!"
     }
@@ -88,7 +89,7 @@
       "boss": {
         "music": {
           "messages": {
-            "title": "{{emoji}} Time to slay some enemies!"
+            "title": "{{emoji}} Time to slay some enemies! {{emoji}}"
           }
         }
       },
@@ -200,6 +201,8 @@
         "winner": "**Winner:** {{winner}} with **{{score}}** points!",
         "quizResult": "Quiz result",
         "thanksForPlaying": "Thanks for playing!",
+        "points": "{{points}} points",
+        "pointsDelta": "(+{{points}} points)",
         "inProgress": {
           "title": "❌ Music Quiz in Progress",
           "description": "You cannot use this command while a music quiz is ongoing in this server."

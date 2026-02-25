@@ -1,15 +1,17 @@
 import mongoose, { InferSchemaType, Document, Schema } from "mongoose";
-import { SUPPORTED_LANGUAGES } from "../../ui/translations";
+import { LanguageCode, SUPPORTED_LANGUAGES } from "../../ui/translations";
 
 interface IGuildSettings extends Document {
   guildId: string;
-  language: string;
+  language: LanguageCode;
 }
 
 const guildSettingsSchema = new Schema<IGuildSettings>({
   guildId: {
     type: String,
     required: true,
+    unique: true,
+    index: true,
   },
   language: {
     type: String,
