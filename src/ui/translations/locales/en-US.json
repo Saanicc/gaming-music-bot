@@ -42,7 +42,7 @@
       "levels": "levels",
       "title": "{{emoji}} **Level Up!** {{emoji}}",
       "description": "{{user}} gained **{{levelsGained}} {{levelText}}** and is now **Level {{level}}**!",
-      "rankMessage": "New rank: **{{newRank}}**!"
+      "rankMessage": "\nNew rank: **{{newRank}}**!"
     }
   },
   "utility": {

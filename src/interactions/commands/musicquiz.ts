@@ -89,8 +89,8 @@ const generateOptions = (
 ): string[] => {
   const pool = new Set<string>();
 
-  for (const t of allTracks) {
-    const val = t[type].trim();
+  for (const track of allTracks) {
+    const val = track[type].trim();
     if (val.toLowerCase() !== correctAnswer.toLowerCase()) {
       pool.add(val);
     }
@@ -729,15 +729,15 @@ const askQuestion = async (
         );
 
         const resultColor = correctUserIds.length > 0 ? "success" : "error";
-        let resultDesc = t("commands.musicquiz.messages.theAnswerWas", {
-          answer: correctAnswer,
-        });
 
-        if (correctUserIds.length === 0) {
-          resultDesc = t("commands.musicquiz.messages.noOneGotIt", {
-            answer: correctAnswer,
-          });
-        }
+        let resultDesc =
+          correctUserIds.length === 0
+            ? t("commands.musicquiz.messages.noOneGotIt", {
+                answer: correctAnswer,
+              })
+            : t("commands.musicquiz.messages.theAnswerWas", {
+                answer: correctAnswer,
+              });
 
         const allPlayers = Array.from(context.scores.keys());
         if (allPlayers.length > 0) {

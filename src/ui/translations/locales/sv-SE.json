@@ -42,7 +42,7 @@
       "levels": "nivåer",
       "title": "{{emoji}} **Nivå upp!** {{emoji}}",
       "description": "{{user}} gick upp **{{levelsGained}} {{levelText}}** och är nu **Nivå {{level}}**!",
-      "rankMessage": "Ny rang: **{{newRank}}**!"
+      "rankMessage": "\nNy rang: **{{newRank}}**!"
     }
   },
   "utility": {

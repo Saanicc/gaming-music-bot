@@ -64,7 +64,7 @@ export const updateUserLevel = async (
           levelsGained > 1
             ? t("levelSystem.levelUp.levels")
             : t("levelSystem.levelUp.level"),
-      })}\n${rankMessage}`,
+      })}${rankMessage}`,
     });
     await (interaction.channel as TextChannel).send(message);
   }
