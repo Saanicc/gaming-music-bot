@@ -10,12 +10,12 @@ export const saveLanguageToDB = async (
   language: LanguageCode
 ) => {
   try {
-    const document = await GuildSettings.findOneAndUpdate(
+    await GuildSettings.findOneAndUpdate(
       { guildId },
       { language },
       { upsert: true }
     );
-    return document?.language as LanguageCode;
+    return language;
   } catch (error) {
     throw error;
   }
@@ -31,8 +31,12 @@ export const getLanguageFromDB = async (guildId: string) => {
   const dbLanguage = guildSettings?.language as LanguageCode | undefined;
 
   if (!dbLanguage) {
-    await saveLanguageToDB(guildId, DEFAULT_LANGUAGE);
-    return DEFAULT_LANGUAGE;
+    try {
+      return await saveLanguageToDB(guildId, DEFAULT_LANGUAGE);
+    } catch (error) {
+      console.error("Failed to save language to DB", error);
+      return DEFAULT_LANGUAGE;
+    }
   }
 
   return dbLanguage;
