@@ -7,6 +7,61 @@
     "trackRequestedBy": "Låt begärd av {{user}} — {{userRank}}",
     "unknown": "Okänd"
   },
+  "guards": {
+    "noQueue": {
+      "title": "Den här servern har ingen aktiv spelar-session."
+    },
+    "noTrackPlaying": {
+      "title": "Det spelas ingen låt."
+    },
+    "pleaseAddTracks": {
+      "title": "Vänligen lägg till några låtar först"
+    },
+    "noGuild": {
+      "title": "Ingen server hittades."
+    },
+    "noVoiceChannel": {
+      "title": "Du måste vara i en röstkanal för att spela musik."
+    },
+    "noGuildMembers": {
+      "title": "Inga servermedlemmar hittades."
+    },
+    "noResults": {
+      "title": "Inga resultat hittades."
+    },
+    "noTrackFound": {
+      "title": "Ingen låt hittades.",
+      "description": "Ingen låt med den URL:en hittades, vänligen se till att URL:en är giltig."
+    },
+    "noTrackUrl": {
+      "title": "Ingen URL hittades för den aktuella låten"
+    },
+    "trackAlreadyExists": {
+      "title": "Låten finns redan!"
+    },
+    "invalidUrl": {
+      "title": "Inte en giltig URL",
+      "description": "Vänligen ange en giltig URL"
+    },
+    "genericError": {
+      "title": "Ett fel uppstod. Vänligen försök igen."
+    },
+    "dbSaveError": {
+      "title": "Ett fel uppstod vid sparande till databasen. Vänligen försök igen."
+    },
+    "playError": {
+      "title": "Fel",
+      "description": "Något gick fel vid spelandet."
+    },
+    "voiceChannelError": {
+      "title": "Fel",
+      "description": "Kunde inte ansluta till röstkanalen."
+    },
+    "quizNoVoiceChannel": {
+      "title": "Fel",
+      "description": "Du måste vara i en röstkanal för att starta musikquizet."
+    }
+  },
   "player": {
     "nowPlaying": "{{emoji}} Spelas nu",
     "paused": "{{emoji}} Musik pausad",

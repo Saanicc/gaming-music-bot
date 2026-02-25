@@ -7,6 +7,61 @@
     "trackRequestedBy": "Track requested by {{user}} — {{userRank}}",
     "unknown": "Unknown"
   },
+  "guards": {
+    "noQueue": {
+      "title": "This server does not have an active player session."
+    },
+    "noTrackPlaying": {
+      "title": "There is no track playing."
+    },
+    "pleaseAddTracks": {
+      "title": "Please add some tracks first"
+    },
+    "noGuild": {
+      "title": "No guild was found."
+    },
+    "noVoiceChannel": {
+      "title": "You must be in a voice channel to play music."
+    },
+    "noGuildMembers": {
+      "title": "No guild members found."
+    },
+    "noResults": {
+      "title": "No results found."
+    },
+    "noTrackFound": {
+      "title": "No track found",
+      "description": "No track with that URL was found, please make sure the URL is valid."
+    },
+    "noTrackUrl": {
+      "title": "No url found for the current track"
+    },
+    "trackAlreadyExists": {
+      "title": "The track already exists!"
+    },
+    "invalidUrl": {
+      "title": "Not a valid url",
+      "description": "Please enter a valid url"
+    },
+    "genericError": {
+      "title": "An error occurred. Please try again."
+    },
+    "dbSaveError": {
+      "title": "An error occurred when saving to database. Please try again."
+    },
+    "playError": {
+      "title": "Error",
+      "description": "Something went wrong while trying to play."
+    },
+    "voiceChannelError": {
+      "title": "Error",
+      "description": "Could not join voice channel."
+    },
+    "quizNoVoiceChannel": {
+      "title": "Error",
+      "description": "You must be in a voice channel to start the quiz."
+    }
+  },
   "player": {
     "nowPlaying": "{{emoji}} Now Playing",
     "paused": "{{emoji}} Music Paused",

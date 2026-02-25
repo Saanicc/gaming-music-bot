@@ -1,6 +1,7 @@
 import { ChatInputCommandInteraction, ButtonInteraction } from "discord.js";
 import { buildMessage } from "../bot-message/buildMessage";
 import { ColorType } from "../constants/colors";
+import { useTranslations } from "../hooks/useTranslations";
 
 // ---------------------------------------------------------------------------
 // Centralized guard‑error message definitions
@@ -20,91 +21,90 @@ interface BuildMessagePayload {
 export const GUARD_MESSAGES = {
   // ── Queue / player state ──────────────────────────────────────────────
   NO_QUEUE: {
-    title: "This server does not have an active player session.",
+    title: "guards.noQueue.title",
     ephemeral: true,
     color: "info",
   },
   NO_TRACK_PLAYING: {
-    title: "There is no track playing.",
+    title: "guards.noTrackPlaying.title",
     ephemeral: true,
     color: "info",
   },
   PLEASE_ADD_TRACKS: {
-    title: "Please add some tracks first",
+    title: "guards.pleaseAddTracks.title",
     ephemeral: true,
     color: "info",
   },
 
   // ── Guild / voice ────────────────────────────────────────────────────
   NO_GUILD: {
-    title: "No guild was found.",
+    title: "guards.noGuild.title",
     ephemeral: true,
   },
   NO_VOICE_CHANNEL: {
-    title: "You must be in a voice channel to play music.",
+    title: "guards.noVoiceChannel.title",
     ephemeral: true,
   },
   NO_GUILD_MEMBERS: {
-    title: "No guild members found.",
+    title: "guards.noGuildMembers.title",
     ephemeral: true,
   },
 
   // ── Search results ───────────────────────────────────────────────────
   NO_RESULTS: {
-    title: "No results found.",
+    title: "guards.noResults.title",
   },
   NO_TRACK_FOUND: {
-    title: "No track found",
-    description:
-      "No track with that URL was found, please make sure the URL is valid.",
+    title: "guards.noTrackFound.title",
+    description: "guards.noTrackFound.description",
     color: "error",
     ephemeral: true,
   },
 
   // ── Track management ─────────────────────────────────────────────────
   NO_TRACK_URL: {
-    title: "No url found for the current track",
+    title: "guards.noTrackUrl.title",
     ephemeral: true,
     color: "error",
   },
   TRACK_ALREADY_EXISTS: {
-    title: "The track already exists!",
+    title: "guards.trackAlreadyExists.title",
     ephemeral: true,
     color: "error",
   },
   INVALID_URL: {
-    title: "Not a valid url",
-    description: "Please enter a valid url",
+    title: "guards.invalidUrl.title",
+    description: "guards.invalidUrl.description",
     ephemeral: true,
     color: "error",
   },
 
   // ── Generic errors ───────────────────────────────────────────────────
   GENERIC_ERROR: {
-    title: "An error occurred. Please try again.",
+    title: "guards.genericError.title",
     ephemeral: true,
     color: "error",
   },
   DB_SAVE_ERROR: {
-    title: "An error occurred when saving to database. Please try again.",
+    title: "guards.dbSaveError.title",
     ephemeral: true,
     color: "error",
   },
   PLAY_ERROR: {
-    title: "Error",
-    description: "Something went wrong while trying to play.",
+    title: "guards.playError.title",
+    description: "guards.playError.description",
     color: "error",
   },
   VOICE_CHANNEL_ERROR: {
-    title: "Error",
+    title: "guards.voiceChannelError.title",
     description: "Could not join voice channel.",
     color: "error",
   },
 
   // ── Music quiz ───────────────────────────────────────────────────────
   QUIZ_NO_VOICE_CHANNEL: {
-    title: "Error",
-    description: "You must be in a voice channel to start the quiz.",
+    title: "guards.quizNoVoiceChannel.title",
+    description: "guards.quizNoVoiceChannel.description",
     color: "error",
     ephemeral: true,
   },
@@ -135,7 +135,13 @@ export const guardReply = async (
   method: ReplyMethod = "reply"
 ): Promise<unknown> => {
   const message = GUARD_MESSAGES[messageKey] as BuildMessagePayload;
-  const data = buildMessage(message);
+  const t = useTranslations(interaction.guildId ?? "");
+
+  const data = buildMessage({
+    ...message,
+    title: t(message.title),
+    description: message.description ? t(message.description) : undefined,
+  });
   const isEphemeral = message.ephemeral === true;
 
   if (method === "editReply" && isEphemeral) {
