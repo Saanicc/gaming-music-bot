@@ -13,24 +13,27 @@ import { getFormattedTrackDescription } from "@/utils/helpers/getFormattedTrackD
 import { emoji } from "@/utils/constants/emojis";
 import { getThumbnail } from "@/utils/helpers/utils";
 import { guardReply } from "@/utils/helpers/interactionGuard";
-import { t } from "@/src/ui/translations";
+import { useTranslations } from "@/utils/hooks/useTranslations";
 
 export const data = new SlashCommandBuilder()
   .setName("queue")
-  .setDescription(t("en-US", "commands.queue.description"));
+  .setDescription("Display the current queue");
 
 const TRACKS_PER_PAGE = 10;
 
 export async function execute(
   interaction: ChatInputCommandInteraction | ButtonInteraction
 ) {
-  await renderQueue(interaction, 1, "reply");
+  const t = useTranslations(interaction.guildId ?? "");
+
+  await renderQueue(interaction, 1, "reply", t);
 }
 
 export async function renderQueue(
   interaction: ChatInputCommandInteraction | ButtonInteraction,
   page: number,
-  mode: "reply" | "update" = "reply"
+  mode: "reply" | "update" = "reply",
+  t: ReturnType<typeof useTranslations>
 ) {
   const queue = useQueue();
 
@@ -57,9 +60,9 @@ export async function renderQueue(
             )}`
         )
         .join("\n")
-    : t("en-US", "commands.queue.messages.noUpcomingTracks");
+    : t("commands.queue.messages.noUpcomingTracks");
 
-  const footerText = t("en-US", "commands.queue.messages.footerText", {
+  const footerText = t("commands.queue.messages.footerText", {
     page: page.toString(),
     totalPages: totalPages.toString(),
     totalTracks: totalTracks.toString(),
@@ -94,12 +97,12 @@ export async function renderQueue(
   );
 
   const data = buildMessage({
-    title: `${emoji.play} ${t("en-US", "commands.queue.messages.nowPlaying")}`,
+    title: `${emoji.play} ${t("commands.queue.messages.nowPlaying")}`,
     thumbnail: getThumbnail(currentTrack),
     description: `
 ${getFormattedTrackDescription(currentTrack, queue)}
 
-### ${t("en-US", "commands.queue.messages.upcomingTracks", {
+### ${t("commands.queue.messages.upcomingTracks", {
       emoji: emoji.queue,
     })}
 ${tracksList}

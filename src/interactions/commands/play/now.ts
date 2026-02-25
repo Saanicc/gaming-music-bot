@@ -7,7 +7,7 @@ import { getSearchEngine } from "@/utils/helpers/getSearchEngine";
 import { getThumbnail } from "@/utils/helpers/utils";
 import { joinVoiceChannel } from "@/utils/helpers/joinVoiceChannel";
 import { guardReply } from "@/utils/helpers/interactionGuard";
-import { t } from "@/src/ui/translations";
+import { useTranslations } from "@/utils/hooks/useTranslations";
 
 interface ExecutePlayNowQueryArgs {
   interaction: ChatInputCommandInteraction;
@@ -24,6 +24,7 @@ export const execute = async ({
   query,
   voiceChannel,
 }: ExecutePlayNowQueryArgs) => {
+  const t = useTranslations(interaction.guildId ?? "");
   const guild = voiceChannel.guild;
 
   try {
@@ -39,10 +40,10 @@ export const execute = async ({
     queue.insertTrack(track);
 
     const message = buildMessage({
-      title: t("en-US", "commands.play.now.messages.title"),
+      title: t("commands.play.now.messages.title"),
       description: getFormattedTrackDescription(track, queue),
       thumbnail: getThumbnail(result.tracks[0]),
-      footerText: t("en-US", "commands.play.now.messages.footerText"),
+      footerText: t("commands.play.now.messages.footerText"),
       color: "queue",
     });
 

@@ -6,7 +6,7 @@ import { getFormattedTrackDescription } from "@/utils/helpers/getFormattedTrackD
 import { getThumbnail } from "@/utils/helpers/utils";
 import { joinVoiceChannel } from "@/utils/helpers/joinVoiceChannel";
 import { guardReply } from "@/utils/helpers/interactionGuard";
-import { t } from "@/src/ui/translations";
+import { useTranslations } from "@/utils/hooks/useTranslations";
 
 interface ExecuteParams {
   interaction: ChatInputCommandInteraction;
@@ -23,6 +23,8 @@ export async function execute({
   queue,
   voiceChannel,
 }: ExecuteParams) {
+  const t = useTranslations(interaction.guildId ?? "");
+
   try {
     const searchGenre = genre
       ? genre
@@ -40,8 +42,8 @@ export async function execute({
     if (!tracks.length) {
       return interaction.followUp(
         buildMessage({
-          title: t("en-US", "commands.play.random.track.messages.errorTitle"),
-          description: t("en-US", "commands.play.random.track.messages.error", {
+          title: t("commands.play.random.track.messages.errorTitle"),
+          description: t("commands.play.random.track.messages.error", {
             searchGenre,
           }),
           color: "error",
@@ -53,7 +55,7 @@ export async function execute({
     queue.addTrack(track);
 
     message = buildMessage({
-      title: t("en-US", "commands.play.random.track.messages.title", {
+      title: t("commands.play.random.track.messages.title", {
         position: queue.tracks.size.toString(),
       }),
       description: getFormattedTrackDescription(track, queue),

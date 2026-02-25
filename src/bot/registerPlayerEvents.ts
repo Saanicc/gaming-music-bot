@@ -12,7 +12,7 @@ import {
   checkIfTrackInDB,
   isTrackInCache,
 } from "../utils/helpers/isTrackInCache";
-import { t } from "../ui/translations";
+import { useTranslations } from "@/utils/hooks/useTranslations";
 
 export const registerPlayerEvents = (player: Player) => {
   player.events.on(GuildQueueEvent.PlayerStart, async (queue, track) => {
@@ -92,11 +92,13 @@ export const registerPlayerEvents = (player: Player) => {
   player.events.on(GuildQueueEvent.QueueDelete, async (queue) => {
     if (queue.metadata.isSwitching) return;
 
+    const t = useTranslations(queue.guild.id);
+
     await musicPlayerMessage.delete();
     musicPlayerMessage.set(undefined);
 
     const data = buildMessage({
-      title: t("en-US", "common.leftVoiceChat"),
+      title: t("common.leftVoiceChat"),
       color: "default",
     });
 
@@ -107,12 +109,14 @@ export const registerPlayerEvents = (player: Player) => {
   player.events.on(GuildQueueEvent.EmptyQueue, async (queue) => {
     if (queue.metadata.musicQuiz) return;
 
+    const t = useTranslations(queue.guild.id);
+
     const channel = queue.metadata.textChannel as TextChannel;
 
     queue.history.clear();
 
     const data = buildMessage({
-      title: t("en-US", "common.emptyQueue"),
+      title: t("common.emptyQueue"),
       color: "info",
     });
 

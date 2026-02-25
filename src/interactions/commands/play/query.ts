@@ -7,7 +7,7 @@ import { getThumbnail } from "@/utils/helpers/utils";
 import { Player, GuildQueue } from "discord-player";
 import { joinVoiceChannel } from "@/utils/helpers/joinVoiceChannel";
 import { guardReply } from "@/utils/helpers/interactionGuard";
-import { t } from "@/src/ui/translations";
+import { useTranslations } from "@/utils/hooks/useTranslations";
 
 interface ExecutePlayQueryArgs {
   interaction: ChatInputCommandInteraction;
@@ -24,6 +24,8 @@ export const execute = async ({
   query,
   voiceChannel,
 }: ExecutePlayQueryArgs) => {
+  const t = useTranslations(interaction.guildId ?? "");
+
   const guild = voiceChannel.guild;
 
   try {
@@ -41,14 +43,14 @@ export const execute = async ({
       queue.addTrack(result.playlist?.tracks ?? []);
 
       message = buildMessage({
-        title: t("en-US", "commands.play.query.messages.title.playlist"),
-        description: t("en-US", "commands.play.query.messages.description", {
+        title: t("commands.play.query.messages.title.playlist"),
+        description: t("commands.play.query.messages.description", {
           track: result.playlist?.title ?? "",
           url: result.playlist?.url ?? "",
           amount: result.playlist?.tracks.length.toString() ?? "",
         }),
         thumbnail: getThumbnail(result.playlist),
-        footerText: t("en-US", "commands.play.query.messages.footerText"),
+        footerText: t("commands.play.query.messages.footerText"),
         color: "queue",
       });
     } else {
@@ -56,12 +58,12 @@ export const execute = async ({
       queue.addTrack(track);
 
       message = buildMessage({
-        title: t("en-US", "commands.play.query.messages.title.track", {
+        title: t("commands.play.query.messages.title.track", {
           position: queue.tracks.size.toString(),
         }),
         description: getFormattedTrackDescription(track, queue),
         thumbnail: getThumbnail(result.tracks[0]),
-        footerText: t("en-US", "commands.play.query.messages.footerText"),
+        footerText: t("commands.play.query.messages.footerText"),
         color: "queue",
       });
     }

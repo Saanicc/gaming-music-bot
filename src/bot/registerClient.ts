@@ -11,6 +11,8 @@ import { buttons } from "../interactions/buttons";
 import { commands } from "../interactions/commands";
 import { handleInteraction } from "../utils/helpers/handleInteraction";
 import { setBotActivity } from "../utils/helpers/setBotActivity";
+import { db } from "../db";
+import { saveBotLanguageToCache } from "../ui/translations";
 
 export const registerDiscordClient = (): Client => {
   const client = new Client({
@@ -26,6 +28,9 @@ export const registerDiscordClient = (): Client => {
   const isDev = config.NODE_ENV === "dev";
 
   client.once(Events.ClientReady, async (readyClient) => {
+    const language = await db.getLanguageFromDB(config.DISCORD_GUILD_ID);
+    saveBotLanguageToCache(config.DISCORD_GUILD_ID, language);
+
     if (isDev) {
       setBotActivity({
         client: readyClient,

@@ -6,15 +6,17 @@ import {
   SlashCommandBuilder,
 } from "discord.js";
 import { Font } from "canvacord";
-import { guardReply } from "@/src/utils/helpers/interactionGuard";
-import { HelpBuilder, CommandData } from "@/src/utils/helpers/HelpBuilder";
-import { t } from "@/src/ui/translations";
+import { guardReply } from "@/utils/helpers/interactionGuard";
+import { HelpBuilder, CommandData } from "@/utils/helpers/HelpBuilder";
+import { useTranslations } from "@/utils/hooks/useTranslations";
 
 export const data = new SlashCommandBuilder()
   .setName("help")
-  .setDescription(t("en-US", "commands.help.description"));
+  .setDescription("Display the help message");
 
 export async function execute(interaction: ChatInputCommandInteraction) {
+  const t = useTranslations(interaction.guildId ?? "");
+
   const guild = interaction.guild;
   if (!guild) return guardReply(interaction, "NO_GUILD");
 
@@ -65,8 +67,8 @@ export async function execute(interaction: ChatInputCommandInteraction) {
 
   const builder = new HelpBuilder()
     .setHeader({
-      title: t("en-US", "commands.help.messages.title"),
-      subtitle: t("en-US", "commands.help.messages.subtitle"),
+      title: t("commands.help.messages.title"),
+      subtitle: t("commands.help.messages.subtitle"),
       avatar: interaction.client.user.displayAvatarURL({
         extension: "png",
         size: 256,
@@ -74,7 +76,7 @@ export async function execute(interaction: ChatInputCommandInteraction) {
     })
     .setCommands(commandList)
     .setFooterText(
-      t("en-US", "commands.help.messages.footerText", {
+      t("commands.help.messages.footerText", {
         botName: interaction.client.user.username,
       })
     );

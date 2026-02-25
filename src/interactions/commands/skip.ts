@@ -2,13 +2,14 @@ import { ChatInputCommandInteraction, SlashCommandBuilder } from "discord.js";
 import { useQueue } from "discord-player";
 import { buildMessage } from "@/utils/bot-message/buildMessage";
 import { guardReply } from "@/utils/helpers/interactionGuard";
-import { t } from "@/src/ui/translations";
+import { useTranslations } from "@/utils/hooks/useTranslations";
 
 export const data = new SlashCommandBuilder()
   .setName("skip")
-  .setDescription(t("en-US", "commands.skip.description"));
+  .setDescription("Skip the currently playing track");
 
 export async function execute(interaction: ChatInputCommandInteraction) {
+  const t = useTranslations(interaction.guildId ?? "");
   const queue = useQueue();
 
   if (!queue) return guardReply(interaction, "NO_QUEUE");
@@ -18,7 +19,7 @@ export async function execute(interaction: ChatInputCommandInteraction) {
   if (queue.node.isPaused()) queue.node.resume();
 
   const data = buildMessage({
-    title: t("en-US", "commands.skip.messages.title"),
+    title: t("commands.skip.messages.title"),
     color: "info",
   });
   return interaction.reply(data);

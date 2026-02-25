@@ -6,7 +6,7 @@ import { getThumbnail } from "@/utils/helpers/utils";
 import { searchSpotifyPlaylists } from "@/src/api/spotify";
 import { joinVoiceChannel } from "@/utils/helpers/joinVoiceChannel";
 import { guardReply } from "@/utils/helpers/interactionGuard";
-import { t } from "@/src/ui/translations";
+import { useTranslations } from "@/utils/hooks/useTranslations";
 
 interface ExecuteParams {
   interaction: ChatInputCommandInteraction;
@@ -25,6 +25,8 @@ export async function execute({
   queue,
   voiceChannel,
 }: ExecuteParams) {
+  const t = useTranslations(interaction.guildId ?? "");
+
   try {
     const searchGenre = genre
       ? genre
@@ -37,8 +39,10 @@ export async function execute({
     if (!spotifyPlaylists.length) {
       return interaction.followUp(
         buildMessage({
-          title: "Error",
-          description: `Could not find any playlists for genre: ${searchGenre}.`,
+          title: t("common.error"),
+          description: t("commands.play.random.playlist.messages.error", {
+            genre: searchGenre,
+          }),
           color: "error",
         })
       );
@@ -57,8 +61,10 @@ export async function execute({
     if (!playlist) {
       return interaction.followUp(
         buildMessage({
-          title: "Error",
-          description: `Could not find any playlist for genre: ${searchGenre}.`,
+          title: t("common.error"),
+          description: t("commands.play.random.playlist.messages.error", {
+            genre: searchGenre,
+          }),
           color: "error",
         })
       );
@@ -69,8 +75,10 @@ export async function execute({
     if (!tracks.length) {
       return interaction.followUp(
         buildMessage({
-          title: "Error",
-          description: `Could not find any track(s) to play with genre: ${searchGenre}.`,
+          title: t("common.error"),
+          description: t("commands.play.random.track.messages.error", {
+            genre: searchGenre,
+          }),
           color: "error",
         })
       );
@@ -86,26 +94,20 @@ export async function execute({
     queue.tracks.shuffle();
 
     const tracksText = amountOfTracks
-      ? t(
-          "en-US",
-          "commands.play.random.playlist.messages.randomlySelectedTracks",
-          { amount: tracks.length.toString() }
-        )
-      : t("en-US", "commands.play.random.playlist.messages.tracks", {
+      ? t("commands.play.random.playlist.messages.randomlySelectedTracks", {
+          amount: tracks.length.toString(),
+        })
+      : t("commands.play.random.playlist.messages.tracks", {
           amount: tracks.length.toString(),
         });
 
     message = buildMessage({
-      title: t("en-US", "commands.play.random.playlist.messages.title"),
-      description: t(
-        "en-US",
-        "commands.play.random.playlist.messages.description",
-        {
-          playlist: playlist.title,
-          url: playlist.url,
-          tracksText,
-        }
-      ),
+      title: t("commands.play.random.playlist.messages.title"),
+      description: t("commands.play.random.playlist.messages.description", {
+        playlist: playlist.title,
+        url: playlist.url,
+        tracksText,
+      }),
       thumbnail: getThumbnail(playlist),
       color: "queue",
     });

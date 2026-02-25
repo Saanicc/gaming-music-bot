@@ -8,40 +8,32 @@ import { execute as executePlayNext } from "./next";
 import { execute as executePlayBossMusic } from "./bossMusic";
 import { execute as executePlayRandomPlaylist } from "./random/playlist";
 import { execute as executePlayRandomTrack } from "./random/track";
-import { t } from "@/src/ui/translations";
 
 export const data = new SlashCommandBuilder()
   .setName("play")
-  .setDescription(t("en-US", "commands.play.description"))
+  .setDescription("All available play commands")
   .addSubcommandGroup((group) =>
     group
       .setName("boss")
-      .setDescription(t("en-US", "commands.play.boss.description"))
+      .setDescription("Boss command group")
       .addSubcommand((subcommand) =>
         subcommand
           .setName("music")
-          .setDescription(t("en-US", "commands.play.boss.music.description"))
+          .setDescription("Start playing your self curated boss music!")
       )
   )
   .addSubcommandGroup((group) =>
     group
       .setName("random")
-      .setDescription(t("en-US", "commands.play.random.description"))
+      .setDescription("Random command group")
       .addSubcommand((subcommand) =>
         subcommand
           .setName("playlist")
-          .setDescription(
-            t("en-US", "commands.play.random.playlist.description")
-          )
+          .setDescription("Play a random playlist")
           .addStringOption((option) =>
             option
               .setName("genre")
-              .setDescription(
-                t(
-                  "en-US",
-                  "commands.play.random.playlist.options.genre.description"
-                )
-              )
+              .setDescription("The genre of music to play.")
               .setRequired(false)
               .addChoices(
                 ...GENRES.map((query) => ({
@@ -53,12 +45,7 @@ export const data = new SlashCommandBuilder()
           .addIntegerOption((option) =>
             option
               .setName("amount")
-              .setDescription(
-                t(
-                  "en-US",
-                  "commands.play.random.playlist.options.amount.description"
-                )
-              )
+              .setDescription("Number of tracks to play.")
               .setRequired(false)
               .addChoices(
                 ...[10, 20, 30, 40, 50].map((query) => ({
@@ -71,16 +58,11 @@ export const data = new SlashCommandBuilder()
       .addSubcommand((subcommand) =>
         subcommand
           .setName("track")
-          .setDescription(t("en-US", "commands.play.random.track.description"))
+          .setDescription("Play a random track")
           .addStringOption((option) =>
             option
               .setName("genre")
-              .setDescription(
-                t(
-                  "en-US",
-                  "commands.play.random.track.options.genre.description"
-                )
-              )
+              .setDescription("The genre of music to play.")
               .setRequired(false)
               .addChoices(
                 ...GENRES.map((query) => ({
@@ -94,39 +76,35 @@ export const data = new SlashCommandBuilder()
   .addSubcommand((subcommand) =>
     subcommand
       .setName("query")
-      .setDescription(t("en-US", "commands.play.query.description"))
+      .setDescription("Plays a track from a url or search query")
       .addStringOption((option) =>
         option
           .setName("query")
-          .setDescription(
-            t("en-US", "commands.play.query.options.query.description")
-          )
+          .setDescription("The url or query to search for")
           .setRequired(true)
       )
   )
   .addSubcommand((subcommand) =>
     subcommand
       .setName("now")
-      .setDescription(t("en-US", "commands.play.now.description"))
+      .setDescription("Instantly play a track from a url or search term")
       .addStringOption((option) =>
         option
           .setName("query")
-          .setDescription(
-            t("en-US", "commands.play.now.options.query.description")
-          )
+          .setDescription("The url or query to search for")
           .setRequired(true)
       )
   )
   .addSubcommand((subcommand) =>
     subcommand
       .setName("next")
-      .setDescription(t("en-US", "commands.play.next.description"))
+      .setDescription(
+        "Enqueues a track from a url or search term, then plays it after the current track ends"
+      )
       .addStringOption((option) =>
         option
           .setName("query")
-          .setDescription(
-            t("en-US", "commands.play.next.options.query.description")
-          )
+          .setDescription("The url or query to search for")
           .setRequired(true)
       )
   );

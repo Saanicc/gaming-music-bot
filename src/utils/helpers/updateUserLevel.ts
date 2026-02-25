@@ -4,13 +4,15 @@ import { getRankTitleWithEmoji } from "@/modules/rankSystem";
 import { buildMessage } from "../bot-message/buildMessage";
 import { getTreasureInfo } from "./getTreasureMessage";
 import { emoji } from "../constants/emojis";
-import { t } from "@/src/ui/translations";
+import { useTranslations } from "../hooks/useTranslations";
 
 export const updateUserLevel = async (
   interaction: CommandInteraction | ButtonInteraction,
   guildId: string,
   command: XPGrantingCommand
 ) => {
+  const t = useTranslations(interaction.guildId ?? "");
+
   const {
     user,
     gainedXP,
@@ -24,7 +26,11 @@ export const updateUserLevel = async (
   if (noXP) return; // cooldown
 
   if (treasure) {
-    const treasureInfo = getTreasureInfo(interaction.user.toString(), gainedXP);
+    const treasureInfo = getTreasureInfo(
+      interaction.user.toString(),
+      gainedXP,
+      t
+    );
     if (!treasureInfo) return;
 
     const { title, description } = treasureInfo;
@@ -41,23 +47,23 @@ export const updateUserLevel = async (
 
     let rankMessage = "";
     if (oldRank !== newRank) {
-      rankMessage = t("en-US", "levelSystem.levelUp.rankMessage", {
+      rankMessage = t("levelSystem.levelUp.rankMessage", {
         newRank,
       });
     }
 
     const message = buildMessage({
-      title: t("en-US", "levelSystem.levelUp.title", {
+      title: t("levelSystem.levelUp.title", {
         emoji: emoji.levelup,
       }),
-      description: `${t("en-US", "levelSystem.levelUp.description", {
+      description: `${t("levelSystem.levelUp.description", {
         user: interaction.user.toString(),
         levelsGained: levelsGained.toString(),
         level: user.level.toString(),
         levelText:
           levelsGained > 1
-            ? t("en-US", "levelSystem.levelUp.levels")
-            : t("en-US", "levelSystem.levelUp.level"),
+            ? t("levelSystem.levelUp.levels")
+            : t("levelSystem.levelUp.level"),
       })}\n${rankMessage}`,
     });
     await (interaction.channel as TextChannel).send(message);

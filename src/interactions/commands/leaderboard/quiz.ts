@@ -1,18 +1,20 @@
 import { LeaderboardBuilder } from "@/utils/helpers/Leaderboard";
 import { getRankTitle } from "@/modules/rankSystem";
 import { Collection, Guild, GuildMember } from "discord.js";
-import { t } from "@/src/ui/translations";
+import { useTranslations } from "@/src/utils/hooks/useTranslations";
 
 interface BuildQuizLeaderboardParams {
   users: any[];
   guild: Guild;
   guildMembers: Collection<string, GuildMember>;
+  t: ReturnType<typeof useTranslations>;
 }
 
 export const buildQuizLeaderboard = ({
   users,
   guild,
   guildMembers,
+  t,
 }: BuildQuizLeaderboardParams) => {
   const sorted = [...users].sort((a, b) => {
     const winsA = a.quizStats?.totalWins ?? 0;
@@ -46,10 +48,10 @@ export const buildQuizLeaderboard = ({
   const lb = new LeaderboardBuilder()
     .setLeaderBoardType("music_quiz")
     .setHeader({
-      leaderBoardTitle: t("en-US", "commands.leaderboard.quiz.title"),
+      leaderBoardTitle: t("commands.leaderboard.quiz.title"),
       title: guild.name,
       image: guild.iconURL() ?? "",
-      subtitle: t("en-US", "commands.leaderboard.quiz.subtitle", {
+      subtitle: t("commands.leaderboard.quiz.subtitle", {
         members: guildMembers.size.toString(),
       }),
     })

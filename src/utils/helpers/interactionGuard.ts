@@ -86,7 +86,7 @@ export const GUARD_MESSAGES = {
     color: "error",
   },
   DB_SAVE_ERROR: {
-    title: "An error occurred when saving track to database. Please try again.",
+    title: "An error occurred when saving to database. Please try again.",
     ephemeral: true,
     color: "error",
   },

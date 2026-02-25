@@ -39,7 +39,7 @@
     "levelUp": {
       "level": "level",
       "levels": "levels",
-      "title": "{{emoji}} *Level Up!* {{emoji}}",
+      "title": "**Level Up!** {{emoji}}",
       "description": "{{user}} gained **{{levelsGained}} {{levelText}}** and is now **Level {{level}}**!",
       "rankMessage": "New rank: **{{newRank}}**!"
     }
@@ -62,14 +62,11 @@
   },
   "commands": {
     "leaderboard": {
-      "description": "View the leaderboard",
       "xp": {
-        "description": "View XP leaderboard",
         "title": "XP Leaderboard",
         "subtitle": "{{members}} members"
       },
       "quiz": {
-        "description": "View Music Quiz leaderboard",
         "title": "Music Quiz Leaderboard",
         "subtitle": "{{members}} members",
         "correctAnswers": "Correct answers: {{correctAnswers}}",
@@ -77,57 +74,35 @@
       }
     },
     "loop": {
-      "description": "Change the loop settings on the player",
       "all": {
-        "description": "Loops the whole queue",
         "title": "Now looping the queue"
       },
       "current": {
-        "description": "Loops the current track",
         "title": "Now looping the current track"
       },
       "disable": {
-        "description": "Disables the loop mode for this playback",
         "title": "Looping has been disabled"
       }
     },
     "play": {
-      "description": "All available play commands",
       "boss": {
-        "description": "Boss command group",
         "music": {
-          "description": "Start playing your self curated boss music!",
           "messages": {
-            "title": "{{emoji}} Time to slay some enemies! {{emoji}}"
+            "title": "{{emoji}} Time to slay some enemies!"
           }
         }
       },
       "random": {
-        "description": "Random command group",
         "playlist": {
-          "description": "Play a random playlist",
-          "options": {
-            "genre": {
-              "description": "The genre of music to play."
-            },
-            "amount": {
-              "description": "Number of tracks to play."
-            }
-          },
           "messages": {
             "title": "Queued",
             "description": "[{{playlist}}]({{url}}) with {{tracksText}}",
             "randomlySelectedTracks": "{{amount}} randomly selected tracks",
-            "tracks": "{{amount}} tracks"
+            "tracks": "{{amount}} tracks",
+            "error": "Could not find any playlists for genre: {{genre}}."
           }
         },
         "track": {
-          "description": "Play a random track",
-          "options": {
-            "genre": {
-              "description": "The genre of music to play."
-            }
-          },
           "messages": {
             "title": "Queued at position #{{position}}",
             "errorTitle": "Error",
@@ -136,12 +111,6 @@
         }
       },
       "query": {
-        "description": "Plays a track from a url or search query",
-        "options": {
-          "query": {
-            "description": "The url or query to search for"
-          }
-        },
         "messages": {
           "title": {
             "playlist": "Queued",
@@ -152,24 +121,12 @@
         }
       },
       "now": {
-        "description": "Instantly play a track from a url or search term",
-        "options": {
-          "query": {
-            "description": "The url or query to search for"
-          }
-        },
         "messages": {
           "title": "Will play instantly",
           "footerText": "Not the correct track? Try being more specific or enter a URL"
         }
       },
       "next": {
-        "description": "Enqueues a track from a url or search term, then plays it after the current track ends",
-        "options": {
-          "query": {
-            "description": "The url or query to search for"
-          }
-        },
         "messages": {
           "title": "Queued at position #{{position}}",
           "footerText": "Not the correct track? Try being more specific or enter a URL"
@@ -177,10 +134,7 @@
       }
     },
     "addTrack": {
-      "description": "Add a new track to the boss music library",
       "messages": {
-        "urlDescription": "Enter url of track to add",
-        "typeDescription": "Select the type of track",
         "bossMusic": "Boss Music",
         "hornSound": "Horn Sound",
         "trackAdded": "Added successfully",
@@ -189,14 +143,12 @@
       }
     },
     "autoplay": {
-      "description": "Play related songs automatically based on your existing queue",
       "messages": {
         "enabled": "Autoplay has been enabled",
         "disabled": "Autoplay has been disabled"
       }
     },
     "help": {
-      "description": "Display the help message",
       "messages": {
         "title": "Command List",
         "subtitle": "Here you find all available commands",
@@ -204,11 +156,11 @@
       }
     },
     "musicquiz": {
-      "description": "Start a music quiz in a thread!",
       "messages": {
         "title": "Music Quiz",
         "settingUpQuiz": "Setting up Quiz...",
         "creatingThread": "Creating a dedicated thread for the quiz.",
+        "threadName": "Music Quiz",
         "numberOfRoundsPlaceholder": "Number of rounds (optional)",
         "genrePlaceholder": "Select a genre (optional)",
         "startQuiz": "Start Quiz",
@@ -227,6 +179,7 @@
         "genericError": "Something went wrong during the quiz. Please try again.",
         "loadingTracks": "Loading Tracks...",
         "fetchingRandomSongs": "Fetching random songs from Spotify...",
+        "couldNotFindPlaylists": "Could not find playlists for theme: {{genre}}.",
         "failedToFindPlayableTracks": "Failed to find playable tracks after multiple attempts.",
         "roundTitle": "Round {{roundNum}}/{{rounds}}",
         "listenCarefully": "Listen carefully! Playing for {{time}} seconds...",
@@ -254,14 +207,12 @@
       }
     },
     "nightcore": {
-      "description": "Toggle the nightcore filter on or off",
       "messages": {
         "enabled": "Nightcore filter has been enabled",
         "disabled": "Nightcore filter has been disabled"
       }
     },
     "queue": {
-      "description": "Display the current queue",
       "messages": {
         "noQueue": "No queue found",
         "nowPlaying": "Now Playing",
@@ -271,30 +222,16 @@
         "footerText": "Page {{page}}/{{totalPages}}  •  Tracks in queue: {{totalTracks}}  •  Total duration: {{totalDuration}}"
       }
     },
-    "rank": {
-      "description": "Check your current DJ rank",
-      "options": {
-        "user": {
-          "description": "Check another user's rank"
-        }
-      }
-    },
     "setLanguage": {
-      "description": "Set the language for the bot",
-      "options": {
-        "language": {
-          "description": "The language to set"
-        }
+      "message": {
+        "title": "Language updated",
+        "description": "Now I speak **English**!"
       }
     },
     "skip": {
-      "description": "Skip the currently playing track",
       "messages": {
         "title": "Skipped to the next track in queue."
       }
-    },
-    "stop": {
-      "description": "Stops and disconnects the player"
     }
   }
 }

@@ -1,6 +1,6 @@
 import { JSX, Builder, loadImage } from "canvacord";
 import { getRankImage } from "@/modules/rankSystem";
-import { t } from "@/src/ui/translations";
+import { useTranslations } from "../hooks/useTranslations";
 
 export type PlayerData = {
   avatar: string;
@@ -31,9 +31,11 @@ export class LeaderboardBuilder extends Builder {
   private cardBackgroundColor: string = "rgba(255, 255, 255, 0.05)";
   private border: string = "1px solid rgba(255,255,255,0.1)";
   private boxShadow: string = "0 4px 6px rgba(0,0,0,0.3)";
+  private t: ReturnType<typeof useTranslations>;
 
-  constructor() {
+  constructor(t: ReturnType<typeof useTranslations>) {
     super(600, 960);
+    this.t = t;
   }
 
   setLeaderBoardType(type: "xp" | "music_quiz") {
@@ -141,7 +143,7 @@ export class LeaderboardBuilder extends Builder {
                 },
               },
               JSX.Fragment({
-                children: t("en-US", "commands.leaderboard.quiz.wins", {
+                children: this.t("commands.leaderboard.quiz.wins", {
                   wins: (player.quizStats?.totalWins ?? 0).toString(),
                 }),
               })
@@ -151,15 +153,11 @@ export class LeaderboardBuilder extends Builder {
           { style: { fontSize: "14px", color: "#7b7b7b" } },
           this.leaderBoardType === "music_quiz"
             ? JSX.Fragment({
-                children: t(
-                  "en-US",
-                  "commands.leaderboard.quiz.correctAnswers",
-                  {
-                    correctAnswers: (
-                      player.quizStats?.totalCorrectAnswers ?? 0
-                    ).toString(),
-                  }
-                ),
+                children: this.t("commands.leaderboard.quiz.correctAnswers", {
+                  correctAnswers: (
+                    player.quizStats?.totalCorrectAnswers ?? 0
+                  ).toString(),
+                }),
               })
             : JSX.Fragment({
                 children: `Level ${player.level} - ${player.xp} XP`,
@@ -274,7 +272,7 @@ export class LeaderboardBuilder extends Builder {
             this.leaderBoardType !== "music_quiz"
               ? JSX.Fragment({ children: `Level ${player.level}` })
               : JSX.Fragment({
-                  children: t("en-US", "commands.leaderboard.quiz.wins", {
+                  children: this.t("commands.leaderboard.quiz.wins", {
                     wins: (player.quizStats?.totalWins ?? 0).toString(),
                   }),
                 })
@@ -293,15 +291,11 @@ export class LeaderboardBuilder extends Builder {
                   style: { color: getTop3PlayerColor(index), fontSize: "14px" },
                 },
                 JSX.Fragment({
-                  children: t(
-                    "en-US",
-                    "commands.leaderboard.quiz.correctAnswers",
-                    {
-                      correctAnswers: (
-                        player.quizStats?.totalCorrectAnswers ?? 0
-                      ).toString(),
-                    }
-                  ),
+                  children: this.t("commands.leaderboard.quiz.correctAnswers", {
+                    correctAnswers: (
+                      player.quizStats?.totalCorrectAnswers ?? 0
+                    ).toString(),
+                  }),
                 })
               )
         )

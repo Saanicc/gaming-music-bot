@@ -10,6 +10,7 @@ import * as nightcore from "./nightcore";
 import * as stop from "./stop";
 import * as musicquiz from "./musicquiz";
 import * as leaderboard from "./leaderboard";
+import * as setLanguage from "./setLanguage";
 
 export const commands = {
   help,
@@ -24,4 +25,5 @@ export const commands = {
   nightcore,
   stop,
   musicquiz,
+  set_language: setLanguage,
 };

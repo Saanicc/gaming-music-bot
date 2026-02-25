@@ -2,29 +2,27 @@ import { ChatInputCommandInteraction, SlashCommandBuilder } from "discord.js";
 import { buildMessage } from "@/utils/bot-message/buildMessage";
 import { QueueRepeatMode, useQueue } from "discord-player";
 import { guardReply } from "@/utils/helpers/interactionGuard";
-import { t } from "@/src/ui/translations";
+import { useTranslations } from "@/utils/hooks/useTranslations";
 
 export const data = new SlashCommandBuilder()
   .setName("loop")
-  .setDescription(t("en-US", "commands.loop.description"))
+  .setDescription("Change the loop settings on the player")
 
   .addSubcommand((subcommand) =>
-    subcommand
-      .setName("all")
-      .setDescription(t("en-US", "commands.loop.all.description"))
+    subcommand.setName("all").setDescription("Loops the whole queue")
   )
   .addSubcommand((subcommand) =>
-    subcommand
-      .setName("current")
-      .setDescription(t("en-US", "commands.loop.current.description"))
+    subcommand.setName("current").setDescription("Loops the current track")
   )
   .addSubcommand((subcommand) =>
     subcommand
       .setName("disable")
-      .setDescription(t("en-US", "commands.loop.disable.description"))
+      .setDescription("Disables the loop mode for this playback")
   );
 
 export async function execute(interaction: ChatInputCommandInteraction) {
+  const t = useTranslations(interaction.guildId ?? "");
+
   const subcommand = interaction.options.getSubcommand(true);
   const queue = useQueue();
 
@@ -35,15 +33,15 @@ export async function execute(interaction: ChatInputCommandInteraction) {
   const modeMap: Record<string, { mode: QueueRepeatMode; title: string }> = {
     all: {
       mode: QueueRepeatMode.QUEUE,
-      title: t("en-US", "commands.loop.all.title"),
+      title: t("commands.loop.all.title"),
     },
     current: {
       mode: QueueRepeatMode.TRACK,
-      title: t("en-US", "commands.loop.current.title"),
+      title: t("commands.loop.current.title"),
     },
     disable: {
       mode: QueueRepeatMode.OFF,
-      title: t("en-US", "commands.loop.disable.title"),
+      title: t("commands.loop.disable.title"),
     },
   };
 

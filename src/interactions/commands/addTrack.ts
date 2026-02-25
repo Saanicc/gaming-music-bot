@@ -6,21 +6,21 @@ import { getThumbnail } from "@/utils/helpers/utils";
 import { BossTrack, TrackType } from "@/models/BossTrack";
 import { getSearchEngine } from "@/utils/helpers/getSearchEngine";
 import { guardReply } from "@/utils/helpers/interactionGuard";
-import { t } from "@/src/ui/translations";
+import { useTranslations } from "@/utils/hooks/useTranslations";
 
 export const data = new SlashCommandBuilder()
   .setName("add_track")
-  .setDescription(t("en-US", "commands.addTrack.description"))
+  .setDescription("Add a new track to the boss music library")
   .addStringOption((option) =>
     option
       .setName("url")
-      .setDescription(t("en-US", "commands.addTrack.messages.urlDescription"))
+      .setDescription("Enter url of track to add")
       .setRequired(true)
   )
   .addStringOption((option) =>
     option
       .setName("type")
-      .setDescription(t("en-US", "commands.addTrack.messages.typeDescription"))
+      .setDescription("Select the type of track")
       .setRequired(true)
       .addChoices(
         {
@@ -35,6 +35,8 @@ export const data = new SlashCommandBuilder()
   );
 
 export const execute = async (interaction: ChatInputCommandInteraction) => {
+  const t = useTranslations(interaction.guildId ?? "");
+
   const url = interaction.options.getString("url", true);
   const selectedType = interaction.options.getString("type", true) as TrackType;
 
@@ -81,19 +83,15 @@ export const execute = async (interaction: ChatInputCommandInteraction) => {
   }
 
   const data = buildMessage({
-    title: t("en-US", "commands.addTrack.messages.trackAdded"),
-    description: t(
-      "en-US",
-      "commands.addTrack.messages.trackAddedDescription",
-      {
-        user: interaction.user.toString(),
-        track: getFormattedTrackDescription(result.tracks[0], queue),
-        type:
-          selectedType === "song"
-            ? t("en-US", "commands.addTrack.messages.bossMusic")
-            : t("en-US", "commands.addTrack.messages.hornSound"),
-      }
-    ),
+    title: t("commands.addTrack.messages.trackAdded"),
+    description: t("commands.addTrack.messages.trackAddedDescription", {
+      user: interaction.user.toString(),
+      track: getFormattedTrackDescription(result.tracks[0], queue),
+      type:
+        selectedType === "song"
+          ? t("commands.addTrack.messages.bossMusic")
+          : t("commands.addTrack.messages.hornSound"),
+    }),
     thumbnail: getThumbnail(result.tracks[0]),
     color: "success",
   });

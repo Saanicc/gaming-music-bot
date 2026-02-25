@@ -2,11 +2,10 @@ import { ChatInputCommandInteraction, SlashCommandBuilder } from "discord.js";
 import { useQueue } from "discord-player";
 import { queueManager } from "@/src/services/queueManager";
 import { guardReply } from "@/utils/helpers/interactionGuard";
-import { t } from "@/src/ui/translations";
 
 export const data = new SlashCommandBuilder()
   .setName("stop")
-  .setDescription(t("en-US", "commands.stop.description"));
+  .setDescription("Stops and disconnects the player");
 
 export async function execute(interaction: ChatInputCommandInteraction) {
   await interaction.deferReply();

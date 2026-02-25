@@ -2,17 +2,20 @@ import { ChatInputCommandInteraction, SlashCommandBuilder } from "discord.js";
 import { buildMessage } from "@/utils/bot-message/buildMessage";
 import { GuildQueue, QueueRepeatMode, useQueue } from "discord-player";
 import { guardReply } from "@/utils/helpers/interactionGuard";
-import { t } from "@/src/ui/translations";
+import { useTranslations } from "@/utils/hooks/useTranslations";
 
 export const data = new SlashCommandBuilder()
   .setName("autoplay")
-  .setDescription(t("en-US", "commands.autoplay.description"));
+  .setDescription(
+    "Play related songs automatically based on your existing queue"
+  );
 
 const isAutoplayEnabled = (queue: GuildQueue) => {
   return queue.repeatMode === QueueRepeatMode.AUTOPLAY;
 };
 
 export async function execute(interaction: ChatInputCommandInteraction) {
+  const t = useTranslations(interaction.guildId ?? "");
   await interaction.deferReply();
 
   const queue = useQueue();
@@ -23,10 +26,10 @@ export async function execute(interaction: ChatInputCommandInteraction) {
 
   if (!isAutoplayEnabled(queue)) {
     queue.setRepeatMode(QueueRepeatMode.AUTOPLAY);
-    title = t("en-US", "commands.autoplay.messages.enabled");
+    title = t("commands.autoplay.messages.enabled");
   } else {
     queue.setRepeatMode(QueueRepeatMode.OFF);
-    title = t("en-US", "commands.autoplay.messages.disabled");
+    title = t("commands.autoplay.messages.disabled");
   }
 
   const embedMessage = buildMessage({

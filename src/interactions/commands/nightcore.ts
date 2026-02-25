@@ -2,13 +2,15 @@ import { ChatInputCommandInteraction, SlashCommandBuilder } from "discord.js";
 import { buildMessage } from "@/utils/bot-message/buildMessage";
 import { useQueue } from "discord-player";
 import { guardReply } from "@/utils/helpers/interactionGuard";
-import { t } from "@/src/ui/translations";
+import { useTranslations } from "@/utils/hooks/useTranslations";
 
 export const data = new SlashCommandBuilder()
   .setName("nightcore")
-  .setDescription(t("en-US", "commands.nightcore.description"));
+  .setDescription("Toggle the nightcore filter on or off");
 
 export async function execute(interaction: ChatInputCommandInteraction) {
+  const t = useTranslations(interaction.guildId ?? "");
+
   await interaction.deferReply();
 
   const queue = useQueue();
@@ -23,10 +25,10 @@ export async function execute(interaction: ChatInputCommandInteraction) {
 
   if (!isNightcoreEnabled()) {
     queue.filters.ffmpeg.setFilters(["nightcore"]);
-    title = t("en-US", "commands.nightcore.messages.enabled");
+    title = t("commands.nightcore.messages.enabled");
   } else {
     queue.filters.ffmpeg.setFilters(false);
-    title = t("en-US", "commands.nightcore.messages.disabled");
+    title = t("commands.nightcore.messages.disabled");
   }
 
   const embedMessage = buildMessage({

@@ -13,7 +13,7 @@ import { musicPlayerMessage } from "@/services/musicPlayerMessage";
 import { useQueue } from "discord-player";
 import { guardReply } from "@/utils/helpers/interactionGuard";
 import { emoji } from "@/utils/constants/emojis";
-import { t } from "@/src/ui/translations";
+import { useTranslations } from "@/utils/hooks/useTranslations";
 
 export const victoryButton = new ButtonBuilder()
   .setCustomId("victory")
@@ -21,6 +21,7 @@ export const victoryButton = new ButtonBuilder()
   .setStyle(ButtonStyle.Secondary);
 
 export const execute = async (interaction: ButtonInteraction) => {
+  const t = useTranslations(interaction.guildId ?? "");
   await interaction.deferUpdate();
 
   const { guild } = interaction;
@@ -38,7 +39,7 @@ export const execute = async (interaction: ButtonInteraction) => {
 
   if (!stored) {
     const data = buildMessage({
-      title: t("en-US", "buttons.utility.queueManager.nothingToRestore"),
+      title: t("utility.queueManager.nothingToRestore"),
     });
     await musicPlayerMessage.delete();
     queueManager.setQueueType("normal");
@@ -48,7 +49,7 @@ export const execute = async (interaction: ButtonInteraction) => {
   }
 
   const data = buildMessage({
-    title: t("en-US", "buttons.utility.queueManager.restore.title"),
+    title: t("utility.queueManager.restore.title"),
     color: "info",
   });
 

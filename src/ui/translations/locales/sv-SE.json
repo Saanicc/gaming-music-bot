@@ -1,0 +1,237 @@
+{
+  "common": {
+    "error": "Error",
+    "couldNotJoinVoiceChannel": "Kunde inte ansluta till röstkanalen.",
+    "leftVoiceChat": "Lämnade röstkanalen",
+    "emptyQueue": "Kön är slut. Lägg till nya låtar för att fortsätta uppspelningen!",
+    "trackRequestedBy": "Låt begärd av {{user}} — {{userRank}}"
+  },
+  "player": {
+    "nowPlaying": "{{emoji}} Spelas nu",
+    "paused": "{{emoji}} Musik pausad",
+    "progress": "Förlopp",
+    "track": "**Låt**",
+    "trackNumber": "**{{current}}** av **{{total}}**"
+  },
+  "levelSystem": {
+    "treasure": {
+      "legendary": {
+        "title": "{{emoji}} *Legendariskt fynd!*",
+        "message": "{{user}} grävde fram en forntida relik som ger 100× XP!"
+      },
+      "epic": {
+        "title": "{{emoji}} *Episk skatt!*",
+        "message": "{{user}} hittade diamanter som ger 50× XP!"
+      },
+      "rare": {
+        "title": "{{emoji}} *Sällsynt fynd!*",
+        "message": "{{user}} upptäckte en gömd kista innehållande 25× XP!"
+      },
+      "lucky": {
+        "title": "{{emoji}} *Lyckligt fynd*",
+        "message": "{{user}} hittade en guldtacka som ger 10× XP!"
+      },
+      "small": {
+        "title": "{{emoji}} *Liten skatt*",
+        "message": "{{user}} hittade några glänsande mynt som ger 2,5× XP!"
+      }
+    },
+    "levelUp": {
+      "level": "nivå",
+      "levels": "nivåer",
+      "title": "**Nivå upp!** {{emoji}}",
+      "description": "{{user}} gick upp **{{levelsGained}} {{levelText}}** och är nu **Nivå {{level}}**!",
+      "rankMessage": "Ny rang: **{{newRank}}**!"
+    }
+  },
+  "utility": {
+    "queueManager": {
+      "restore": {
+        "title": "Återställer gammal kö..."
+      },
+      "nothingToRestore": "Inget att återställa, lämnar röstkanalen. Lägg till nya låtar för att återuppta uppspelningen!"
+    }
+  },
+  "buttons": {
+    "addTrack": {
+      "messages": {
+        "title": "Tillagd",
+        "description": "{{user}} lade till {{track}} i Boss Music-biblioteket!"
+      }
+    }
+  },
+  "commands": {
+    "leaderboard": {
+      "xp": {
+        "title": "XP-topplista",
+        "subtitle": "{{members}} medlemmar"
+      },
+      "quiz": {
+        "title": "Musikquiz-topplista",
+        "subtitle": "{{members}} medlemmar",
+        "correctAnswers": "Rätta svar: {{correctAnswers}}",
+        "wins": "Vinster: {{wins}}"
+      }
+    },
+    "loop": {
+      "all": {
+        "title": "Upprepar nu kön"
+      },
+      "current": {
+        "title": "Upprepar nu den aktuella låten"
+      },
+      "disable": {
+        "title": "Upprepning har inaktiverats"
+      }
+    },
+    "play": {
+      "boss": {
+        "music": {
+          "messages": {
+            "title": "{{emoji}} Dags att besegra fiender!"
+          }
+        }
+      },
+      "random": {
+        "playlist": {
+          "messages": {
+            "title": "Köad",
+            "description": "[{{playlist}}]({{url}}) med {{tracksText}}",
+            "randomlySelectedTracks": "{{amount}} slumpmässigt valda låtar",
+            "tracks": "{{amount}} låtar",
+            "error": "Kunde inte hitta några spellistor för genren: {{searchGenre}}."
+          }
+        },
+        "track": {
+          "messages": {
+            "title": "Köad på plats #{{position}}",
+            "errorTitle": "Fel",
+            "error": "Kunde inte hitta några låtar att spela med genre: {{searchGenre}}."
+          }
+        }
+      },
+      "query": {
+        "messages": {
+          "title": {
+            "playlist": "Köad",
+            "track": "Köad på plats #{{position}}"
+          },
+          "description": "[{{track}}]({{url}}) med {{amount}} låtar",
+          "footerText": "Inte rätt låt? Försök vara mer specifik eller ange en URL"
+        }
+      },
+      "now": {
+        "messages": {
+          "title": "Spelas omedelbart",
+          "footerText": "Inte rätt låt? Försök vara mer specifik eller ange en URL"
+        }
+      },
+      "next": {
+        "messages": {
+          "title": "Köad på plats #{{position}}",
+          "footerText": "Inte rätt låt? Försök vara mer specifik eller ange en URL"
+        }
+      }
+    },
+    "addTrack": {
+      "messages": {
+        "bossMusic": "Bossmusik",
+        "hornSound": "Hornljud",
+        "trackAdded": "Tillagd",
+        "trackAlreadyExists": "Låten finns redan",
+        "trackAddedDescription": "{{user}} lade till {{track}} i {{type}}-biblioteket!"
+      }
+    },
+    "autoplay": {
+      "messages": {
+        "enabled": "Automatisk uppspelning har aktiverats",
+        "disabled": "Automatisk uppspelning har inaktiverats"
+      }
+    },
+    "help": {
+      "messages": {
+        "title": "Kommandolista",
+        "subtitle": "Här hittar du alla tillgängliga kommandon",
+        "footerText": "{{botName}} • Spelmusik gjort enkelt"
+      }
+    },
+    "musicquiz": {
+      "messages": {
+        "title": "Musikquiz",
+        "settingUpQuiz": "Förbereder quiz...",
+        "creatingThread": "Skapar en dedikerad tråd för quizet.",
+        "threadName": "Musikquiz",
+        "numberOfRoundsPlaceholder": "Antal omgångar (valfritt)",
+        "genrePlaceholder": "Välj en genre (valfritt)",
+        "startQuiz": "Starta quiz",
+        "musicQuizReady": "🎵 Musikquiz redo",
+        "musicQuizStarted": "🎵 Musikquiz startat",
+        "genreAndRounds": "Genre: **{{genre}}**.\n\nSpelar {{rounds}} omgångar. Gör er redo!",
+        "joinVoiceChannel": "Gå med i en röstkanal, välj en genre och klicka på knappen nedan för att starta!",
+        "default": "(Standard)",
+        "errorTitle": "Fel",
+        "noVoiceChannel": "Du måste vara i en röstkanal för att starta quizet.",
+        "threadCreateFail": "Kunde inte skapa en tråd. Kontrollera mina behörigheter.",
+        "lobbyTimeout": "Quiz-lobbyn tog slut. Kör `/musicquiz` igen för att starta ett nytt quiz.",
+        "spotifyError": "Kunde inte nå Spotify. Försök igen senare.",
+        "trackPlayFail": "Misslyckades med att spela låt. Hoppar över.",
+        "voiceConnectError": "Kunde inte ansluta till röstkanalen. Kontrollera mina behörigheter.",
+        "genericError": "Något gick fel under quizet. Försök igen.",
+        "loadingTracks": "Laddar låtar...",
+        "fetchingRandomSongs": "Hämtar slumpmässiga låtar från Spotify...",
+        "couldNotFindPlaylists": "Kunde inte hitta spellistor för genren: {{genre}}.",
+        "failedToFindPlayableTracks": "Misslyckades med att hitta spelbara låtar efter flera försök.",
+        "roundTitle": "Omgång {{roundNum}}/{{rounds}}",
+        "listenCarefully": "Lyssna noga! Spelar i {{time}} sekunder...",
+        "whoIsTheArtist": "Vem är artisten?",
+        "whatIsTheTrackName": "Vad heter låten?",
+        "alreadyGuessed": "Du har redan gissat!",
+        "correctAnswer": "✅ Rätt! +{{points}} poäng",
+        "wrongAnswer": "❌ Fel!",
+        "guessNow": "Gissa nu!",
+        "timeToGuess": "Du har {{time}} sekunder!",
+        "timeIsUp": "Tiden är ute!",
+        "theAnswerWas": "Svaret var **{{answer}}**.",
+        "noOneGotIt": "Ingen gissade rätt!\nSvaret var **{{answer}}**.",
+        "scoreTable": "Poängtabell",
+        "noPointsScored": "Inga poäng samlades in.",
+        "quizFinished": "Quiz avslutat",
+        "weHaveAWinner": "🎉 Vi har en vinnare!",
+        "winner": "**Vinnare:** {{winner}} med **{{score}}** poäng!",
+        "quizResult": "Quizresultat",
+        "thanksForPlaying": "Tack för att du spelade!",
+        "inProgress": {
+          "title": "❌ Musikquiz pågår",
+          "description": "Du kan inte använda detta kommando medan ett musikquiz pågår på den här servern."
+        }
+      }
+    },
+    "nightcore": {
+      "messages": {
+        "enabled": "Nightcore-filtret har aktiverats",
+        "disabled": "Nightcore-filtret har inaktiverats"
+      }
+    },
+    "queue": {
+      "messages": {
+        "noQueue": "Ingen kö hittades",
+        "nowPlaying": "Spelas nu",
+        "upcomingTracks": "{{emoji}} Kommande låtar",
+        "noTrackPlaying": "Ingen låt spelas",
+        "noUpcomingTracks": "Inga kommande låtar i kön",
+        "footerText": "Sida {{page}}/{{totalPages}}  •  Låtar i kön: {{totalTracks}}  •  Total längd: {{totalDuration}}"
+      }
+    },
+    "setLanguage": {
+      "message": {
+        "title": "Språket uppdaterat",
+        "description": "Nu pratar jag **Svenska**!"
+      }
+    },
+    "skip": {
+      "messages": {
+        "title": "Hoppade till nästa låt i kön."
+      }
+    }
+  }
+}
