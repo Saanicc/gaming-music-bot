@@ -125,8 +125,8 @@ const setupQuizThread = async (
 ): Promise<PublicThreadChannel | null> => {
   await interaction.reply(
     buildMessage({
-      title: t("commands.musicquiz.messages.settingUpQuiz"),
-      description: t("commands.musicquiz.messages.creatingThread"),
+      title: t("commands.musicquiz.message.settingUpQuiz"),
+      description: t("commands.musicquiz.message.creatingThread"),
     })
   );
 
@@ -134,14 +134,14 @@ const setupQuizThread = async (
   try {
     const initialQuizMessage = await interaction.fetchReply();
     thread = await initialQuizMessage.startThread({
-      name: t("commands.musicquiz.messages.threadName"),
+      name: t("commands.musicquiz.message.threadName"),
       autoArchiveDuration: ThreadAutoArchiveDuration.OneHour,
     });
   } catch {
     await interaction.followUp(
       buildMessage({
-        title: t("commands.musicquiz.messages.errorTitle"),
-        description: t("commands.musicquiz.messages.threadCreateFail"),
+        title: t("commands.musicquiz.message.errorTitle"),
+        description: t("commands.musicquiz.message.threadCreateFail"),
         color: "error",
         ephemeral: true,
       })
@@ -155,12 +155,12 @@ const setupQuizThread = async (
 const buildLobbyComponents = (t: ReturnType<typeof useTranslations>) => {
   const numberOfRoundsSelect = new StringSelectMenuBuilder()
     .setCustomId("quiz_rounds_select")
-    .setPlaceholder(t("commands.musicquiz.messages.numberOfRoundsPlaceholder"))
+    .setPlaceholder(t("commands.musicquiz.message.numberOfRoundsPlaceholder"))
     .addOptions(
       [3, 4, 5, 6, 7, 8, 9, 10].map((num) => ({
         label:
           num === QUIZ_CONFIG.DEFAULT_ROUNDS
-            ? `${num} ${t("commands.musicquiz.messages.default")}`
+            ? `${num} ${t("commands.musicquiz.message.default")}`
             : num.toString(),
         value: num.toString(),
       }))
@@ -168,7 +168,7 @@ const buildLobbyComponents = (t: ReturnType<typeof useTranslations>) => {
 
   const musicQuizGenreSelect = new StringSelectMenuBuilder()
     .setCustomId("quiz_genre_select")
-    .setPlaceholder(t("commands.musicquiz.messages.genrePlaceholder"))
+    .setPlaceholder(t("commands.musicquiz.message.genrePlaceholder"))
     .addOptions(
       GENRES.map((genre) => ({
         label: truncateLabelIfNeeded(genre),
@@ -178,7 +178,7 @@ const buildLobbyComponents = (t: ReturnType<typeof useTranslations>) => {
 
   const startBtn = new ButtonBuilder()
     .setCustomId("start_quiz_btn")
-    .setLabel(t("commands.musicquiz.messages.startQuiz"))
+    .setLabel(t("commands.musicquiz.message.startQuiz"))
     .setStyle(ButtonStyle.Success);
 
   return [
@@ -197,8 +197,8 @@ const sendLobbyMessage = async (
   t: ReturnType<typeof useTranslations>
 ) => {
   const lobbyMessage = buildMessage({
-    title: t("commands.musicquiz.messages.musicQuizReady"),
-    description: t("commands.musicquiz.messages.joinVoiceChannel"),
+    title: t("commands.musicquiz.message.musicQuizReady"),
+    description: t("commands.musicquiz.message.joinVoiceChannel"),
     color: "info",
     actionRowBuilder: buildLobbyComponents(t),
   });
@@ -234,8 +234,8 @@ const handleLobbyInteractions = async (
     if (reason === "time") {
       await lobbyMsg.edit(
         buildMessage({
-          title: t("commands.musicquiz.messages.title"),
-          description: t("commands.musicquiz.messages.lobbyTimeout"),
+          title: t("commands.musicquiz.message.title"),
+          description: t("commands.musicquiz.message.lobbyTimeout"),
           color: "error",
         })
       );
@@ -266,8 +266,8 @@ const handleLobbyInteractions = async (
 
       await lobbyMsg.edit(
         buildMessage({
-          title: t("commands.musicquiz.messages.musicQuizStarted"),
-          description: t("commands.musicquiz.messages.genreAndRounds", {
+          title: t("commands.musicquiz.message.musicQuizStarted"),
+          description: t("commands.musicquiz.message.genreAndRounds", {
             genre,
             rounds: rounds.toString(),
           }),
@@ -334,8 +334,8 @@ async function runGameLoop({
 
     await thread.send(
       buildMessage({
-        title: t("commands.musicquiz.messages.loadingTracks"),
-        description: t("commands.musicquiz.messages.fetchingRandomSongs"),
+        title: t("commands.musicquiz.message.loadingTracks"),
+        description: t("commands.musicquiz.message.fetchingRandomSongs"),
       })
     );
 
@@ -344,8 +344,8 @@ async function runGameLoop({
     if (!spotifyPlaylists?.length) {
       await thread.send(
         buildMessage({
-          title: t("commands.musicquiz.messages.errorTitle"),
-          description: t("commands.musicquiz.messages.couldNotFindPlaylists", {
+          title: t("commands.musicquiz.message.errorTitle"),
+          description: t("commands.musicquiz.message.couldNotFindPlaylists", {
             genre,
           }),
           color: "error",
@@ -360,8 +360,8 @@ async function runGameLoop({
       } catch (error) {
         await thread.send(
           buildMessage({
-            title: t("commands.musicquiz.messages.errorTitle"),
-            description: t("commands.musicquiz.messages.voiceConnectError"),
+            title: t("commands.musicquiz.message.errorTitle"),
+            description: t("commands.musicquiz.message.voiceConnectError"),
             color: "error",
           })
         );
@@ -376,8 +376,8 @@ async function runGameLoop({
     console.error("Game loop error:", error);
     await thread.send(
       buildMessage({
-        title: t("commands.musicquiz.messages.errorTitle"),
-        description: t("commands.musicquiz.messages.genericError"),
+        title: t("commands.musicquiz.message.errorTitle"),
+        description: t("commands.musicquiz.message.genericError"),
         color: "error",
       })
     );
@@ -471,10 +471,8 @@ const fetchPlaylistTracks = async (
   if (attempt >= QUIZ_CONFIG.MAX_PLAYLIST_RETRIES) {
     await thread.send(
       buildMessage({
-        title: t("commands.musicquiz.messages.errorTitle"),
-        description: t(
-          "commands.musicquiz.messages.failedToFindPlayableTracks"
-        ),
+        title: t("commands.musicquiz.message.errorTitle"),
+        description: t("commands.musicquiz.message.failedToFindPlayableTracks"),
         color: "error",
       })
     );
@@ -520,11 +518,11 @@ const playQuizRounds = async (
 
     await context.thread.send(
       buildMessage({
-        title: t("commands.musicquiz.messages.roundTitle", {
+        title: t("commands.musicquiz.message.roundTitle", {
           roundNum: roundNum.toString(),
           rounds: rounds.toString(),
         }),
-        description: t("commands.musicquiz.messages.listenCarefully", {
+        description: t("commands.musicquiz.message.listenCarefully", {
           time: (QUIZ_CONFIG.TIME_TO_PLAY_SONG / 1000).toString(),
         }),
         color: "info",
@@ -539,8 +537,8 @@ const playQuizRounds = async (
     } catch (error) {
       await context.thread.send(
         buildMessage({
-          title: t("commands.musicquiz.messages.errorTitle"),
-          description: t("commands.musicquiz.messages.trackPlayFail"),
+          title: t("commands.musicquiz.message.errorTitle"),
+          description: t("commands.musicquiz.message.trackPlayFail"),
           color: "error",
         })
       );
@@ -558,7 +556,7 @@ const playQuizRounds = async (
       allTracks,
       {
         property: "author",
-        questionText: t("commands.musicquiz.messages.whoIsTheArtist"),
+        questionText: t("commands.musicquiz.message.whoIsTheArtist"),
       },
       t
     );
@@ -571,7 +569,7 @@ const playQuizRounds = async (
       allTracks,
       {
         property: "cleanTitle",
-        questionText: t("commands.musicquiz.messages.whatIsTheTrackName"),
+        questionText: t("commands.musicquiz.message.whatIsTheTrackName"),
       },
       t
     );
@@ -610,7 +608,7 @@ const handleAnswerSubmission = async (
 ) => {
   if (answeredUserIds.has(interaction.user.id)) {
     await interaction.reply({
-      content: t("commands.musicquiz.messages.alreadyGuessed"),
+      content: t("commands.musicquiz.message.alreadyGuessed"),
       flags: MessageFlags.Ephemeral,
     });
     return;
@@ -642,14 +640,14 @@ const handleAnswerSubmission = async (
     correctUserIds.push(userId);
 
     await interaction.reply({
-      content: t("commands.musicquiz.messages.correctAnswer", {
+      content: t("commands.musicquiz.message.correctAnswer", {
         points: points.toString(),
       }),
       flags: MessageFlags.Ephemeral,
     });
   } else {
     await interaction.reply({
-      content: t("commands.musicquiz.messages.wrongAnswer"),
+      content: t("commands.musicquiz.message.wrongAnswer"),
       flags: MessageFlags.Ephemeral,
     });
   }
@@ -673,9 +671,9 @@ const askQuestion = async (
 
   const questionMsg = await context.thread.send(
     buildMessage({
-      title: t("commands.musicquiz.messages.guessNow"),
+      title: t("commands.musicquiz.message.guessNow"),
       description: `**${questionText}**`,
-      footerText: t("commands.musicquiz.messages.timeToGuess", {
+      footerText: t("commands.musicquiz.message.timeToGuess", {
         time: (QUIZ_CONFIG.QUESTION_TIME / 1000).toString(),
       }),
       color: "info",
@@ -720,9 +718,9 @@ const askQuestion = async (
 
         await questionMsg.edit(
           buildMessage({
-            title: t("commands.musicquiz.messages.guessNow"),
+            title: t("commands.musicquiz.message.guessNow"),
             description: `**${questionText}**`,
-            footerText: t("commands.musicquiz.messages.timeIsUp"),
+            footerText: t("commands.musicquiz.message.timeIsUp"),
             color: "info",
             actionRowBuilder: [disabledRow],
           })
@@ -732,10 +730,10 @@ const askQuestion = async (
 
         let resultDesc =
           correctUserIds.length === 0
-            ? t("commands.musicquiz.messages.noOneGotIt", {
+            ? t("commands.musicquiz.message.noOneGotIt", {
                 answer: correctAnswer,
               })
-            : t("commands.musicquiz.messages.theAnswerWas", {
+            : t("commands.musicquiz.message.theAnswerWas", {
                 answer: correctAnswer,
               });
 
@@ -752,19 +750,19 @@ const askQuestion = async (
               const gained = current - prev;
               return `${idx + 1}. <@${id}>: ${current} ${
                 gained > 0
-                  ? t("commands.musicquiz.messages.pointsDelta", {
+                  ? t("commands.musicquiz.message.pointsDelta", {
                       points: gained.toString(),
                     })
                   : ""
               }`;
             })
             .join("\n");
-          resultDesc += `\n\n${t("commands.musicquiz.messages.scoreTable")}\n${names}`;
+          resultDesc += `\n\n${t("commands.musicquiz.message.scoreTable")}\n${names}`;
         }
 
         await context.thread.send(
           buildMessage({
-            title: t("commands.musicquiz.messages.timeIsUp"),
+            title: t("commands.musicquiz.message.timeIsUp"),
             description: resultDesc,
             color: resultColor,
           })
@@ -786,26 +784,26 @@ const declareWinner = async (
 ) => {
   const sortedScores = [...scores.entries()].sort((a, b) => b[1] - a[1]);
 
-  let description = t("commands.musicquiz.messages.noPointsScored");
-  let title = t("commands.musicquiz.messages.quizFinished");
+  let description = t("commands.musicquiz.message.noPointsScored");
+  let title = t("commands.musicquiz.message.quizFinished");
   let color: ColorType = "info";
 
   if (sortedScores.length > 0) {
     const [winnerId, winnerScore] = sortedScores[0];
-    title = t("commands.musicquiz.messages.weHaveAWinner");
+    title = t("commands.musicquiz.message.weHaveAWinner");
     color = "success";
     description =
-      t("commands.musicquiz.messages.winner", {
+      t("commands.musicquiz.message.winner", {
         winner: `<@${winnerId}>`,
         score: winnerScore.toString(),
       }) +
       "\n\n" +
-      t("commands.musicquiz.messages.quizResult") +
+      t("commands.musicquiz.message.quizResult") +
       "\n" +
       sortedScores
         .map(
           ([id, s], idx) =>
-            `${idx + 1}. <@${id}>: ${t("commands.musicquiz.messages.points", {
+            `${idx + 1}. <@${id}>: ${t("commands.musicquiz.message.points", {
               points: s.toString(),
             })}`
         )
@@ -832,7 +830,7 @@ const declareWinner = async (
       title,
       description,
       color,
-      footerText: t("commands.musicquiz.messages.thanksForPlaying"),
+      footerText: t("commands.musicquiz.message.thanksForPlaying"),
     })
   );
 };

@@ -65,7 +65,7 @@ export const execute = async ({
     queueManager.setQueueType("boss");
 
     const data = buildMessage({
-      title: t("commands.play.boss.music.messages.title", {
+      title: t("commands.play.boss.music.message.title", {
         emoji: emoji.fight,
       }),
       titleFontSize: "lg",

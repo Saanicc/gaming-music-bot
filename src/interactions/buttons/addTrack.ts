@@ -58,8 +58,8 @@ export const execute = async (interaction: ButtonInteraction) => {
   }
 
   const data = buildMessage({
-    title: t("buttons.addTrack.messages.title"),
-    description: t("buttons.addTrack.messages.description", {
+    title: t("buttons.addTrack.message.title"),
+    description: t("buttons.addTrack.message.description", {
       user: interaction.user.toString(),
       track: getFormattedTrackDescription(queue.currentTrack, queue),
     }),

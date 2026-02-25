@@ -43,14 +43,14 @@ export const execute = async ({
       queue.addTrack(result.playlist?.tracks ?? []);
 
       message = buildMessage({
-        title: t("commands.play.query.messages.title.playlist"),
-        description: t("commands.play.query.messages.description", {
+        title: t("commands.play.query.message.title.playlist"),
+        description: t("commands.play.query.message.description", {
           track: result.playlist?.title ?? "",
           url: result.playlist?.url ?? "",
           amount: result.playlist?.tracks.length.toString() ?? "",
         }),
         thumbnail: getThumbnail(result.playlist),
-        footerText: t("commands.play.query.messages.footerText"),
+        footerText: t("commands.play.query.message.footerText"),
         color: "queue",
       });
     } else {
@@ -58,12 +58,12 @@ export const execute = async ({
       queue.addTrack(track);
 
       message = buildMessage({
-        title: t("commands.play.query.messages.title.track", {
+        title: t("commands.play.query.message.title.track", {
           position: queue.tracks.size.toString(),
         }),
         description: getFormattedTrackDescription(track, queue),
         thumbnail: getThumbnail(result.tracks[0]),
-        footerText: t("commands.play.query.messages.footerText"),
+        footerText: t("commands.play.query.message.footerText"),
         color: "queue",
       });
     }

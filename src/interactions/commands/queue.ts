@@ -60,9 +60,9 @@ export async function renderQueue(
             )}`
         )
         .join("\n")
-    : t("commands.queue.messages.noUpcomingTracks");
+    : t("commands.queue.message.noUpcomingTracks");
 
-  const footerText = t("commands.queue.messages.footerText", {
+  const footerText = t("commands.queue.message.footerText", {
     page: page.toString(),
     totalPages: totalPages.toString(),
     totalTracks: totalTracks.toString(),
@@ -97,12 +97,12 @@ export async function renderQueue(
   );
 
   const data = buildMessage({
-    title: `${emoji.play} ${t("commands.queue.messages.nowPlaying")}`,
+    title: `${emoji.play} ${t("commands.queue.message.nowPlaying")}`,
     thumbnail: getThumbnail(currentTrack),
     description: `
 ${getFormattedTrackDescription(currentTrack, queue)}
 
-### ${t("commands.queue.messages.upcomingTracks", {
+### ${t("commands.queue.message.upcomingTracks", {
       emoji: emoji.queue,
     })}
 ${tracksList}

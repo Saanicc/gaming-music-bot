@@ -26,10 +26,10 @@ export async function execute(interaction: ChatInputCommandInteraction) {
 
   if (!isAutoplayEnabled(queue)) {
     queue.setRepeatMode(QueueRepeatMode.AUTOPLAY);
-    title = t("commands.autoplay.messages.enabled");
+    title = t("commands.autoplay.message.enabled");
   } else {
     queue.setRepeatMode(QueueRepeatMode.OFF);
-    title = t("commands.autoplay.messages.disabled");
+    title = t("commands.autoplay.message.disabled");
   }
 
   const embedMessage = buildMessage({

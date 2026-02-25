@@ -42,9 +42,9 @@ export async function execute({
     if (!tracks.length) {
       return interaction.followUp(
         buildMessage({
-          title: t("commands.play.random.track.messages.errorTitle"),
-          description: t("commands.play.random.track.messages.error", {
-            searchGenre,
+          title: t("commands.play.random.track.message.errorTitle"),
+          description: t("commands.play.random.track.message.error", {
+            genre: searchGenre,
           }),
           color: "error",
         })
@@ -55,7 +55,7 @@ export async function execute({
     queue.addTrack(track);
 
     message = buildMessage({
-      title: t("commands.play.random.track.messages.title", {
+      title: t("commands.play.random.track.message.title", {
         position: queue.tracks.size.toString(),
       }),
       description: getFormattedTrackDescription(track, queue),

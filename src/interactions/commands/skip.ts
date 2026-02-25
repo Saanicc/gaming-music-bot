@@ -19,7 +19,7 @@ export async function execute(interaction: ChatInputCommandInteraction) {
   if (queue.node.isPaused()) queue.node.resume();
 
   const data = buildMessage({
-    title: t("commands.skip.messages.title"),
+    title: t("commands.skip.message.title"),
     color: "info",
   });
   return interaction.reply(data);

@@ -110,7 +110,7 @@
   },
   "buttons": {
     "addTrack": {
-      "messages": {
+      "message": {
         "title": "Tillagd",
         "description": "{{user}} lade till {{track}} i Boss Music-biblioteket!"
       }
@@ -143,14 +143,14 @@
     "play": {
       "boss": {
         "music": {
-          "messages": {
+          "message": {
             "title": "{{emoji}} Dags att besegra fiender! {{emoji}}"
           }
         }
       },
       "random": {
         "playlist": {
-          "messages": {
+          "message": {
             "title": "Köad",
             "description": "[{{playlist}}]({{url}}) med {{tracksText}}",
             "randomlySelectedTracks": "{{amount}} slumpmässigt valda låtar",
@@ -159,7 +159,7 @@
           }
         },
         "track": {
-          "messages": {
+          "message": {
             "title": "Köad på plats #{{position}}",
             "errorTitle": "Fel",
             "error": "Kunde inte hitta några låtar att spela med genre: {{genre}}."
@@ -167,7 +167,7 @@
         }
       },
       "query": {
-        "messages": {
+        "message": {
           "title": {
             "playlist": "Köad",
             "track": "Köad på plats #{{position}}"
@@ -177,20 +177,20 @@
         }
       },
       "now": {
-        "messages": {
+        "message": {
           "title": "Spelas omedelbart",
           "footerText": "Inte rätt låt? Försök vara mer specifik eller ange en URL"
         }
       },
       "next": {
-        "messages": {
+        "message": {
           "title": "Köad på plats #{{position}}",
           "footerText": "Inte rätt låt? Försök vara mer specifik eller ange en URL"
         }
       }
     },
     "addTrack": {
-      "messages": {
+      "message": {
         "bossMusic": "Bossmusik",
         "hornSound": "Hornljud",
         "trackAdded": "Tillagd",
@@ -199,20 +199,20 @@
       }
     },
     "autoplay": {
-      "messages": {
+      "message": {
         "enabled": "Automatisk uppspelning har aktiverats",
         "disabled": "Automatisk uppspelning har inaktiverats"
       }
     },
     "help": {
-      "messages": {
+      "message": {
         "title": "Kommandolista",
         "subtitle": "Här hittar du alla tillgängliga kommandon",
         "footerText": "{{botName}} • Spelmusik gjort enkelt"
       }
     },
     "musicquiz": {
-      "messages": {
+      "message": {
         "title": "Musikquiz",
         "settingUpQuiz": "Förbereder quiz...",
         "creatingThread": "Skapar en dedikerad tråd för quizet.",
@@ -265,13 +265,13 @@
       }
     },
     "nightcore": {
-      "messages": {
+      "message": {
         "enabled": "Nightcore-filtret har aktiverats",
         "disabled": "Nightcore-filtret har inaktiverats"
       }
     },
     "queue": {
-      "messages": {
+      "message": {
         "noQueue": "Ingen kö hittades",
         "nowPlaying": "Spelas nu",
         "upcomingTracks": "{{emoji}} Kommande låtar",
@@ -287,7 +287,7 @@
       }
     },
     "skip": {
-      "messages": {
+      "message": {
         "title": "Hoppade till nästa låt i kön."
       }
     }

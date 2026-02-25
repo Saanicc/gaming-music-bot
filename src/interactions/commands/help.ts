@@ -67,8 +67,8 @@ export async function execute(interaction: ChatInputCommandInteraction) {
 
   const builder = new HelpBuilder()
     .setHeader({
-      title: t("commands.help.messages.title"),
-      subtitle: t("commands.help.messages.subtitle"),
+      title: t("commands.help.message.title"),
+      subtitle: t("commands.help.message.subtitle"),
       avatar: interaction.client.user.displayAvatarURL({
         extension: "png",
         size: 256,
@@ -76,7 +76,7 @@ export async function execute(interaction: ChatInputCommandInteraction) {
     })
     .setCommands(commandList)
     .setFooterText(
-      t("commands.help.messages.footerText", {
+      t("commands.help.message.footerText", {
         botName: interaction.client.user.username,
       })
     );

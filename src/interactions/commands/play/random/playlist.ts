@@ -40,7 +40,7 @@ export async function execute({
       return interaction.followUp(
         buildMessage({
           title: t("common.error"),
-          description: t("commands.play.random.playlist.messages.error", {
+          description: t("commands.play.random.playlist.message.error", {
             genre: searchGenre,
           }),
           color: "error",
@@ -62,7 +62,7 @@ export async function execute({
       return interaction.followUp(
         buildMessage({
           title: t("common.error"),
-          description: t("commands.play.random.playlist.messages.error", {
+          description: t("commands.play.random.playlist.message.error", {
             genre: searchGenre,
           }),
           color: "error",
@@ -76,7 +76,7 @@ export async function execute({
       return interaction.followUp(
         buildMessage({
           title: t("common.error"),
-          description: t("commands.play.random.track.messages.error", {
+          description: t("commands.play.random.track.message.error", {
             genre: searchGenre,
           }),
           color: "error",
@@ -94,16 +94,16 @@ export async function execute({
     queue.tracks.shuffle();
 
     const tracksText = amountOfTracks
-      ? t("commands.play.random.playlist.messages.randomlySelectedTracks", {
+      ? t("commands.play.random.playlist.message.randomlySelectedTracks", {
           amount: tracks.length.toString(),
         })
-      : t("commands.play.random.playlist.messages.tracks", {
+      : t("commands.play.random.playlist.message.tracks", {
           amount: tracks.length.toString(),
         });
 
     message = buildMessage({
-      title: t("commands.play.random.playlist.messages.title"),
-      description: t("commands.play.random.playlist.messages.description", {
+      title: t("commands.play.random.playlist.message.title"),
+      description: t("commands.play.random.playlist.message.description", {
         playlist: playlist.title,
         url: playlist.url,
         tracksText,

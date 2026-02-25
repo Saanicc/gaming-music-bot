@@ -40,10 +40,10 @@ export const execute = async ({
     queue.insertTrack(track);
 
     const message = buildMessage({
-      title: t("commands.play.now.messages.title"),
+      title: t("commands.play.now.message.title"),
       description: getFormattedTrackDescription(track, queue),
       thumbnail: getThumbnail(result.tracks[0]),
-      footerText: t("commands.play.now.messages.footerText"),
+      footerText: t("commands.play.now.message.footerText"),
       color: "queue",
     });
 

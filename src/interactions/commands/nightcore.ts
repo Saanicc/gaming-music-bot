@@ -25,10 +25,10 @@ export async function execute(interaction: ChatInputCommandInteraction) {
 
   if (!isNightcoreEnabled()) {
     queue.filters.ffmpeg.setFilters(["nightcore"]);
-    title = t("commands.nightcore.messages.enabled");
+    title = t("commands.nightcore.message.enabled");
   } else {
     queue.filters.ffmpeg.setFilters(false);
-    title = t("commands.nightcore.messages.disabled");
+    title = t("commands.nightcore.message.disabled");
   }
 
   const embedMessage = buildMessage({

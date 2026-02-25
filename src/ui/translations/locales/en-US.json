@@ -110,7 +110,7 @@
   },
   "buttons": {
     "addTrack": {
-      "messages": {
+      "message": {
         "title": "Added successfully",
         "description": "{{user}} added {{track}} to the Boss Music library!"
       }
@@ -143,14 +143,14 @@
     "play": {
       "boss": {
         "music": {
-          "messages": {
+          "message": {
             "title": "{{emoji}} Time to slay some enemies! {{emoji}}"
           }
         }
       },
       "random": {
         "playlist": {
-          "messages": {
+          "message": {
             "title": "Queued",
             "description": "[{{playlist}}]({{url}}) with {{tracksText}}",
             "randomlySelectedTracks": "{{amount}} randomly selected tracks",
@@ -159,15 +159,15 @@
           }
         },
         "track": {
-          "messages": {
+          "message": {
             "title": "Queued at position #{{position}}",
             "errorTitle": "Error",
-            "error": "Could not find any track(s) to play with genre: {{searchGenre}}."
+            "error": "Could not find any track(s) to play with genre: {{genre}}."
           }
         }
       },
       "query": {
-        "messages": {
+        "message": {
           "title": {
             "playlist": "Queued",
             "track": "Queued at position #{{position}}"
@@ -177,20 +177,20 @@
         }
       },
       "now": {
-        "messages": {
+        "message": {
           "title": "Will play instantly",
           "footerText": "Not the correct track? Try being more specific or enter a URL"
         }
       },
       "next": {
-        "messages": {
+        "message": {
           "title": "Queued at position #{{position}}",
           "footerText": "Not the correct track? Try being more specific or enter a URL"
         }
       }
     },
     "addTrack": {
-      "messages": {
+      "message": {
         "bossMusic": "Boss Music",
         "hornSound": "Horn Sound",
         "trackAdded": "Added successfully",
@@ -199,20 +199,20 @@
       }
     },
     "autoplay": {
-      "messages": {
+      "message": {
         "enabled": "Autoplay has been enabled",
         "disabled": "Autoplay has been disabled"
       }
     },
     "help": {
-      "messages": {
+      "message": {
         "title": "Command List",
         "subtitle": "Here you find all available commands",
         "footerText": "{{botName}} • Gaming music made simple"
       }
     },
     "musicquiz": {
-      "messages": {
+      "message": {
         "title": "Music Quiz",
         "settingUpQuiz": "Setting up Quiz...",
         "creatingThread": "Creating a dedicated thread for the quiz.",
@@ -265,13 +265,13 @@
       }
     },
     "nightcore": {
-      "messages": {
+      "message": {
         "enabled": "Nightcore filter has been enabled",
         "disabled": "Nightcore filter has been disabled"
       }
     },
     "queue": {
-      "messages": {
+      "message": {
         "noQueue": "No queue found",
         "nowPlaying": "Now Playing",
         "upcomingTracks": "{{emoji}} Upcoming Tracks",
@@ -287,7 +287,7 @@
       }
     },
     "skip": {
-      "messages": {
+      "message": {
         "title": "Skipped to the next track in queue."
       }
     }

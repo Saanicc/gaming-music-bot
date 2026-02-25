@@ -83,14 +83,14 @@ export const execute = async (interaction: ChatInputCommandInteraction) => {
   }
 
   const data = buildMessage({
-    title: t("commands.addTrack.messages.trackAdded"),
-    description: t("commands.addTrack.messages.trackAddedDescription", {
+    title: t("commands.addTrack.message.trackAdded"),
+    description: t("commands.addTrack.message.trackAddedDescription", {
       user: interaction.user.toString(),
       track: getFormattedTrackDescription(result.tracks[0], queue),
       type:
         selectedType === "song"
-          ? t("commands.addTrack.messages.bossMusic")
-          : t("commands.addTrack.messages.hornSound"),
+          ? t("commands.addTrack.message.bossMusic")
+          : t("commands.addTrack.message.hornSound"),
     }),
     thumbnail: getThumbnail(result.tracks[0]),
     color: "success",
