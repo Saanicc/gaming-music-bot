@@ -4,12 +4,15 @@ import { getRankTitleWithEmoji } from "@/modules/rankSystem";
 import { buildMessage } from "../bot-message/buildMessage";
 import { getTreasureInfo } from "./getTreasureMessage";
 import { emoji } from "../constants/emojis";
+import { useTranslations } from "../hooks/useTranslations";
 
 export const updateUserLevel = async (
   interaction: CommandInteraction | ButtonInteraction,
   guildId: string,
   command: XPGrantingCommand
 ) => {
+  const t = useTranslations(guildId);
+
   const {
     user,
     gainedXP,
@@ -23,7 +26,11 @@ export const updateUserLevel = async (
   if (noXP) return; // cooldown
 
   if (treasure) {
-    const treasureInfo = getTreasureInfo(interaction.user.toString(), gainedXP);
+    const treasureInfo = getTreasureInfo(
+      interaction.user.toString(),
+      gainedXP,
+      t
+    );
     if (!treasureInfo) return;
 
     const { title, description } = treasureInfo;
@@ -40,14 +47,24 @@ export const updateUserLevel = async (
 
     let rankMessage = "";
     if (oldRank !== newRank) {
-      rankMessage = `\nNew rank: **${newRank}**!`;
+      rankMessage = t("levelSystem.levelUp.rankMessage", {
+        newRank,
+      });
     }
 
     const message = buildMessage({
-      title: `${emoji.levelup} Level up! ${emoji.levelup}`,
-      description: `${interaction.user.toString()} gained **${levelsGained} ${
-        levelsGained > 1 ? "levels" : "level"
-      }** and is now **Level ${user.level}**!${rankMessage}`,
+      title: t("levelSystem.levelUp.title", {
+        emoji: emoji.levelup,
+      }),
+      description: `${t("levelSystem.levelUp.description", {
+        user: interaction.user.toString(),
+        levelsGained: levelsGained.toString(),
+        level: user.level.toString(),
+        levelText:
+          levelsGained > 1
+            ? t("levelSystem.levelUp.levels")
+            : t("levelSystem.levelUp.level"),
+      })}${rankMessage}`,
     });
     await (interaction.channel as TextChannel).send(message);
   }

@@ -1,6 +1,11 @@
 import { xpEmoji } from "../constants/emojis";
+import { useTranslations } from "../hooks/useTranslations";
 
-export const getTreasureInfo = (userId: string, gainedXP: number) => {
+export const getTreasureInfo = (
+  userId: string,
+  gainedXP: number,
+  t: ReturnType<typeof useTranslations>
+) => {
   if (!gainedXP) return;
 
   let title: string;
@@ -8,24 +13,44 @@ export const getTreasureInfo = (userId: string, gainedXP: number) => {
 
   switch (true) {
     case gainedXP >= 200:
-      title = `${xpEmoji.legendary} *LEGENDARY FIND!*`;
-      message = `${userId} unearthed an ancient relic granting 100× XP!`;
+      title = t("levelSystem.treasure.legendary.title", {
+        emoji: xpEmoji.legendary,
+      });
+      message = t("levelSystem.treasure.legendary.message", {
+        user: userId,
+      });
       break;
     case gainedXP >= 100:
-      title = `${xpEmoji.epic} *Epic Treasure!*`;
-      message = `${userId} struck diamonds granting 50× XP!`;
+      title = t("levelSystem.treasure.epic.title", {
+        emoji: xpEmoji.epic,
+      });
+      message = t("levelSystem.treasure.epic.message", {
+        user: userId,
+      });
       break;
     case gainedXP >= 50:
-      title = `${xpEmoji.rare} *Rare Find!*`;
-      message = `${userId} discovered a hidden chest containing 25× XP!`;
+      title = t("levelSystem.treasure.rare.title", {
+        emoji: xpEmoji.rare,
+      });
+      message = t("levelSystem.treasure.rare.message", {
+        user: userId,
+      });
       break;
     case gainedXP >= 20:
-      title = `${xpEmoji.gold} *Lucky Find*`;
-      message = `${userId} found a golden ingot granting 10× XP!`;
+      title = t("levelSystem.treasure.lucky.title", {
+        emoji: xpEmoji.gold,
+      });
+      message = t("levelSystem.treasure.lucky.message", {
+        user: userId,
+      });
       break;
     default:
-      title = `${xpEmoji.coins} *Small Treasure*`;
-      message = `${userId} found some shiny coins granting 2.5× XP!`;
+      title = t("levelSystem.treasure.small.title", {
+        emoji: xpEmoji.coins,
+      });
+      message = t("levelSystem.treasure.small.message", {
+        user: userId,
+      });
   }
 
   return {

@@ -13,6 +13,7 @@ import { getFormattedTrackDescription } from "@/utils/helpers/getFormattedTrackD
 import { emoji } from "@/utils/constants/emojis";
 import { getThumbnail } from "@/utils/helpers/utils";
 import { guardReply } from "@/utils/helpers/interactionGuard";
+import { useTranslations } from "@/utils/hooks/useTranslations";
 
 export const data = new SlashCommandBuilder()
   .setName("queue")
@@ -23,13 +24,16 @@ const TRACKS_PER_PAGE = 10;
 export async function execute(
   interaction: ChatInputCommandInteraction | ButtonInteraction
 ) {
-  await renderQueue(interaction, 1, "reply");
+  const t = useTranslations(interaction.guildId ?? "");
+
+  await renderQueue(interaction, 1, "reply", t);
 }
 
 export async function renderQueue(
   interaction: ChatInputCommandInteraction | ButtonInteraction,
   page: number,
-  mode: "reply" | "update" = "reply"
+  mode: "reply" | "update" = "reply",
+  t: ReturnType<typeof useTranslations>
 ) {
   const queue = useQueue();
 
@@ -56,9 +60,14 @@ export async function renderQueue(
             )}`
         )
         .join("\n")
-    : "No upcoming tracks in queue.";
+    : t("commands.queue.message.noUpcomingTracks");
 
-  const footerText = `Page ${page}/${totalPages}  •  Tracks in queue: ${totalTracks}  •  Total duration: ${queue.durationFormatted}`;
+  const footerText = t("commands.queue.message.footerText", {
+    page: page.toString(),
+    totalPages: totalPages.toString(),
+    totalTracks: totalTracks.toString(),
+    totalDuration: queue.durationFormatted,
+  });
 
   const row = new ActionRowBuilder<ButtonBuilder>().addComponents(
     new ButtonBuilder()
@@ -88,12 +97,14 @@ export async function renderQueue(
   );
 
   const data = buildMessage({
-    title: `${emoji.play} Now Playing`,
+    title: `${emoji.play} ${t("commands.queue.message.nowPlaying")}`,
     thumbnail: getThumbnail(currentTrack),
     description: `
 ${getFormattedTrackDescription(currentTrack, queue)}
 
-**Upcoming Tracks:**
+### ${t("commands.queue.message.upcomingTracks", {
+      emoji: emoji.queue,
+    })}
 ${tracksList}
     `,
     color: "queue",

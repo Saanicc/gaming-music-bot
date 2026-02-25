@@ -7,6 +7,7 @@ import { getThumbnail } from "@/utils/helpers/utils";
 import { Player, GuildQueue } from "discord-player";
 import { joinVoiceChannel } from "@/utils/helpers/joinVoiceChannel";
 import { guardReply } from "@/utils/helpers/interactionGuard";
+import { useTranslations } from "@/utils/hooks/useTranslations";
 
 interface ExecutePlayQueryArgs {
   interaction: ChatInputCommandInteraction;
@@ -23,6 +24,8 @@ export const execute = async ({
   query,
   voiceChannel,
 }: ExecutePlayQueryArgs) => {
+  const t = useTranslations(interaction.guildId ?? "");
+
   const guild = voiceChannel.guild;
 
   try {
@@ -40,11 +43,14 @@ export const execute = async ({
       queue.addTrack(result.playlist?.tracks ?? []);
 
       message = buildMessage({
-        title: `Queued`,
-        description: `[${result.playlist?.title}](${result.playlist?.url}) with ${result.playlist?.tracks.length} tracks`,
+        title: t("commands.play.query.message.title.playlist"),
+        description: t("commands.play.query.message.description", {
+          track: result.playlist?.title ?? "",
+          url: result.playlist?.url ?? "",
+          amount: result.playlist?.tracks.length.toString() ?? "",
+        }),
         thumbnail: getThumbnail(result.playlist),
-        footerText:
-          "Not the correct track? Try being more specific or enter a URL",
+        footerText: t("commands.play.query.message.footerText"),
         color: "queue",
       });
     } else {
@@ -52,11 +58,12 @@ export const execute = async ({
       queue.addTrack(track);
 
       message = buildMessage({
-        title: `Queued at position #${queue.tracks.size}`,
-        description: `${getFormattedTrackDescription(track, queue)}`,
+        title: t("commands.play.query.message.title.track", {
+          position: queue.tracks.size.toString(),
+        }),
+        description: getFormattedTrackDescription(track, queue),
         thumbnail: getThumbnail(result.tracks[0]),
-        footerText:
-          "Not the correct track? Try being more specific or enter a URL",
+        footerText: t("commands.play.query.message.footerText"),
         color: "queue",
       });
     }

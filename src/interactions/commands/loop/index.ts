@@ -2,6 +2,7 @@ import { ChatInputCommandInteraction, SlashCommandBuilder } from "discord.js";
 import { buildMessage } from "@/utils/bot-message/buildMessage";
 import { QueueRepeatMode, useQueue } from "discord-player";
 import { guardReply } from "@/utils/helpers/interactionGuard";
+import { useTranslations } from "@/utils/hooks/useTranslations";
 
 export const data = new SlashCommandBuilder()
   .setName("loop")
@@ -20,6 +21,8 @@ export const data = new SlashCommandBuilder()
   );
 
 export async function execute(interaction: ChatInputCommandInteraction) {
+  const t = useTranslations(interaction.guildId ?? "");
+
   const subcommand = interaction.options.getSubcommand(true);
   const queue = useQueue();
 
@@ -28,12 +31,18 @@ export async function execute(interaction: ChatInputCommandInteraction) {
   await interaction.deferReply();
 
   const modeMap: Record<string, { mode: QueueRepeatMode; title: string }> = {
-    all: { mode: QueueRepeatMode.QUEUE, title: "Now looping the queue" },
+    all: {
+      mode: QueueRepeatMode.QUEUE,
+      title: t("commands.loop.all.title"),
+    },
     current: {
       mode: QueueRepeatMode.TRACK,
-      title: "Now looping the current track",
+      title: t("commands.loop.current.title"),
     },
-    disable: { mode: QueueRepeatMode.OFF, title: "Looping has been disabled" },
+    disable: {
+      mode: QueueRepeatMode.OFF,
+      title: t("commands.loop.disable.title"),
+    },
   };
 
   const entry = modeMap[subcommand];

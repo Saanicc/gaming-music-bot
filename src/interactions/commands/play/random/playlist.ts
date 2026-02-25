@@ -6,6 +6,7 @@ import { getThumbnail } from "@/utils/helpers/utils";
 import { searchSpotifyPlaylists } from "@/src/api/spotify";
 import { joinVoiceChannel } from "@/utils/helpers/joinVoiceChannel";
 import { guardReply } from "@/utils/helpers/interactionGuard";
+import { useTranslations } from "@/utils/hooks/useTranslations";
 
 interface ExecuteParams {
   interaction: ChatInputCommandInteraction;
@@ -24,6 +25,8 @@ export async function execute({
   queue,
   voiceChannel,
 }: ExecuteParams) {
+  const t = useTranslations(interaction.guildId ?? "");
+
   try {
     const searchGenre = genre
       ? genre
@@ -36,8 +39,10 @@ export async function execute({
     if (!spotifyPlaylists.length) {
       return interaction.followUp(
         buildMessage({
-          title: "Error",
-          description: `Could not find any playlists for genre: ${searchGenre}.`,
+          title: t("common.error"),
+          description: t("commands.play.random.playlist.message.error", {
+            genre: searchGenre,
+          }),
           color: "error",
         })
       );
@@ -56,8 +61,10 @@ export async function execute({
     if (!playlist) {
       return interaction.followUp(
         buildMessage({
-          title: "Error",
-          description: `Could not find any playlist for genre: ${searchGenre}.`,
+          title: t("common.error"),
+          description: t("commands.play.random.playlist.message.error", {
+            genre: searchGenre,
+          }),
           color: "error",
         })
       );
@@ -68,8 +75,10 @@ export async function execute({
     if (!tracks.length) {
       return interaction.followUp(
         buildMessage({
-          title: "Error",
-          description: `Could not find any track(s) to play with genre: ${searchGenre}.`,
+          title: t("common.error"),
+          description: t("commands.play.random.track.message.error", {
+            genre: searchGenre,
+          }),
           color: "error",
         })
       );
@@ -85,12 +94,20 @@ export async function execute({
     queue.tracks.shuffle();
 
     const tracksText = amountOfTracks
-      ? `${tracks.length} randomly selected tracks`
-      : `${tracks.length} tracks`;
+      ? t("commands.play.random.playlist.message.randomlySelectedTracks", {
+          amount: tracks.length.toString(),
+        })
+      : t("commands.play.random.playlist.message.tracks", {
+          amount: tracks.length.toString(),
+        });
 
     message = buildMessage({
-      title: `Queued`,
-      description: `[${playlist.title}](${playlist.url}) with ${tracksText}`,
+      title: t("commands.play.random.playlist.message.title"),
+      description: t("commands.play.random.playlist.message.description", {
+        playlist: playlist.title,
+        url: playlist.url,
+        tracksText,
+      }),
       thumbnail: getThumbnail(playlist),
       color: "queue",
     });

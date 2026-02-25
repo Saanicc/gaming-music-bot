@@ -6,14 +6,17 @@ import {
   SlashCommandBuilder,
 } from "discord.js";
 import { Font } from "canvacord";
-import { guardReply } from "@/src/utils/helpers/interactionGuard";
-import { HelpBuilder, CommandData } from "@/src/utils/helpers/HelpBuilder";
+import { guardReply } from "@/utils/helpers/interactionGuard";
+import { HelpBuilder, CommandData } from "@/utils/helpers/HelpBuilder";
+import { useTranslations } from "@/utils/hooks/useTranslations";
 
 export const data = new SlashCommandBuilder()
   .setName("help")
-  .setDescription("View a list of commands and how to use them.");
+  .setDescription("Display the help message");
 
 export async function execute(interaction: ChatInputCommandInteraction) {
+  const t = useTranslations(interaction.guildId ?? "");
+
   const guild = interaction.guild;
   if (!guild) return guardReply(interaction, "NO_GUILD");
 
@@ -64,8 +67,8 @@ export async function execute(interaction: ChatInputCommandInteraction) {
 
   const builder = new HelpBuilder()
     .setHeader({
-      title: "Command List",
-      subtitle: "Here you find all available commands",
+      title: t("commands.help.message.title"),
+      subtitle: t("commands.help.message.subtitle"),
       avatar: interaction.client.user.displayAvatarURL({
         extension: "png",
         size: 256,
@@ -73,7 +76,9 @@ export async function execute(interaction: ChatInputCommandInteraction) {
     })
     .setCommands(commandList)
     .setFooterText(
-      `${interaction.client.user.username} • Gaming music made simple`
+      t("commands.help.message.footerText", {
+        botName: interaction.client.user.username,
+      })
     );
 
   const image = await builder.build();

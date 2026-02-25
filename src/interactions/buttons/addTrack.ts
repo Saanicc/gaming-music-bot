@@ -7,6 +7,7 @@ import { BossTrack } from "@/models/BossTrack";
 import { addTrackToCache } from "@/utils/helpers/isTrackInCache";
 import { guardReply } from "@/utils/helpers/interactionGuard";
 import { emoji } from "@/utils/constants/emojis";
+import { useTranslations } from "@/utils/hooks/useTranslations";
 
 export const addTrackButton = new ButtonBuilder()
   .setCustomId("addTrack")
@@ -14,6 +15,8 @@ export const addTrackButton = new ButtonBuilder()
   .setStyle(ButtonStyle.Secondary);
 
 export const execute = async (interaction: ButtonInteraction) => {
+  const t = useTranslations(interaction.guildId ?? "");
+
   await interaction.deferReply();
 
   const queue = useQueue();
@@ -55,11 +58,11 @@ export const execute = async (interaction: ButtonInteraction) => {
   }
 
   const data = buildMessage({
-    title: `Added successfully`,
-    description: `${interaction.user.toString()} added ${getFormattedTrackDescription(
-      queue.currentTrack,
-      queue
-    )} to the boss music library!`,
+    title: t("buttons.addTrack.message.title"),
+    description: t("buttons.addTrack.message.description", {
+      user: interaction.user.toString(),
+      track: getFormattedTrackDescription(queue.currentTrack, queue),
+    }),
     thumbnail: getThumbnail(queue.currentTrack),
     color: "success",
   });

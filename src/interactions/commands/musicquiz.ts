@@ -36,6 +36,7 @@ import { savePreviousQueue } from "@/utils/helpers/saveQueueData";
 import { queueManager, StoredQueue } from "@/src/services/queueManager";
 import { musicPlayerMessage } from "@/src/services/musicPlayerMessage";
 import { restoreOldQueue } from "@/utils/helpers/restoreOldQueue";
+import { useTranslations } from "@/utils/hooks/useTranslations";
 
 const QUIZ_CONFIG = {
   TIME_TO_PLAY_SONG: 45000,
@@ -46,19 +47,6 @@ const QUIZ_CONFIG = {
   SEEK_START: 20000,
 };
 
-const UI_STRINGS = {
-  ERROR_TITLE: "Error",
-  NO_VOICE_CHANNEL: "You must be in a voice channel to start the quiz.",
-  THREAD_CREATE_FAIL: "Could not create a thread. Check my permissions.",
-  LOBBY_TIMEOUT:
-    "The quiz lobby timed out. Run `/musicquiz` again to start a new quiz.",
-  SPOTIFY_ERROR: "Failed to reach Spotify. Please try again later.",
-  TRACK_PLAY_FAIL: "Failed to play track. Skipping.",
-  VOICE_CONNECT_ERROR:
-    "Could not join the voice channel. Check my permissions.",
-  GENERIC_ERROR: "Something went wrong during the quiz. Please try again.",
-};
-
 interface GameLoopOptions {
   thread: PublicThreadChannel;
   voiceChannel: VoiceBasedChannel;
@@ -66,6 +54,7 @@ interface GameLoopOptions {
   interaction: ChatInputCommandInteraction;
   genre: string;
   rounds: number;
+  t: ReturnType<typeof useTranslations>;
 }
 
 interface QuizContext {
@@ -100,8 +89,8 @@ const generateOptions = (
 ): string[] => {
   const pool = new Set<string>();
 
-  for (const t of allTracks) {
-    const val = t[type].trim();
+  for (const track of allTracks) {
+    const val = track[type].trim();
     if (val.toLowerCase() !== correctAnswer.toLowerCase()) {
       pool.add(val);
     }
@@ -116,26 +105,28 @@ export const data = new SlashCommandBuilder()
   .setDescription("Start a music quiz in a thread!");
 
 export async function execute(interaction: ChatInputCommandInteraction) {
+  const t = useTranslations(interaction.guildId ?? "");
   const member = interaction.member as GuildMember;
   const player = useMainPlayer();
 
   if (!member.voice.channel)
     return guardReply(interaction, "QUIZ_NO_VOICE_CHANNEL");
 
-  const thread = await setupQuizThread(interaction);
+  const thread = await setupQuizThread(interaction, t);
   if (!thread) return;
 
-  const lobbyMsg = await sendLobbyMessage(thread);
-  await handleLobbyInteractions(lobbyMsg, thread, interaction, player);
+  const lobbyMsg = await sendLobbyMessage(thread, t);
+  await handleLobbyInteractions(lobbyMsg, thread, interaction, player, t);
 }
 
 const setupQuizThread = async (
-  interaction: ChatInputCommandInteraction
+  interaction: ChatInputCommandInteraction,
+  t: ReturnType<typeof useTranslations>
 ): Promise<PublicThreadChannel | null> => {
   await interaction.reply(
     buildMessage({
-      title: "Setting up Quiz...",
-      description: "Creating a dedicated thread for the quiz.",
+      title: t("commands.musicquiz.message.settingUpQuiz"),
+      description: t("commands.musicquiz.message.creatingThread"),
     })
   );
 
@@ -143,14 +134,14 @@ const setupQuizThread = async (
   try {
     const initialQuizMessage = await interaction.fetchReply();
     thread = await initialQuizMessage.startThread({
-      name: "Music Quiz",
+      name: t("commands.musicquiz.message.threadName"),
       autoArchiveDuration: ThreadAutoArchiveDuration.OneHour,
     });
   } catch {
     await interaction.followUp(
       buildMessage({
-        title: UI_STRINGS.ERROR_TITLE,
-        description: UI_STRINGS.THREAD_CREATE_FAIL,
+        title: t("commands.musicquiz.message.errorTitle"),
+        description: t("commands.musicquiz.message.threadCreateFail"),
         color: "error",
         ephemeral: true,
       })
@@ -161,15 +152,15 @@ const setupQuizThread = async (
   return thread;
 };
 
-const buildLobbyComponents = () => {
+const buildLobbyComponents = (t: ReturnType<typeof useTranslations>) => {
   const numberOfRoundsSelect = new StringSelectMenuBuilder()
     .setCustomId("quiz_rounds_select")
-    .setPlaceholder("Number of rounds (optional)")
+    .setPlaceholder(t("commands.musicquiz.message.numberOfRoundsPlaceholder"))
     .addOptions(
       [3, 4, 5, 6, 7, 8, 9, 10].map((num) => ({
         label:
           num === QUIZ_CONFIG.DEFAULT_ROUNDS
-            ? `${num} (Default)`
+            ? `${num} ${t("commands.musicquiz.message.default")}`
             : num.toString(),
         value: num.toString(),
       }))
@@ -177,7 +168,7 @@ const buildLobbyComponents = () => {
 
   const musicQuizGenreSelect = new StringSelectMenuBuilder()
     .setCustomId("quiz_genre_select")
-    .setPlaceholder("Select a genre (optional)")
+    .setPlaceholder(t("commands.musicquiz.message.genrePlaceholder"))
     .addOptions(
       GENRES.map((genre) => ({
         label: truncateLabelIfNeeded(genre),
@@ -187,7 +178,7 @@ const buildLobbyComponents = () => {
 
   const startBtn = new ButtonBuilder()
     .setCustomId("start_quiz_btn")
-    .setLabel("Start Quiz")
+    .setLabel(t("commands.musicquiz.message.startQuiz"))
     .setStyle(ButtonStyle.Success);
 
   return [
@@ -201,12 +192,15 @@ const buildLobbyComponents = () => {
   ];
 };
 
-const sendLobbyMessage = async (thread: PublicThreadChannel) => {
+const sendLobbyMessage = async (
+  thread: PublicThreadChannel,
+  t: ReturnType<typeof useTranslations>
+) => {
   const lobbyMessage = buildMessage({
-    title: "🎵 Music Quiz Ready",
-    description: `Join a voice channel, select a genre, and click the button below to start!`,
+    title: t("commands.musicquiz.message.musicQuizReady"),
+    description: t("commands.musicquiz.message.joinVoiceChannel"),
     color: "info",
-    actionRowBuilder: buildLobbyComponents(),
+    actionRowBuilder: buildLobbyComponents(t),
   });
 
   return thread.send(lobbyMessage);
@@ -216,7 +210,8 @@ const handleLobbyInteractions = async (
   lobbyMsg: Message,
   thread: PublicThreadChannel,
   interaction: ChatInputCommandInteraction,
-  player: Player
+  player: Player,
+  t: ReturnType<typeof useTranslations>
 ) => {
   let selectedRounds: number | null = null;
   let selectedGenre: string | null = null;
@@ -239,8 +234,8 @@ const handleLobbyInteractions = async (
     if (reason === "time") {
       await lobbyMsg.edit(
         buildMessage({
-          title: "🎵 Music Quiz",
-          description: UI_STRINGS.LOBBY_TIMEOUT,
+          title: t("commands.musicquiz.message.title"),
+          description: t("commands.musicquiz.message.lobbyTimeout"),
           color: "error",
         })
       );
@@ -271,8 +266,11 @@ const handleLobbyInteractions = async (
 
       await lobbyMsg.edit(
         buildMessage({
-          title: "🎵 Music Quiz Started",
-          description: `Genre: **${genre}**.\n\nPlaying ${rounds} rounds. Get ready!`,
+          title: t("commands.musicquiz.message.musicQuizStarted"),
+          description: t("commands.musicquiz.message.genreAndRounds", {
+            genre,
+            rounds: rounds.toString(),
+          }),
         })
       );
 
@@ -283,6 +281,7 @@ const handleLobbyInteractions = async (
         interaction,
         genre,
         rounds,
+        t,
       });
     }
   });
@@ -319,6 +318,7 @@ async function runGameLoop({
   interaction,
   genre,
   rounds,
+  t,
 }: GameLoopOptions) {
   let queue: GuildQueue | undefined;
   try {
@@ -334,8 +334,8 @@ async function runGameLoop({
 
     await thread.send(
       buildMessage({
-        title: "Loading Tracks...",
-        description: "Fetching random songs from Spotify...",
+        title: t("commands.musicquiz.message.loadingTracks"),
+        description: t("commands.musicquiz.message.fetchingRandomSongs"),
       })
     );
 
@@ -344,8 +344,10 @@ async function runGameLoop({
     if (!spotifyPlaylists?.length) {
       await thread.send(
         buildMessage({
-          title: UI_STRINGS.ERROR_TITLE,
-          description: `Could not find playlists for theme: ${genre}.`,
+          title: t("commands.musicquiz.message.errorTitle"),
+          description: t("commands.musicquiz.message.couldNotFindPlaylists", {
+            genre,
+          }),
           color: "error",
         })
       );
@@ -358,8 +360,8 @@ async function runGameLoop({
       } catch (error) {
         await thread.send(
           buildMessage({
-            title: UI_STRINGS.ERROR_TITLE,
-            description: UI_STRINGS.VOICE_CONNECT_ERROR,
+            title: t("commands.musicquiz.message.errorTitle"),
+            description: t("commands.musicquiz.message.voiceConnectError"),
             color: "error",
           })
         );
@@ -367,15 +369,15 @@ async function runGameLoop({
       }
     }
 
-    await playQuizRounds(spotifyPlaylists, context, rounds);
+    await playQuizRounds(spotifyPlaylists, context, rounds, t);
     await delay(3000);
-    await declareWinner(context.scores, context.correctAnswers, thread);
+    await declareWinner(context.scores, context.correctAnswers, thread, t);
   } catch (error) {
     console.error("Game loop error:", error);
     await thread.send(
       buildMessage({
-        title: UI_STRINGS.ERROR_TITLE,
-        description: UI_STRINGS.GENERIC_ERROR,
+        title: t("commands.musicquiz.message.errorTitle"),
+        description: t("commands.musicquiz.message.genericError"),
         color: "error",
       })
     );
@@ -388,9 +390,20 @@ async function runGameLoop({
     queue.delete();
 
     try {
-      const previousQueue = await getPreviousQueue(guild, interaction, thread);
+      const previousQueue = await getPreviousQueue(
+        guild,
+        interaction,
+        thread,
+        t
+      );
       if (previousQueue) {
-        await restorePreviousQueue(previousQueue, interaction, guild, thread);
+        await restorePreviousQueue(
+          previousQueue,
+          interaction,
+          guild,
+          thread,
+          t
+        );
       }
     } catch (restoreError) {
       console.error("Failed to restore previous queue:", restoreError);
@@ -401,13 +414,13 @@ async function runGameLoop({
 const getPreviousQueue = async (
   guild: Guild,
   interaction: ChatInputCommandInteraction,
-  thread: PublicThreadChannel
+  thread: PublicThreadChannel,
+  t: ReturnType<typeof useTranslations>
 ) => {
   const stored = queueManager.retrieve(guild.id);
   if (!stored) {
     const data = buildMessage({
-      title:
-        "Nothing to restore, leaving voice chat. Please queue some new track(s) to resume playback!",
+      title: t("utility.queueManager.nothingToRestore"),
     });
     await musicPlayerMessage.delete().catch(() => {
       // Already deleted, ignore
@@ -425,10 +438,11 @@ const restorePreviousQueue = async (
   storedQueue: StoredQueue,
   interaction: ChatInputCommandInteraction,
   guild: Guild,
-  thread: PublicThreadChannel
+  thread: PublicThreadChannel,
+  t: ReturnType<typeof useTranslations>
 ) => {
   const data = buildMessage({
-    title: "Restoring old queue...",
+    title: t("utility.queueManager.restore.title"),
     color: "info",
   });
 
@@ -448,6 +462,7 @@ const restorePreviousQueue = async (
 };
 
 const fetchPlaylistTracks = async (
+  t: ReturnType<typeof useTranslations>,
   player: Player,
   playlists: string[],
   thread: PublicThreadChannel,
@@ -456,8 +471,8 @@ const fetchPlaylistTracks = async (
   if (attempt >= QUIZ_CONFIG.MAX_PLAYLIST_RETRIES) {
     await thread.send(
       buildMessage({
-        title: UI_STRINGS.ERROR_TITLE,
-        description: "Failed to find playable tracks after multiple attempts.",
+        title: t("commands.musicquiz.message.errorTitle"),
+        description: t("commands.musicquiz.message.failedToFindPlayableTracks"),
         color: "error",
       })
     );
@@ -474,22 +489,24 @@ const fetchPlaylistTracks = async (
     });
 
     if (!searchResult || !searchResult.tracks.length) {
-      return fetchPlaylistTracks(player, playlists, thread, attempt + 1);
+      return fetchPlaylistTracks(t, player, playlists, thread, attempt + 1);
     }
 
     return shuffleArray(searchResult.tracks);
   } catch (error) {
-    return fetchPlaylistTracks(player, playlists, thread, attempt + 1);
+    return fetchPlaylistTracks(t, player, playlists, thread, attempt + 1);
   }
 };
 
 const playQuizRounds = async (
   playlists: string[],
   context: QuizContext,
-  rounds: number
+  rounds: number,
+  t: ReturnType<typeof useTranslations>
 ) => {
   for (let i = 0; i < rounds; i++) {
     const allTracks = await fetchPlaylistTracks(
+      t,
       context.player,
       playlists,
       context.thread
@@ -501,8 +518,13 @@ const playQuizRounds = async (
 
     await context.thread.send(
       buildMessage({
-        title: `Round ${roundNum}/${rounds}`,
-        description: `Listen carefully! Playing for ${QUIZ_CONFIG.TIME_TO_PLAY_SONG / 1000} seconds...`,
+        title: t("commands.musicquiz.message.roundTitle", {
+          roundNum: roundNum.toString(),
+          rounds: rounds.toString(),
+        }),
+        description: t("commands.musicquiz.message.listenCarefully", {
+          time: (QUIZ_CONFIG.TIME_TO_PLAY_SONG / 1000).toString(),
+        }),
         color: "info",
       })
     );
@@ -515,8 +537,8 @@ const playQuizRounds = async (
     } catch (error) {
       await context.thread.send(
         buildMessage({
-          title: UI_STRINGS.ERROR_TITLE,
-          description: UI_STRINGS.TRACK_PLAY_FAIL,
+          title: t("commands.musicquiz.message.errorTitle"),
+          description: t("commands.musicquiz.message.trackPlayFail"),
           color: "error",
         })
       );
@@ -528,17 +550,29 @@ const playQuizRounds = async (
       context.queue.node.stop();
     }
 
-    await askQuestion(context, randomTrack, allTracks, {
-      property: "author",
-      questionText: "Who is the Artist?",
-    });
+    await askQuestion(
+      context,
+      randomTrack,
+      allTracks,
+      {
+        property: "author",
+        questionText: t("commands.musicquiz.message.whoIsTheArtist"),
+      },
+      t
+    );
 
     await delay(2000);
 
-    await askQuestion(context, randomTrack, allTracks, {
-      property: "cleanTitle",
-      questionText: "What is the Track Name?",
-    });
+    await askQuestion(
+      context,
+      randomTrack,
+      allTracks,
+      {
+        property: "cleanTitle",
+        questionText: t("commands.musicquiz.message.whatIsTheTrackName"),
+      },
+      t
+    );
 
     await delay(2000);
   }
@@ -569,11 +603,12 @@ const handleAnswerSubmission = async (
   targetAnswer: string,
   startTime: number,
   answeredUserIds: Set<string>,
-  correctUserIds: string[]
+  correctUserIds: string[],
+  t: ReturnType<typeof useTranslations>
 ) => {
   if (answeredUserIds.has(interaction.user.id)) {
     await interaction.reply({
-      content: "You already guessed!",
+      content: t("commands.musicquiz.message.alreadyGuessed"),
       flags: MessageFlags.Ephemeral,
     });
     return;
@@ -605,12 +640,14 @@ const handleAnswerSubmission = async (
     correctUserIds.push(userId);
 
     await interaction.reply({
-      content: `✅ Correct! +${points} pts`,
+      content: t("commands.musicquiz.message.correctAnswer", {
+        points: points.toString(),
+      }),
       flags: MessageFlags.Ephemeral,
     });
   } else {
     await interaction.reply({
-      content: "❌ Wrong!",
+      content: t("commands.musicquiz.message.wrongAnswer"),
       flags: MessageFlags.Ephemeral,
     });
   }
@@ -620,7 +657,8 @@ const askQuestion = async (
   context: QuizContext,
   track: Track,
   allTracks: Track[],
-  options: QuestionOptions
+  options: QuestionOptions,
+  t: ReturnType<typeof useTranslations>
 ) => {
   const { property, questionText } = options;
   const correctAnswer = track[property];
@@ -633,9 +671,11 @@ const askQuestion = async (
 
   const questionMsg = await context.thread.send(
     buildMessage({
-      title: "Guess Now!",
+      title: t("commands.musicquiz.message.guessNow"),
       description: `**${questionText}**`,
-      footerText: `You have ${QUIZ_CONFIG.QUESTION_TIME / 1000} seconds!`,
+      footerText: t("commands.musicquiz.message.timeToGuess", {
+        time: (QUIZ_CONFIG.QUESTION_TIME / 1000).toString(),
+      }),
       color: "info",
       actionRowBuilder: [row],
     })
@@ -659,7 +699,8 @@ const askQuestion = async (
       targetAnswer,
       questionStartTime,
       answeredUserIds,
-      correctUserIds
+      correctUserIds,
+      t
     ).catch(console.error);
   });
 
@@ -677,20 +718,24 @@ const askQuestion = async (
 
         await questionMsg.edit(
           buildMessage({
-            title: "Guess Now!",
+            title: t("commands.musicquiz.message.guessNow"),
             description: `**${questionText}**`,
-            footerText: "Time's up!",
+            footerText: t("commands.musicquiz.message.timeIsUp"),
             color: "info",
             actionRowBuilder: [disabledRow],
           })
         );
 
         const resultColor = correctUserIds.length > 0 ? "success" : "error";
-        let resultDesc = `The answer was **${correctAnswer}**.`;
 
-        if (correctUserIds.length === 0) {
-          resultDesc = `No one got it! ${resultDesc}`;
-        }
+        let resultDesc =
+          correctUserIds.length === 0
+            ? t("commands.musicquiz.message.noOneGotIt", {
+                answer: correctAnswer,
+              })
+            : t("commands.musicquiz.message.theAnswerWas", {
+                answer: correctAnswer,
+              });
 
         const allPlayers = Array.from(context.scores.keys());
         if (allPlayers.length > 0) {
@@ -703,15 +748,21 @@ const askQuestion = async (
               const current = context.scores.get(id) ?? 0;
               const prev = preQuestionScores.get(id) ?? 0;
               const gained = current - prev;
-              return `${idx + 1}. <@${id}>: ${current} ${gained > 0 ? `(+${gained}pts)` : ""}`;
+              return `${idx + 1}. <@${id}>: ${current} ${
+                gained > 0
+                  ? t("commands.musicquiz.message.pointsDelta", {
+                      points: gained.toString(),
+                    })
+                  : ""
+              }`;
             })
             .join("\n");
-          resultDesc += `\n\nScore Table:\n${names}`;
+          resultDesc += `\n\n${t("commands.musicquiz.message.scoreTable")}\n${names}`;
         }
 
         await context.thread.send(
           buildMessage({
-            title: "Time's up!",
+            title: t("commands.musicquiz.message.timeIsUp"),
             description: resultDesc,
             color: resultColor,
           })
@@ -728,22 +779,34 @@ const askQuestion = async (
 const declareWinner = async (
   scores: Map<string, number>,
   correctAnswers: Map<string, number>,
-  thread: PublicThreadChannel
+  thread: PublicThreadChannel,
+  t: ReturnType<typeof useTranslations>
 ) => {
   const sortedScores = [...scores.entries()].sort((a, b) => b[1] - a[1]);
 
-  let description = "No points were scored.";
-  let title = "Quiz Finished";
+  let description = t("commands.musicquiz.message.noPointsScored");
+  let title = t("commands.musicquiz.message.quizFinished");
   let color: ColorType = "info";
 
   if (sortedScores.length > 0) {
     const [winnerId, winnerScore] = sortedScores[0];
-    title = "🎉 We have a winner!";
+    title = t("commands.musicquiz.message.weHaveAWinner");
     color = "success";
     description =
-      `**Winner:** <@${winnerId}> with **${winnerScore}** points!\n\n**Quiz result:**\n` +
+      t("commands.musicquiz.message.winner", {
+        winner: `<@${winnerId}>`,
+        score: winnerScore.toString(),
+      }) +
+      "\n\n" +
+      t("commands.musicquiz.message.quizResult") +
+      "\n" +
       sortedScores
-        .map(([id, s], idx) => `${idx + 1}. <@${id}>: ${s} pts`)
+        .map(
+          ([id, s], idx) =>
+            `${idx + 1}. <@${id}>: ${t("commands.musicquiz.message.points", {
+              points: s.toString(),
+            })}`
+        )
         .join("\n");
 
     const updatePromises = sortedScores.map(([id]) =>
@@ -767,7 +830,7 @@ const declareWinner = async (
       title,
       description,
       color,
-      footerText: "Thanks for playing!",
+      footerText: t("commands.musicquiz.message.thanksForPlaying"),
     })
   );
 };

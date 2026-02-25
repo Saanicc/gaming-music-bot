@@ -1,0 +1,295 @@
+{
+  "common": {
+    "error": "Error",
+    "couldNotJoinVoiceChannel": "Could not join voice channel.",
+    "leftVoiceChat": "Left the voice channel",
+    "emptyQueue": "Reached the end of the queue. Please queue new track(s) to continue playback!",
+    "trackRequestedBy": "Track requested by {{user}} — {{userRank}}",
+    "unknown": "Unknown"
+  },
+  "guards": {
+    "noQueue": {
+      "title": "This server does not have an active player session."
+    },
+    "noTrackPlaying": {
+      "title": "There is no track playing."
+    },
+    "pleaseAddTracks": {
+      "title": "Please add some tracks first"
+    },
+    "noGuild": {
+      "title": "No guild was found."
+    },
+    "noVoiceChannel": {
+      "title": "You must be in a voice channel to play music."
+    },
+    "noGuildMembers": {
+      "title": "No guild members found."
+    },
+    "noResults": {
+      "title": "No results found."
+    },
+    "noTrackFound": {
+      "title": "No track found",
+      "description": "No track with that URL was found, please make sure the URL is valid."
+    },
+    "noTrackUrl": {
+      "title": "No url found for the current track"
+    },
+    "trackAlreadyExists": {
+      "title": "The track already exists!"
+    },
+    "invalidUrl": {
+      "title": "Not a valid url",
+      "description": "Please enter a valid url"
+    },
+    "genericError": {
+      "title": "An error occurred. Please try again."
+    },
+    "dbSaveError": {
+      "title": "An error occurred when saving to database. Please try again."
+    },
+    "playError": {
+      "title": "Error",
+      "description": "Something went wrong while trying to play."
+    },
+    "voiceChannelError": {
+      "title": "Error",
+      "description": "Could not join voice channel."
+    },
+    "quizNoVoiceChannel": {
+      "title": "Error",
+      "description": "You must be in a voice channel to start the quiz."
+    }
+  },
+  "player": {
+    "nowPlaying": "{{emoji}} Now Playing",
+    "paused": "{{emoji}} Music Paused",
+    "progress": "Progress",
+    "track": "**Track**",
+    "trackNumber": "**{{current}}** of **{{total}}**"
+  },
+  "levelSystem": {
+    "treasure": {
+      "legendary": {
+        "title": "{{emoji}} *Legendary Find!*",
+        "message": "{{user}} unearthed an ancient relic granting 100× XP!"
+      },
+      "epic": {
+        "title": "{{emoji}} *Epic Treasure!*",
+        "message": "{{user}} struck diamonds granting 50× XP!"
+      },
+      "rare": {
+        "title": "{{emoji}} *Rare Find!*",
+        "message": "{{user}} discovered a hidden chest containing 25× XP!"
+      },
+      "lucky": {
+        "title": "{{emoji}} *Lucky Find*",
+        "message": "{{user}} found a golden ingot granting 10× XP!"
+      },
+      "small": {
+        "title": "{{emoji}} *Small Treasure*",
+        "message": "{{user}} found some shiny coins granting 2.5× XP!"
+      }
+    },
+    "levelUp": {
+      "level": "level",
+      "levels": "levels",
+      "title": "{{emoji}} **Level Up!** {{emoji}}",
+      "description": "{{user}} gained **{{levelsGained}} {{levelText}}** and is now **Level {{level}}**!",
+      "rankMessage": "\nNew rank: **{{newRank}}**!"
+    }
+  },
+  "utility": {
+    "queueManager": {
+      "restore": {
+        "title": "Restoring old queue..."
+      },
+      "nothingToRestore": "Nothing to restore, leaving voice chat. Please queue some new track(s) to resume playback!"
+    }
+  },
+  "buttons": {
+    "addTrack": {
+      "message": {
+        "title": "Added successfully",
+        "description": "{{user}} added {{track}} to the Boss Music library!"
+      }
+    }
+  },
+  "commands": {
+    "leaderboard": {
+      "xp": {
+        "title": "XP Leaderboard",
+        "subtitle": "{{members}} members"
+      },
+      "quiz": {
+        "title": "Music Quiz Leaderboard",
+        "subtitle": "{{members}} members",
+        "correctAnswers": "Correct answers: {{correctAnswers}}",
+        "wins": "Wins: {{wins}}"
+      }
+    },
+    "loop": {
+      "all": {
+        "title": "Now looping the queue"
+      },
+      "current": {
+        "title": "Now looping the current track"
+      },
+      "disable": {
+        "title": "Looping has been disabled"
+      }
+    },
+    "play": {
+      "boss": {
+        "music": {
+          "message": {
+            "title": "{{emoji}} Time to slay some enemies! {{emoji}}"
+          }
+        }
+      },
+      "random": {
+        "playlist": {
+          "message": {
+            "title": "Queued",
+            "description": "[{{playlist}}]({{url}}) with {{tracksText}}",
+            "randomlySelectedTracks": "{{amount}} randomly selected tracks",
+            "tracks": "{{amount}} tracks",
+            "error": "Could not find any playlists for genre: {{genre}}."
+          }
+        },
+        "track": {
+          "message": {
+            "title": "Queued at position #{{position}}",
+            "errorTitle": "Error",
+            "error": "Could not find any track(s) to play with genre: {{genre}}."
+          }
+        }
+      },
+      "query": {
+        "message": {
+          "title": {
+            "playlist": "Queued",
+            "track": "Queued at position #{{position}}"
+          },
+          "description": "[{{track}}]({{url}}) with {{amount}} tracks",
+          "footerText": "Not the correct track? Try being more specific or enter a URL"
+        }
+      },
+      "now": {
+        "message": {
+          "title": "Will play instantly",
+          "footerText": "Not the correct track? Try being more specific or enter a URL"
+        }
+      },
+      "next": {
+        "message": {
+          "title": "Queued at position #{{position}}",
+          "footerText": "Not the correct track? Try being more specific or enter a URL"
+        }
+      }
+    },
+    "addTrack": {
+      "message": {
+        "bossMusic": "Boss Music",
+        "hornSound": "Horn Sound",
+        "trackAdded": "Added successfully",
+        "trackAlreadyExists": "Track already exists",
+        "trackAddedDescription": "{{user}} added {{track}} to the {{type}} library!"
+      }
+    },
+    "autoplay": {
+      "message": {
+        "enabled": "Autoplay has been enabled",
+        "disabled": "Autoplay has been disabled"
+      }
+    },
+    "help": {
+      "message": {
+        "title": "Command List",
+        "subtitle": "Here you find all available commands",
+        "footerText": "{{botName}} • Gaming music made simple"
+      }
+    },
+    "musicquiz": {
+      "message": {
+        "title": "Music Quiz",
+        "settingUpQuiz": "Setting up Quiz...",
+        "creatingThread": "Creating a dedicated thread for the quiz.",
+        "threadName": "Music Quiz",
+        "numberOfRoundsPlaceholder": "Number of rounds (optional)",
+        "genrePlaceholder": "Select a genre (optional)",
+        "startQuiz": "Start Quiz",
+        "musicQuizReady": "🎵 Music Quiz Ready",
+        "musicQuizStarted": "🎵 Music Quiz Started",
+        "genreAndRounds": "Genre: **{{genre}}**.\n\nPlaying {{rounds}} rounds. Get ready!",
+        "joinVoiceChannel": "Join a voice channel, select a genre, and click the button below to start!",
+        "default": "(Default)",
+        "errorTitle": "Error",
+        "noVoiceChannel": "You must be in a voice channel to start the quiz.",
+        "threadCreateFail": "Could not create a thread. Check my permissions.",
+        "lobbyTimeout": "The quiz lobby timed out. Run `/musicquiz` again to start a new quiz.",
+        "spotifyError": "Failed to reach Spotify. Please try again later.",
+        "trackPlayFail": "Failed to play track. Skipping.",
+        "voiceConnectError": "Could not join the voice channel. Check my permissions.",
+        "genericError": "Something went wrong during the quiz. Please try again.",
+        "loadingTracks": "Loading Tracks...",
+        "fetchingRandomSongs": "Fetching random songs from Spotify...",
+        "couldNotFindPlaylists": "Could not find playlists for theme: {{genre}}.",
+        "failedToFindPlayableTracks": "Failed to find playable tracks after multiple attempts.",
+        "roundTitle": "Round {{roundNum}}/{{rounds}}",
+        "listenCarefully": "Listen carefully! Playing for {{time}} seconds...",
+        "whoIsTheArtist": "Who is the Artist?",
+        "whatIsTheTrackName": "What is the Track Name?",
+        "alreadyGuessed": "You already guessed!",
+        "correctAnswer": "✅ Correct! +{{points}} pts",
+        "wrongAnswer": "❌ Wrong!",
+        "guessNow": "Guess Now!",
+        "timeToGuess": "You have {{time}} seconds!",
+        "timeIsUp": "Time's up!",
+        "theAnswerWas": "The answer was **{{answer}}**.",
+        "noOneGotIt": "No one got it!\nThe answer was **{{answer}}**.",
+        "scoreTable": "Score Table",
+        "noPointsScored": "No points were scored.",
+        "quizFinished": "Quiz Finished",
+        "weHaveAWinner": "🎉 We have a winner!",
+        "winner": "**Winner:** {{winner}} with **{{score}}** points!",
+        "quizResult": "Quiz result",
+        "thanksForPlaying": "Thanks for playing!",
+        "points": "{{points}} points",
+        "pointsDelta": "(+{{points}} points)",
+        "inProgress": {
+          "title": "❌ Music Quiz in Progress",
+          "description": "You cannot use this command while a music quiz is ongoing in this server."
+        }
+      }
+    },
+    "nightcore": {
+      "message": {
+        "enabled": "Nightcore filter has been enabled",
+        "disabled": "Nightcore filter has been disabled"
+      }
+    },
+    "queue": {
+      "message": {
+        "noQueue": "No queue found",
+        "nowPlaying": "Now Playing",
+        "upcomingTracks": "{{emoji}} Upcoming Tracks",
+        "noTrackPlaying": "No track playing",
+        "noUpcomingTracks": "No upcoming tracks in queue",
+        "footerText": "Page {{page}}/{{totalPages}}  •  Tracks in queue: {{totalTracks}}  •  Total duration: {{totalDuration}}"
+      }
+    },
+    "setLanguage": {
+      "message": {
+        "title": "Language updated",
+        "description": "Now I speak **English**!"
+      }
+    },
+    "skip": {
+      "message": {
+        "title": "Skipped to the next track in queue."
+      }
+    }
+  }
+}

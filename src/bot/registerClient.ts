@@ -11,6 +11,8 @@ import { buttons } from "../interactions/buttons";
 import { commands } from "../interactions/commands";
 import { handleInteraction } from "../utils/helpers/handleInteraction";
 import { setBotActivity } from "../utils/helpers/setBotActivity";
+import { db } from "../db";
+import { saveBotLanguageToCache } from "../db/language";
 
 export const registerDiscordClient = (): Client => {
   const client = new Client({
@@ -34,6 +36,8 @@ export const registerDiscordClient = (): Client => {
         activityType: ActivityType.Custom,
       });
       await deployCommands({ guildId: config.DISCORD_GUILD_ID });
+      const language = await db.getLanguageFromDB(config.DISCORD_GUILD_ID);
+      saveBotLanguageToCache(config.DISCORD_GUILD_ID, language);
     } else {
       setBotActivity({
         client: readyClient,
@@ -41,6 +45,13 @@ export const registerDiscordClient = (): Client => {
         activityText: "/help",
         activityType: ActivityType.Listening,
       });
+
+      await Promise.all(
+        readyClient.guilds.cache.map(async (guild) => {
+          const language = await db.getLanguageFromDB(guild.id);
+          saveBotLanguageToCache(guild.id, language);
+        })
+      );
     }
 
     const environment = isDev ? "DEV" : "PROD";
@@ -49,6 +60,8 @@ export const registerDiscordClient = (): Client => {
 
   client.on(Events.GuildCreate, async (guild) => {
     await deployCommands({ guildId: guild.id });
+    const language = await db.getLanguageFromDB(guild.id);
+    saveBotLanguageToCache(guild.id, language);
   });
 
   client.on(Events.InteractionCreate, async (interaction) => {

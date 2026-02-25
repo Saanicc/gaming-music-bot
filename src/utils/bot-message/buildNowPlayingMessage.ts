@@ -28,6 +28,7 @@ import { getThumbnail } from "../helpers/utils";
 import { addTrackButton } from "@/interactions/buttons/addTrack";
 import { loopTrackButton } from "@/interactions/buttons/loopTrack";
 import { loopQueueButton } from "@/interactions/buttons/loopQueue";
+import { useTranslations } from "@/utils/hooks/useTranslations";
 
 type NowPlayingMessageProps = {
   track: Track;
@@ -54,6 +55,8 @@ export const buildNowPlayingMessage = ({
   footerText,
   isTrackInDB,
 }: NowPlayingMessageProps): MessageCreateOptions => {
+  const t = useTranslations(queue.guild.id);
+
   const isBossQueue =
     (isPlaying || !isPlaying) && queueManager.getQueueType() === "boss";
 
@@ -94,10 +97,10 @@ export const buildNowPlayingMessage = ({
   const container = new ContainerBuilder();
 
   const trackInfoText = new TextDisplayBuilder().setContent(`
-### ${isPlaying ? `${emoji.play} Now Playing` : `${emoji.pause} Music Paused`}  
+### ${isPlaying ? t("player.nowPlaying", { emoji: emoji.play }) : t("player.paused", { emoji: emoji.pause })}  
 ${getFormattedTrackDescription(track, queue)}
 
-**Progress**
+**${t("player.progress")}**
 ${progressBar}
 `);
 
@@ -118,8 +121,8 @@ ${progressBar}
     const totalQueueNumber = queue.tracks.size + currentTrackNumber;
 
     const queueText = new TextDisplayBuilder().setContent(`
-**Track** 
-**${currentTrackNumber}** of **${totalQueueNumber}**
+${t("player.track")}
+${t("player.trackNumber", { current: currentTrackNumber.toString(), total: totalQueueNumber.toString() })}
     `);
 
     container.addTextDisplayComponents(queueText);

@@ -3,6 +3,7 @@ import { TextChannel, VoiceBasedChannel } from "discord.js";
 import { buildMessage } from "../bot-message/buildMessage";
 import { ChatInputCommandInteraction, ButtonInteraction } from "discord.js";
 import { guardReply } from "./interactionGuard";
+import { useTranslations } from "../hooks/useTranslations";
 
 interface JoinVoiceChannelArgs {
   queue: GuildQueue;
@@ -17,6 +18,8 @@ export const joinVoiceChannel = async ({
   interaction,
   textChannel,
 }: JoinVoiceChannelArgs) => {
+  const t = useTranslations(queue.guild.id);
+
   try {
     if (!queue.connection) await queue.connect(voiceChannel);
   } catch (e) {
@@ -25,8 +28,8 @@ export const joinVoiceChannel = async ({
     } else if (!interaction && textChannel) {
       await textChannel.send(
         buildMessage({
-          title: "Error",
-          description: "Could not join voice channel.",
+          title: t("common.error"),
+          description: t("common.couldNotJoinVoiceChannel"),
           color: "error",
         })
       );

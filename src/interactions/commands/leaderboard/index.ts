@@ -2,8 +2,9 @@ import { ChatInputCommandInteraction, SlashCommandBuilder } from "discord.js";
 import { buildXpLeaderboard } from "./xp";
 import { buildQuizLeaderboard } from "./quiz";
 import { Font } from "canvacord";
-import { User } from "@/src/models/User";
-import { guardReply } from "@/src/utils/helpers/interactionGuard";
+import { User } from "@/models/User";
+import { guardReply } from "@/utils/helpers/interactionGuard";
+import { useTranslations } from "@/utils/hooks/useTranslations";
 
 export const data = new SlashCommandBuilder()
   .setName("leaderboard")
@@ -16,6 +17,8 @@ export const data = new SlashCommandBuilder()
   );
 
 export async function execute(interaction: ChatInputCommandInteraction) {
+  const t = useTranslations(interaction.guildId ?? "");
+
   const subcommand = interaction.options.getSubcommand(true);
 
   const guild = interaction.guild;
@@ -67,9 +70,9 @@ export async function execute(interaction: ChatInputCommandInteraction) {
   let leaderboard: string | Buffer<ArrayBufferLike> = "";
 
   if (subcommand === "xp") {
-    leaderboard = await buildXpLeaderboard({ users, guild, guildMembers });
+    leaderboard = await buildXpLeaderboard({ users, guild, guildMembers, t });
   } else if (subcommand === "quiz") {
-    leaderboard = await buildQuizLeaderboard({ users, guild, guildMembers });
+    leaderboard = await buildQuizLeaderboard({ users, guild, guildMembers, t });
   }
 
   return interaction.followUp({ files: [leaderboard] });
