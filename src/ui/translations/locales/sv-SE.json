@@ -1,6 +1,6 @@
 {
   "common": {
-    "error": "Error",
+    "error": "Fel",
     "couldNotJoinVoiceChannel": "Kunde inte ansluta till röstkanalen.",
     "leftVoiceChat": "Lämnade röstkanalen",
     "emptyQueue": "Kön är slut. Lägg till nya låtar för att fortsätta uppspelningen!",
@@ -100,14 +100,14 @@
             "description": "[{{playlist}}]({{url}}) med {{tracksText}}",
             "randomlySelectedTracks": "{{amount}} slumpmässigt valda låtar",
             "tracks": "{{amount}} låtar",
-            "error": "Kunde inte hitta några spellistor för genren: {{searchGenre}}."
+            "error": "Kunde inte hitta några spellistor för genren: {{genre}}."
           }
         },
         "track": {
           "messages": {
             "title": "Köad på plats #{{position}}",
             "errorTitle": "Fel",
-            "error": "Kunde inte hitta några låtar att spela med genre: {{searchGenre}}."
+            "error": "Kunde inte hitta några låtar att spela med genre: {{genre}}."
           }
         }
       },
