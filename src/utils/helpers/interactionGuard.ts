@@ -97,7 +97,7 @@ export const GUARD_MESSAGES = {
   },
   VOICE_CHANNEL_ERROR: {
     title: "guards.voiceChannelError.title",
-    description: "Could not join voice channel.",
+    description: "guards.voiceChannelError.description",
     color: "error",
   },
 
