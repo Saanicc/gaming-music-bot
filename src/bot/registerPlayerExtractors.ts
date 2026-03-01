@@ -2,7 +2,6 @@ import { Player } from "discord-player";
 import { SpotifyExtractor } from "discord-player-spotify";
 import { SoundcloudExtractor } from "discord-player-soundcloud";
 import { config } from "../config";
-// import { YoutubeExtractor } from "discord-player-youtube";
 import { YoutubeiExtractor } from "discord-player-youtubei";
 
 export const registerPlayerExtractors = async (player: Player) => {
@@ -11,9 +10,6 @@ export const registerPlayerExtractors = async (player: Player) => {
     clientSecret: config.SPOTIFY_CLIENT_SECRET,
     market: "SE",
   });
-  // const youtubeExt = await player.extractors.register(YoutubeExtractor, {
-  //   cookie: config.YOUTUBE_COOKIE,
-  // });
   const youtubeiExt = await player.extractors.register(YoutubeiExtractor, {
     cookie: config.YOUTUBE_COOKIE,
     logLevel: "ALL",
@@ -25,7 +21,6 @@ export const registerPlayerExtractors = async (player: Player) => {
   );
 
   if (spotifyExt) spotifyExt.priority = 3;
-  // if (youtubeExt) youtubeExt.priority = 2;
   if (youtubeiExt) youtubeiExt.priority = 2;
   if (soundcloudExt) soundcloudExt.priority = 1;
 };
