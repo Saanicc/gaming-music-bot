@@ -20,7 +20,6 @@
     "release:major": "npm version major && npm run build-prod"
   },
   "dependencies": {
-    "@discordjs/opus": "^0.10.0",
     "@snazzah/davey": "^0.1.9",
     "canvacord": "^6.0.4",
     "discord-player": "^7.2.0",
