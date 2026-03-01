@@ -3,3 +3,4 @@ node_modules
 music
 music-discord-bot-*.tar
 .env
+**/.DS_Store
