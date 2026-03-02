@@ -52,8 +52,9 @@ export const handleInteraction = async (
     const { deferred, replied } = interaction;
     const replyMethod = deferred || replied ? "editReply" : "reply";
     if (error?.name === "GatewayRateLimitError" && error?.data?.opcode === 8) {
+      const retryAfter = error?.data?.retry_after;
       await guardReply(interaction, "RATE_LIMIT", replyMethod, {
-        waitTime: String(error?.data?.retry_after),
+        waitTime: retryAfter ? String(retryAfter) : "0",
       });
     } else {
       console.error("Interaction execution error:", error);
