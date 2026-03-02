@@ -11,11 +11,17 @@
     "noQueue": {
       "title": "Den här servern har ingen aktiv spelar-session."
     },
+    "noTracksInQueue": {
+      "title": "Det finns inga låtar i kön."
+    },
     "noTrackPlaying": {
       "title": "Det spelas ingen låt."
     },
     "pleaseAddTracks": {
       "title": "Vänligen lägg till några låtar först"
+    },
+    "invalidSkipPosition": {
+      "title": "Ogiltig hopp-position"
     },
     "noGuild": {
       "title": "Ingen server hittades."
@@ -292,7 +298,8 @@
     },
     "skip": {
       "message": {
-        "title": "Hoppade till nästa låt i kön."
+        "title": "Hoppade till nästa låt i kön.",
+        "toTitle": "Hoppade till låt #{{to}} i kön."
       }
     }
   }

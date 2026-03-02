@@ -25,6 +25,11 @@ export const GUARD_MESSAGES = {
     ephemeral: true,
     color: "info",
   },
+  NO_TRACKS_IN_QUEUE: {
+    title: "guards.noTracksInQueue.title",
+    ephemeral: true,
+    color: "info",
+  },
   NO_TRACK_PLAYING: {
     title: "guards.noTrackPlaying.title",
     ephemeral: true,
@@ -34,6 +39,11 @@ export const GUARD_MESSAGES = {
     title: "guards.pleaseAddTracks.title",
     ephemeral: true,
     color: "info",
+  },
+  INVALID_SKIP_POSITION: {
+    title: "guards.invalidSkipPosition.title",
+    ephemeral: true,
+    color: "error",
   },
 
   // ── Guild / voice ────────────────────────────────────────────────────
