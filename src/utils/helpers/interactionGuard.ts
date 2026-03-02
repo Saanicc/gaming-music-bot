@@ -40,6 +40,11 @@ export const GUARD_MESSAGES = {
     ephemeral: true,
     color: "info",
   },
+  INVALID_SKIP_POSITION: {
+    title: "guards.invalidSkipPosition.title",
+    ephemeral: true,
+    color: "error",
+  },
 
   // ── Guild / voice ────────────────────────────────────────────────────
   NO_GUILD: {

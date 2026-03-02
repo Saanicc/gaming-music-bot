@@ -20,6 +20,9 @@
     "pleaseAddTracks": {
       "title": "Please add some tracks first"
     },
+    "invalidSkipPosition": {
+      "title": "Invalid skip position"
+    },
     "noGuild": {
       "title": "No guild was found."
     },

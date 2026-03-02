@@ -27,6 +27,8 @@ export async function execute(interaction: ChatInputCommandInteraction) {
   const to = interaction.options.getInteger("to");
 
   if (to) {
+    if (to > queue.tracks.data.length)
+      return guardReply(interaction, "INVALID_SKIP_POSITION");
     queue.node.skipTo(to - 1);
   } else {
     queue.node.skip();
@@ -38,9 +40,9 @@ export async function execute(interaction: ChatInputCommandInteraction) {
     ? t("commands.skip.message.toTitle", { to: to.toString() })
     : t("commands.skip.message.title");
 
-  const data = buildMessage({
+  const message = buildMessage({
     title,
     color: "info",
   });
-  return interaction.reply(data);
+  return interaction.reply(message);
 }
