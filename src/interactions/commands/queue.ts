@@ -4,7 +4,7 @@ import {
   ButtonInteraction,
   ButtonStyle,
   ChatInputCommandInteraction,
-  InteractionUpdateOptions,
+  InteractionResponse,
   SlashCommandBuilder,
 } from "discord.js";
 import { useQueue } from "discord-player";
@@ -21,6 +21,11 @@ export const data = new SlashCommandBuilder()
 
 const TRACKS_PER_PAGE = 10;
 
+const queueInteractionTimeouts = new Map<
+  string,
+  { timeout: NodeJS.Timeout; interaction: InteractionResponse }
+>();
+
 export async function execute(
   interaction: ChatInputCommandInteraction | ButtonInteraction
 ) {
@@ -35,9 +40,18 @@ export async function renderQueue(
   mode: "reply" | "update" = "reply",
   t: ReturnType<typeof useTranslations>
 ) {
-  const queue = useQueue();
+  const guildId = interaction.guildId;
+
+  if (!guildId) return guardReply(interaction, "NO_GUILD");
+
+  const queue = useQueue(guildId);
 
   if (!queue) return guardReply(interaction, "NO_QUEUE");
+
+  if (queueInteractionTimeouts.has(guildId)) {
+    const queueInteraction = queueInteractionTimeouts.get(guildId);
+    if (queueInteraction) clearTimeout(queueInteraction.timeout);
+  }
 
   const tracks = queue.tracks.data;
   const currentTrack = queue.currentTrack;
@@ -112,9 +126,26 @@ ${tracksList}
     actionRowBuilder: [row],
   });
 
+  const timeout = setTimeout(async () => {
+    const queueInteraction = queueInteractionTimeouts.get(guildId);
+    if (queueInteraction) {
+      await queueInteraction.interaction.delete().catch(() => {});
+      queueInteractionTimeouts.delete(guildId);
+    }
+  }, 15000);
+
+  let interactionResponse: InteractionResponse | null = null;
+
   if (mode === "update" && interaction.isButton()) {
-    return interaction.update(data as InteractionUpdateOptions);
+    interactionResponse = await interaction.update(data);
+  } else {
+    interactionResponse = await interaction.reply(data);
   }
 
-  return interaction.reply(data);
+  queueInteractionTimeouts.set(guildId, {
+    timeout,
+    interaction: interactionResponse,
+  });
+
+  return interactionResponse;
 }
