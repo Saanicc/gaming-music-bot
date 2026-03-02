@@ -129,7 +129,8 @@ ${tracksList}
   const timeout = setTimeout(async () => {
     const queueInteraction = queueInteractionTimeouts.get(guildId);
     if (queueInteraction) {
-      await queueInteraction.interaction.delete();
+      await queueInteraction.interaction.delete().catch(() => {});
+      queueInteractionTimeouts.delete(guildId);
     }
   }, 15000);
 
