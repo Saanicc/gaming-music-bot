@@ -11,6 +11,9 @@
     "noQueue": {
       "title": "This server does not have an active player session."
     },
+    "noTracksInQueue": {
+      "title": "There are no tracks in the queue."
+    },
     "noTrackPlaying": {
       "title": "There is no track playing."
     },
@@ -292,7 +295,8 @@
     },
     "skip": {
       "message": {
-        "title": "Skipped to the next track in queue."
+        "title": "Skipped to the next track in queue.",
+        "toTitle": "Skipped to track #{{to}} in queue."
       }
     }
   }

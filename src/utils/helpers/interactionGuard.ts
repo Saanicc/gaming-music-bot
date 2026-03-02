@@ -25,6 +25,11 @@ export const GUARD_MESSAGES = {
     ephemeral: true,
     color: "info",
   },
+  NO_TRACKS_IN_QUEUE: {
+    title: "guards.noTracksInQueue.title",
+    ephemeral: true,
+    color: "info",
+  },
   NO_TRACK_PLAYING: {
     title: "guards.noTrackPlaying.title",
     ephemeral: true,

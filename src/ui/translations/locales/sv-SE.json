@@ -11,6 +11,9 @@
     "noQueue": {
       "title": "Den här servern har ingen aktiv spelar-session."
     },
+    "noTracksInQueue": {
+      "title": "Det finns inga låtar i kön."
+    },
     "noTrackPlaying": {
       "title": "Det spelas ingen låt."
     },
