@@ -30,7 +30,7 @@ export async function execute(interaction: ChatInputCommandInteraction) {
 
   const guildMembers = await guild.members.fetch();
   if (!guildMembers || guildMembers.size === 0) {
-    return guardReply(interaction, "NO_GUILD_MEMBERS", "reply");
+    return guardReply(interaction, "NO_GUILD_MEMBERS", "editReply");
   }
 
   Font.loadDefault();

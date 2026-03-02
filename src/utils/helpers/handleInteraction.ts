@@ -49,12 +49,15 @@ export const handleInteraction = async (
   try {
     await player.context.provide(context, () => handler.execute(interaction));
   } catch (error: any) {
+    const { deferred, replied } = interaction;
+    const replyMethod = deferred || replied ? "editReply" : "reply";
     if (error?.name === "GatewayRateLimitError" && error?.data?.opcode === 8) {
-      await guardReply(interaction, "RATE_LIMIT", "editReply", {
+      await guardReply(interaction, "RATE_LIMIT", replyMethod, {
         waitTime: String(error?.data?.retry_after),
       });
     } else {
       console.error("Interaction execution error:", error);
+      await guardReply(interaction, "GENERIC_ERROR", replyMethod);
     }
   }
 };
