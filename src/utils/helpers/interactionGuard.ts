@@ -100,6 +100,12 @@ export const GUARD_MESSAGES = {
     description: "guards.voiceChannelError.description",
     color: "error",
   },
+  RATE_LIMIT: {
+    title: "guards.rateLimit.title",
+    description: "guards.rateLimit.description",
+    color: "error",
+    ephemeral: true,
+  },
 
   // ── Music quiz ───────────────────────────────────────────────────────
   QUIZ_NO_VOICE_CHANNEL: {
@@ -132,7 +138,8 @@ type Repliable = ChatInputCommandInteraction | ButtonInteraction;
 export const guardReply = async (
   interaction: Repliable,
   messageKey: GuardMessageKey,
-  method: ReplyMethod = "reply"
+  method: ReplyMethod = "reply",
+  translationData?: Record<string, string>
 ): Promise<unknown> => {
   const message = GUARD_MESSAGES[messageKey] as BuildMessagePayload;
   const t = useTranslations(interaction.guildId ?? "");
@@ -140,7 +147,12 @@ export const guardReply = async (
   const data = buildMessage({
     ...message,
     title: t(message.title),
-    description: message.description ? t(message.description) : undefined,
+    description:
+      message.description && translationData
+        ? t(message.description, translationData)
+        : message.description && !translationData
+          ? t(message.description)
+          : undefined,
   });
   const isEphemeral = message.ephemeral === true;
 

@@ -60,6 +60,10 @@
     "quizNoVoiceChannel": {
       "title": "Error",
       "description": "You must be in a voice channel to start the quiz."
+    },
+    "rateLimit": {
+      "title": "Rate Limited",
+      "description": "You are being rate limited by Discord. Please try again in {{waitTime}} seconds."
     }
   },
   "player": {
