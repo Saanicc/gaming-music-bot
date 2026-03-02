@@ -79,7 +79,7 @@ export const data = new SlashCommandBuilder()
       .setDescription("Plays a track from a url or search query")
       .addStringOption((option) =>
         option
-          .setName("query")
+          .setName("term")
           .setDescription("The url or query to search for")
           .setRequired(true)
       )
@@ -90,7 +90,7 @@ export const data = new SlashCommandBuilder()
       .setDescription("Instantly play a track from a url or search term")
       .addStringOption((option) =>
         option
-          .setName("query")
+          .setName("term")
           .setDescription("The url or query to search for")
           .setRequired(true)
       )
@@ -103,7 +103,7 @@ export const data = new SlashCommandBuilder()
       )
       .addStringOption((option) =>
         option
-          .setName("query")
+          .setName("term")
           .setDescription("The url or query to search for")
           .setRequired(true)
       )
@@ -170,7 +170,7 @@ export const execute = async (interaction: ChatInputCommandInteraction) => {
       break;
     }
     case "query": {
-      const query = interaction.options.getString("query", true);
+      const query = interaction.options.getString("term", true);
       await executePlayQuery({
         interaction,
         player,
@@ -181,7 +181,7 @@ export const execute = async (interaction: ChatInputCommandInteraction) => {
       break;
     }
     case "now": {
-      const query = interaction.options.getString("query", true);
+      const query = interaction.options.getString("term", true);
       await executePlayNow({
         interaction,
         player,
@@ -192,7 +192,7 @@ export const execute = async (interaction: ChatInputCommandInteraction) => {
       break;
     }
     case "next": {
-      const query = interaction.options.getString("query", true);
+      const query = interaction.options.getString("term", true);
       await executePlayNext({
         interaction,
         player,
