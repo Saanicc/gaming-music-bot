@@ -1,7 +1,8 @@
 import { useMainPlayer, useQueue } from "discord-player";
-import { Interaction } from "discord.js";
+import { ButtonInteraction, ChatInputCommandInteraction } from "discord.js";
 import { buildMessage } from "../bot-message/buildMessage";
 import { useTranslations } from "../hooks/useTranslations";
+import { guardReply } from "./interactionGuard";
 
 const ALLOWED_COMMANDS_DURING_QUIZ = [
   "help",
@@ -11,7 +12,7 @@ const ALLOWED_COMMANDS_DURING_QUIZ = [
 ];
 
 export const handleInteraction = async (
-  interaction: Interaction,
+  interaction: ChatInputCommandInteraction | ButtonInteraction,
   collection: Record<string, { execute: (i: any) => Promise<any> }>,
   key: string
 ) => {
@@ -44,5 +45,16 @@ export const handleInteraction = async (
   const context = {
     guild: interaction.guild,
   };
-  await player.context.provide(context, () => handler.execute(interaction));
+
+  try {
+    await player.context.provide(context, () => handler.execute(interaction));
+  } catch (error: any) {
+    if (error?.name === "GatewayRateLimitError" && error?.data?.opcode === 8) {
+      await guardReply(interaction, "RATE_LIMIT", "editReply", {
+        waitTime: String(error?.data?.retry_after),
+      });
+    } else {
+      console.error("Interaction execution error:", error);
+    }
+  }
 };

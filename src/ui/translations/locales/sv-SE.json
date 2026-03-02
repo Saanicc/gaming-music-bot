@@ -60,6 +60,10 @@
     "quizNoVoiceChannel": {
       "title": "Fel",
       "description": "Du måste vara i en röstkanal för att starta musikquizet."
+    },
+    "rateLimit": {
+      "title": "Kvot överskriden",
+      "description": "Du har överskridit din kvot hos Discord. Vänligen försök igen om {{waitTime}} sekunder."
     }
   },
   "player": {
