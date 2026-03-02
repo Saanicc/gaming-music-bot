@@ -17,17 +17,7 @@ import { colors as colorConstant, ColorType } from "../constants/colors";
 
 type FontSize = "lg" | "md" | "sm";
 
-export const buildMessage = ({
-  title,
-  titleFontSize = "sm",
-  color,
-  ephemeral = false,
-  description,
-  imageUrl,
-  thumbnail,
-  footerText,
-  actionRowBuilder,
-}: {
+export interface BuildMessageOptions {
   title: string;
   titleFontSize?: FontSize;
   color?: ColorType;
@@ -39,7 +29,19 @@ export const buildMessage = ({
   actionRowBuilder?: ActionRowBuilder<
     ButtonBuilder | StringSelectMenuBuilder
   >[];
-}): BaseMessageOptions => {
+}
+
+export const buildMessage = ({
+  title,
+  titleFontSize = "sm",
+  color,
+  ephemeral = false,
+  description,
+  imageUrl,
+  thumbnail,
+  footerText,
+  actionRowBuilder,
+}: BuildMessageOptions): BaseMessageOptions => {
   const getTitleFontSize = () => {
     switch (titleFontSize) {
       case "lg":
