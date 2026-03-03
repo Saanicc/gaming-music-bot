@@ -19,10 +19,15 @@ export const generateOptions = (
   type: "author" | "cleanTitle"
 ): string[] => {
   const pool = new Set<string>();
+  const normalized = new Set<string>();
+  const correctKey = correctAnswer.trim().toLowerCase();
 
   for (const track of allTracks) {
     const val = track[type].trim();
-    if (val.toLowerCase() !== correctAnswer.toLowerCase()) {
+
+    const key = val.toLowerCase();
+    if (key !== correctKey && !normalized.has(key)) {
+      normalized.add(key);
       pool.add(val);
     }
   }
@@ -38,7 +43,7 @@ export const createAnswerButtons = (
   const buttons = optLabels.map((opt, index) => {
     const customId = `quiz_opt_${index}`;
     const label = truncateLabelIfNeeded(opt);
-    answerMap.set(customId, label);
+    answerMap.set(customId, opt);
 
     return new ButtonBuilder()
       .setCustomId(customId)
@@ -53,7 +58,7 @@ export const handleAnswerSubmission = async (
   interaction: ButtonInteraction,
   context: QuizContext,
   answerMap: Map<string, string>,
-  targetAnswer: string,
+  correctAnswer: string,
   startTime: number,
   answeredUserIds: Set<string>,
   correctUserIds: string[],
@@ -74,7 +79,8 @@ export const handleAnswerSubmission = async (
   }
 
   const selectedAnswer = answerMap.get(interaction.customId);
-  const isCorrect = selectedAnswer === targetAnswer;
+  const isCorrect =
+    selectedAnswer?.trim().toLowerCase() === correctAnswer.trim().toLowerCase();
 
   if (isCorrect) {
     const elapsed = Date.now() - startTime;
@@ -118,7 +124,6 @@ export const askQuestion = async (
   const guessOptions = generateOptions(correctAnswer, allTracks, property);
 
   const { buttons, answerMap } = createAnswerButtons(guessOptions);
-  const targetAnswer = truncateLabelIfNeeded(correctAnswer);
 
   const row = new ActionRowBuilder<ButtonBuilder>().addComponents(buttons);
 
@@ -149,7 +154,7 @@ export const askQuestion = async (
       i,
       context,
       answerMap,
-      targetAnswer,
+      correctAnswer,
       questionStartTime,
       answeredUserIds,
       correctUserIds,

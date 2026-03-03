@@ -82,31 +82,31 @@ export async function runGameLoop({
       })
     );
   } finally {
-    if (!queue) return;
+    if (queue) {
+      const guild = voiceChannel.guild;
+      (queue.metadata as any).isSwitching = true;
+      (queue.metadata as any).musicQuiz = false;
+      queue.delete();
 
-    const guild = voiceChannel.guild;
-    (queue.metadata as any).isSwitching = true;
-    (queue.metadata as any).musicQuiz = false;
-    queue.delete();
-
-    try {
-      const previousQueue = await getPreviousQueue(
-        guild,
-        interaction,
-        thread,
-        t
-      );
-      if (previousQueue) {
-        await restorePreviousQueue(
-          previousQueue,
-          interaction,
+      try {
+        const previousQueue = await getPreviousQueue(
           guild,
+          interaction,
           thread,
           t
         );
+        if (previousQueue) {
+          await restorePreviousQueue(
+            previousQueue,
+            interaction,
+            guild,
+            thread,
+            t
+          );
+        }
+      } catch (restoreError) {
+        console.error("Failed to restore previous queue:", restoreError);
       }
-    } catch (restoreError) {
-      console.error("Failed to restore previous queue:", restoreError);
     }
   }
 }
