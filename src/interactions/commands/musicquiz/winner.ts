@@ -18,39 +18,42 @@ export const declareWinner = async (
 
   if (sortedScores.length > 0) {
     const [winnerId, winnerScore] = sortedScores[0];
-    title = t("commands.musicquiz.message.weHaveAWinner");
-    color = "success";
-    description =
-      t("commands.musicquiz.message.winner", {
-        winner: `<@${winnerId}>`,
-        score: winnerScore.toString(),
-      }) +
-      "\n\n" +
-      t("commands.musicquiz.message.quizResult") +
-      "\n" +
-      sortedScores
-        .map(
-          ([id, s], idx) =>
-            `${idx + 1}. <@${id}>: ${t("commands.musicquiz.message.points", {
-              points: s.toString(),
-            })}`
-        )
-        .join("\n");
 
-    const updatePromises = sortedScores.map(([id]) =>
-      updateUserQuizStats(thread.guildId, id, {
-        won: id === winnerId,
-        correctAnswers: correctAnswers.get(id) ?? 0,
-      })
-    );
+    if (winnerScore > 0) {
+      title = t("commands.musicquiz.message.weHaveAWinner");
+      color = "success";
+      description =
+        t("commands.musicquiz.message.winner", {
+          winner: `<@${winnerId}>`,
+          score: winnerScore.toString(),
+        }) +
+        "\n\n" +
+        t("commands.musicquiz.message.quizResult") +
+        "\n" +
+        sortedScores
+          .map(
+            ([id, s], idx) =>
+              `${idx + 1}. <@${id}>: ${t("commands.musicquiz.message.points", {
+                points: s.toString(),
+              })}`
+          )
+          .join("\n");
 
-    Promise.allSettled(updatePromises).then((results) => {
-      results
-        .filter((r): r is PromiseRejectedResult => r.status === "rejected")
-        .forEach((r) =>
-          console.error("updateUserQuizStats failed: ", r.reason)
-        );
-    });
+      const updatePromises = sortedScores.map(([id]) =>
+        updateUserQuizStats(thread.guildId, id, {
+          won: id === winnerId,
+          correctAnswers: correctAnswers.get(id) ?? 0,
+        })
+      );
+
+      Promise.allSettled(updatePromises).then((results) => {
+        results
+          .filter((r): r is PromiseRejectedResult => r.status === "rejected")
+          .forEach((r) =>
+            console.error("updateUserQuizStats failed: ", r.reason)
+          );
+      });
+    }
   }
 
   await thread.send(
