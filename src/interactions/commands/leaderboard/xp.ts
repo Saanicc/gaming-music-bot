@@ -24,7 +24,9 @@ export const buildXpLeaderboard = async ({
     const discordUser = guildMembers.find((dUser) => dUser.id === user.userId);
 
     return {
-      avatar: discordUser?.user.displayAvatarURL({ size: 128 }) ?? "",
+      avatar:
+        discordUser?.user.displayAvatarURL({ size: 128, forceStatic: true }) ??
+        "",
       username: discordUser?.user.username ?? "",
       displayName: discordUser?.displayName ?? "",
       level: user.level,
