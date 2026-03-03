@@ -46,13 +46,12 @@ export const declareWinner = async (
         })
       );
 
-      Promise.allSettled(updatePromises).then((results) => {
-        results
-          .filter((r): r is PromiseRejectedResult => r.status === "rejected")
-          .forEach((r) =>
-            console.error("updateUserQuizStats failed: ", r.reason)
-          );
-      });
+      const results = await Promise.allSettled(updatePromises);
+      results
+        .filter((r): r is PromiseRejectedResult => r.status === "rejected")
+        .forEach((r) =>
+          console.error("updateUserQuizStats failed: ", r.reason)
+        );
     }
   }
 
