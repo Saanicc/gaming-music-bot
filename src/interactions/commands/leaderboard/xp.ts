@@ -10,21 +10,19 @@ interface BuildXpLeaderboardParams {
   t: ReturnType<typeof useTranslations>;
 }
 
-export const buildXpLeaderboard = ({
+export const buildXpLeaderboard = async ({
   users,
   guild,
   guildMembers,
   t,
 }: BuildXpLeaderboardParams) => {
-  const sorted = [...users].sort((a, b) =>
-    b.level === a.level ? b.xp - a.xp : b.level - a.level
-  );
-
-  const mappedUsers = sorted.map((user, index) => {
+  const mappedUsers = users.map((user, index) => {
     const discordUser = guildMembers.find((dUser) => dUser.id === user.userId);
 
     return {
-      avatar: discordUser?.user.displayAvatarURL({ size: 128 }) ?? "",
+      avatar:
+        discordUser?.user.displayAvatarURL({ size: 128, forceStatic: true }) ??
+        "",
       username: discordUser?.user.username ?? "",
       displayName: discordUser?.displayName ?? "",
       level: user.level,
@@ -34,7 +32,7 @@ export const buildXpLeaderboard = ({
     };
   });
 
-  const lb = new LeaderboardBuilder(t)
+  const lb = new LeaderboardBuilder(t, 600, 1040)
     .setLeaderBoardType("xp")
     .setHeader({
       leaderBoardTitle: t("commands.leaderboard.xp.title"),

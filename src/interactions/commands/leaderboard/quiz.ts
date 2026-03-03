@@ -10,28 +10,19 @@ interface BuildQuizLeaderboardParams {
   t: ReturnType<typeof useTranslations>;
 }
 
-export const buildQuizLeaderboard = ({
+export const buildQuizLeaderboard = async ({
   users,
   guild,
   guildMembers,
   t,
 }: BuildQuizLeaderboardParams) => {
-  const sorted = [...users].sort((a, b) => {
-    const winsA = a.quizStats?.totalWins ?? 0;
-    const winsB = b.quizStats?.totalWins ?? 0;
-    if (winsA !== winsB) {
-      return winsB - winsA;
-    }
-    const correctA = a.quizStats?.totalCorrectAnswers ?? 0;
-    const correctB = b.quizStats?.totalCorrectAnswers ?? 0;
-    return correctB - correctA;
-  });
-
-  const mappedUsers = sorted.map((user, index) => {
+  const mappedUsers = users.map((user, index) => {
     const discordUser = guildMembers.find((dUser) => dUser.id === user.userId);
 
     return {
-      avatar: discordUser?.user.displayAvatarURL({ size: 128 }) ?? "",
+      avatar:
+        discordUser?.user.displayAvatarURL({ size: 128, forceStatic: true }) ??
+        "",
       username: discordUser?.user.username ?? "",
       displayName: discordUser?.displayName ?? "",
       level: user.level,
@@ -45,7 +36,7 @@ export const buildQuizLeaderboard = ({
     };
   });
 
-  const lb = new LeaderboardBuilder(t)
+  const lb = new LeaderboardBuilder(t, 600, 1020)
     .setLeaderBoardType("music_quiz")
     .setHeader({
       leaderBoardTitle: t("commands.leaderboard.quiz.title"),

@@ -40,32 +40,33 @@ export async function execute(interaction: ChatInputCommandInteraction) {
     return users.map((user) => user.id);
   };
 
-  const findOrCreateUserInDB = async () => {
+  const findUsersInDB = async () => {
     const userIds = getUserIds();
-
     try {
-      const users = await Promise.all(
-        userIds.map(async (id) => {
-          try {
-            let user = await User.findOne({ guildId: guild.id, userId: id });
-            if (!user) {
-              user = await User.create({ guildId: guild.id, userId: id });
-            }
-            return user;
-          } catch (err) {
-            console.error(`Error processing user ${id}:`, err);
-            return null;
-          }
-        })
-      );
-      return users.filter(Boolean);
+      const query = User.find({ guildId: guild.id, userId: { $in: userIds } });
+
+      if (subcommand === "xp") {
+        return await query.sort({ totalXp: -1 }).limit(8).lean();
+      }
+
+      if (subcommand === "quiz") {
+        return await query
+          .sort({
+            "quizStats.totalWins": -1,
+            "quizStats.totalCorrectAnswers": -1,
+          })
+          .limit(8)
+          .lean();
+      }
+
+      return [];
     } catch (err) {
-      console.error("Error finding or creating users:", err);
-      throw new Error("Database error while finding/creating users.");
+      console.error("Error finding users:", err);
+      throw new Error("Database error while finding users.");
     }
   };
 
-  const users = await findOrCreateUserInDB();
+  const users = await findUsersInDB();
 
   let leaderboard: string | Buffer<ArrayBufferLike> = "";
 
