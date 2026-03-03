@@ -308,10 +308,20 @@ export class LeaderboardBuilder extends Builder {
     if (!this.leaderBoardType) throw new Error("Leaderboard type is required!");
 
     const bgImage = await loadImage(this.header.image);
-    const topThree = await this.renderTopThree();
-    const otherPlayers = await Promise.all(
-      this.players.slice(3).map((p) => this.renderPlayer(p))
-    );
+
+    let topThreeElement: ReturnType<typeof JSX.createElement> | null = null;
+    let otherPlayers: Awaited<ReturnType<typeof this.renderPlayer>>[] = [];
+
+    if (this.players.length >= 3) {
+      topThreeElement = await this.renderTopThree();
+      otherPlayers = await Promise.all(
+        this.players.slice(3).map((p) => this.renderPlayer(p))
+      );
+    } else {
+      otherPlayers = await Promise.all(
+        this.players.map((p) => this.renderPlayer(p))
+      );
+    }
 
     return JSX.createElement(
       "div",
@@ -379,7 +389,7 @@ export class LeaderboardBuilder extends Builder {
           )
         )
       ),
-      topThree,
+      ...(topThreeElement ? [topThreeElement] : []),
       ...otherPlayers
     );
   }
