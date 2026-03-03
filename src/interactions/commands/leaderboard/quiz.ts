@@ -10,7 +10,7 @@ interface BuildQuizLeaderboardParams {
   t: ReturnType<typeof useTranslations>;
 }
 
-export const buildQuizLeaderboard = ({
+export const buildQuizLeaderboard = async ({
   users,
   guild,
   guildMembers,

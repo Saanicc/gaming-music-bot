@@ -10,7 +10,7 @@ interface BuildXpLeaderboardParams {
   t: ReturnType<typeof useTranslations>;
 }
 
-export const buildXpLeaderboard = ({
+export const buildXpLeaderboard = async ({
   users,
   guild,
   guildMembers,
