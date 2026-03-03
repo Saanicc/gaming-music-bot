@@ -58,13 +58,15 @@ export async function execute(interaction: ChatInputCommandInteraction) {
           .limit(8)
           .lean();
       }
+
+      return [];
     } catch (err) {
       console.error("Error finding users:", err);
       throw new Error("Database error while finding users.");
     }
   };
 
-  const users = (await findUsersInDB()) ?? [];
+  const users = await findUsersInDB();
 
   let leaderboard: string | Buffer<ArrayBufferLike> = "";
 
