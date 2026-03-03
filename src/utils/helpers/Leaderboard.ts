@@ -33,8 +33,12 @@ export class LeaderboardBuilder extends Builder {
   private boxShadow: string = "0 4px 6px rgba(0,0,0,0.3)";
   private t: ReturnType<typeof useTranslations>;
 
-  constructor(t: ReturnType<typeof useTranslations>) {
-    super(600, 960);
+  constructor(
+    t: ReturnType<typeof useTranslations>,
+    width: number,
+    height: number
+  ) {
+    super(width, height);
     this.t = t;
   }
 

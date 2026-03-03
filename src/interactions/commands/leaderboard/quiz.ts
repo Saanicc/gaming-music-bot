@@ -47,7 +47,7 @@ export const buildQuizLeaderboard = async ({
     };
   });
 
-  const lb = new LeaderboardBuilder(t)
+  const lb = new LeaderboardBuilder(t, 600, 1020)
     .setLeaderBoardType("music_quiz")
     .setHeader({
       leaderBoardTitle: t("commands.leaderboard.quiz.title"),

@@ -36,7 +36,7 @@ export const buildXpLeaderboard = async ({
     };
   });
 
-  const lb = new LeaderboardBuilder(t)
+  const lb = new LeaderboardBuilder(t, 600, 1040)
     .setLeaderBoardType("xp")
     .setHeader({
       leaderBoardTitle: t("commands.leaderboard.xp.title"),
