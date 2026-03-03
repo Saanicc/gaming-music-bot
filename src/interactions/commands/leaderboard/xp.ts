@@ -16,11 +16,7 @@ export const buildXpLeaderboard = async ({
   guildMembers,
   t,
 }: BuildXpLeaderboardParams) => {
-  const sorted = [...users].sort((a, b) =>
-    b.level === a.level ? b.xp - a.xp : b.level - a.level
-  );
-
-  const mappedUsers = sorted.map((user, index) => {
+  const mappedUsers = users.map((user, index) => {
     const discordUser = guildMembers.find((dUser) => dUser.id === user.userId);
 
     return {

@@ -43,14 +43,28 @@ export async function execute(interaction: ChatInputCommandInteraction) {
   const findUsersInDB = async () => {
     const userIds = getUserIds();
     try {
-      return await User.find({ guildId: guild.id, userId: { $in: userIds } });
+      const query = User.find({ guildId: guild.id, userId: { $in: userIds } });
+
+      if (subcommand === "xp") {
+        return await query.sort({ totalXp: -1 }).limit(8).lean();
+      }
+
+      if (subcommand === "quiz") {
+        return await query
+          .sort({
+            "quizStats.totalWins": -1,
+            "quizStats.totalCorrectAnswers": -1,
+          })
+          .limit(8)
+          .lean();
+      }
     } catch (err) {
       console.error("Error finding users:", err);
       throw new Error("Database error while finding users.");
     }
   };
 
-  const users = await findUsersInDB();
+  const users = (await findUsersInDB()) ?? [];
 
   let leaderboard: string | Buffer<ArrayBufferLike> = "";
 
