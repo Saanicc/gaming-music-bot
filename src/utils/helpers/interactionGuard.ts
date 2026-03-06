@@ -45,6 +45,11 @@ export const GUARD_MESSAGES = {
     ephemeral: true,
     color: "error",
   },
+  INVALID_REMOVE_POSITION: {
+    title: "guards.invalidRemovePosition.title",
+    ephemeral: true,
+    color: "error",
+  },
 
   // ── Guild / voice ────────────────────────────────────────────────────
   NO_GUILD: {

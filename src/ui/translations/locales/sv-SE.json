@@ -23,6 +23,9 @@
     "invalidSkipPosition": {
       "title": "Ogiltig hopp-position"
     },
+    "invalidRemovePosition": {
+      "title": "Ogiltig borttagnings-position"
+    },
     "noGuild": {
       "title": "Ingen server hittades."
     },
@@ -300,6 +303,11 @@
       "message": {
         "title": "Hoppade till nästa låt i kön.",
         "toTitle": "Hoppade till låt #{{to}} i kön."
+      }
+    },
+    "remove": {
+      "message": {
+        "title": "Tog bort låt #{{at}} från kön."
       }
     }
   }
