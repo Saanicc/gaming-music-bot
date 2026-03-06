@@ -25,7 +25,7 @@
     "discord-player": "^7.2.0",
     "discord-player-soundcloud": "^1.0.7",
     "discord-player-spotify": "^1.1.7",
-    "discord-player-youtubei": "^2.0.0-dev",
+    "discord-player-youtubei": "2.0.0-dev.1",
     "discord.js": "^14.25.1",
     "dotenv": "^17.2.3",
     "mediaplex": "^1.0.0",

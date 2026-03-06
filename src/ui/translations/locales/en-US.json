@@ -23,6 +23,9 @@
     "invalidSkipPosition": {
       "title": "Invalid skip position"
     },
+    "invalidRemovePosition": {
+      "title": "Invalid remove position"
+    },
     "noGuild": {
       "title": "No guild was found."
     },
@@ -300,6 +303,11 @@
       "message": {
         "title": "Skipped to the next track in queue.",
         "toTitle": "Skipped to track #{{to}} in queue."
+      }
+    },
+    "remove": {
+      "message": {
+        "title": "Removed track #{{at}} from queue."
       }
     }
   }

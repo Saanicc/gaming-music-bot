@@ -7,6 +7,7 @@ import { getThumbnail } from "@/utils/helpers/utils";
 import { joinVoiceChannel } from "@/utils/helpers/joinVoiceChannel";
 import { guardReply } from "@/utils/helpers/interactionGuard";
 import { useTranslations } from "@/utils/hooks/useTranslations";
+import { updateUserLevel } from "@/utils/helpers/updateUserLevel";
 
 interface ExecuteParams {
   interaction: ChatInputCommandInteraction;
@@ -70,6 +71,8 @@ export async function execute({
     });
 
     if (joinError) return;
+
+    await updateUserLevel(interaction, queue.guild.id, "play");
 
     if (!queue.node.isPlaying()) {
       await queue.node.play();

@@ -3,6 +3,7 @@ import * as play from "./play";
 import * as help from "./help";
 import * as queue from "./queue";
 import * as skip from "./skip";
+import * as remove from "./remove";
 import * as rank from "./rank";
 import * as autoplay from "./autoplay";
 import * as loop from "./loop";
@@ -18,6 +19,7 @@ export const commands = {
   add_track: addTrack,
   queue,
   skip,
+  remove,
   rank,
   leaderboard,
   autoplay,
