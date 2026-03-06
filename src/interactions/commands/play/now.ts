@@ -8,6 +8,7 @@ import { getThumbnail } from "@/utils/helpers/utils";
 import { joinVoiceChannel } from "@/utils/helpers/joinVoiceChannel";
 import { guardReply } from "@/utils/helpers/interactionGuard";
 import { useTranslations } from "@/utils/hooks/useTranslations";
+import { withTasksQueue } from "@/utils/helpers/withTasksQueue";
 
 interface ExecutePlayNowQueryArgs {
   interaction: ChatInputCommandInteraction;
@@ -37,7 +38,6 @@ export const execute = async ({
       return guardReply(interaction, "NO_RESULTS", "editReply");
 
     const track = result.tracks[0];
-    queue.insertTrack(track);
 
     const message = buildMessage({
       title: t("commands.play.now.message.title"),
@@ -47,18 +47,22 @@ export const execute = async ({
       color: "queue",
     });
 
-    const joinError = await joinVoiceChannel({
-      interaction,
-      queue,
-      voiceChannel,
+    await withTasksQueue(queue, async () => {
+      queue.insertTrack(track);
+
+      const joinError = await joinVoiceChannel({
+        interaction,
+        queue,
+        voiceChannel,
+      });
+
+      if (joinError) return;
+
+      await updateUserLevel(interaction, guild.id, "play");
+
+      if (!queue.isPlaying()) await queue.node.play();
+      else queue.node.skip();
     });
-
-    if (joinError) return;
-
-    await updateUserLevel(interaction, guild.id, "play");
-
-    if (!queue.isPlaying()) await queue.node.play();
-    else queue.node.skip();
 
     await interaction.followUp(message);
   } catch (error) {

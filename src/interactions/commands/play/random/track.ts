@@ -8,6 +8,7 @@ import { joinVoiceChannel } from "@/utils/helpers/joinVoiceChannel";
 import { guardReply } from "@/utils/helpers/interactionGuard";
 import { useTranslations } from "@/utils/hooks/useTranslations";
 import { updateUserLevel } from "@/utils/helpers/updateUserLevel";
+import { withTasksQueue } from "@/utils/helpers/withTasksQueue";
 
 interface ExecuteParams {
   interaction: ChatInputCommandInteraction;
@@ -31,8 +32,6 @@ export async function execute({
       ? genre
       : GENRES[Math.floor(Math.random() * GENRES.length)];
 
-    let message;
-
     const searchResult = await player.search(searchGenre, {
       requestedBy: interaction.user,
       searchEngine: QueryType.SPOTIFY_SONG,
@@ -53,32 +52,36 @@ export async function execute({
     }
 
     const track = tracks[Math.floor(Math.random() * tracks.length)];
-    queue.addTrack(track);
+    let message;
 
-    message = buildMessage({
-      title: t("commands.play.random.track.message.title", {
-        position: queue.tracks.size.toString(),
-      }),
-      description: getFormattedTrackDescription(track, queue),
-      thumbnail: getThumbnail(track),
-      color: "queue",
+    await withTasksQueue(queue, async () => {
+      queue.addTrack(track);
+
+      message = buildMessage({
+        title: t("commands.play.random.track.message.title", {
+          position: queue.tracks.size.toString(),
+        }),
+        description: getFormattedTrackDescription(track, queue),
+        thumbnail: getThumbnail(track),
+        color: "queue",
+      });
+
+      const joinError = await joinVoiceChannel({
+        interaction,
+        queue,
+        voiceChannel,
+      });
+
+      if (joinError) return;
+
+      await updateUserLevel(interaction, queue.guild.id, "play");
+
+      if (!queue.node.isPlaying()) {
+        await queue.node.play();
+      }
     });
 
-    const joinError = await joinVoiceChannel({
-      interaction,
-      queue,
-      voiceChannel,
-    });
-
-    if (joinError) return;
-
-    await updateUserLevel(interaction, queue.guild.id, "play");
-
-    if (!queue.node.isPlaying()) {
-      await queue.node.play();
-    }
-
-    return interaction.followUp(message);
+    return interaction.followUp(message!);
   } catch (error) {
     console.error(error);
     return guardReply(interaction, "PLAY_ERROR", "followUp");
