@@ -1,4 +1,4 @@
-import { User, UserType } from "../models/User";
+import { db, UserType } from "../db";
 import config from "@/bot-config.json";
 
 export type XPGrantingCommand = "play_boss_music" | "play";
@@ -40,11 +40,7 @@ export const addXP = async (
   commandName: XPGrantingCommand
 ) => {
   const now = new Date();
-  let user = await User.findOne({ guildId, userId });
-
-  if (!user) {
-    user = await User.create({ guildId, userId });
-  }
+  let user = await db.findOrCreateUser(guildId, userId);
 
   if (user.lastXP && now.getTime() - user.lastXP.getTime() < XP_COOLDOWN_TIME) {
     return { ...user.toObject(), noXP: true };

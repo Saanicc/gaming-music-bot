@@ -1,5 +1,5 @@
 import { DEFAULT_LANGUAGE, LanguageCode } from "../ui/translations";
-import { GuildSettings } from "./schema/GuildSettings";
+import { GuildSettings } from "./schemas/GuildSettings";
 
 const guildLanguages: Map<string, LanguageCode> = new Map();
 

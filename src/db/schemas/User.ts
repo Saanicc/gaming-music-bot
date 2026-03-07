@@ -1,4 +1,4 @@
-import mongoose, { InferSchemaType, Document } from "mongoose";
+import mongoose, { InferSchemaType } from "mongoose";
 
 const userSchema = new mongoose.Schema({
   guildId: {

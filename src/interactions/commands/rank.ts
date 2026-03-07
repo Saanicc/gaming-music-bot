@@ -1,4 +1,3 @@
-import { User } from "@/models/User";
 import {
   AttachmentBuilder,
   ChatInputCommandInteraction,
@@ -8,6 +7,7 @@ import { getRequiredXP } from "@/modules/xpSystem";
 import { getRankImage, getRankTitle } from "@/modules/rankSystem";
 import { Font } from "canvacord";
 import { LevelCardBuilder } from "@/utils/helpers/LevelCard";
+import { db } from "@/db";
 
 export const data = new SlashCommandBuilder()
   .setName("rank")
@@ -31,17 +31,7 @@ export async function execute(interaction: ChatInputCommandInteraction) {
 
   Font.loadDefault();
 
-  let user = await User.findOne({
-    guildId: guildId,
-    userId: targetUser.id,
-  });
-  if (!user) {
-    user = await User.create({
-      guildId: guildId,
-      userId: targetUser.id,
-    });
-    await user.save();
-  }
+  const user = await db.findOrCreateUser(guildId, targetUser.id);
 
   const card = new LevelCardBuilder()
     .setDisplayName(targetUserObj.displayName)

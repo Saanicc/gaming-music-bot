@@ -14,3 +14,7 @@ export const getThumbnail = (obj: Track | Playlist | null | undefined) => {
 
   return obj.thumbnail;
 };
+
+export const removeWww = (url: string) => {
+  return url.replace(/^(https?:\/\/)www\./, "$1");
+};

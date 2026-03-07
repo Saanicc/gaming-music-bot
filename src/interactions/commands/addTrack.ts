@@ -2,8 +2,8 @@ import { ChatInputCommandInteraction, SlashCommandBuilder } from "discord.js";
 import { buildMessage } from "@/utils/bot-message/buildMessage";
 import { getFormattedTrackDescription } from "@/utils/helpers/getFormattedTrackDescription";
 import { useMainPlayer, useQueue } from "discord-player";
-import { getThumbnail } from "@/utils/helpers/utils";
-import { BossTrack, TrackType } from "@/models/BossTrack";
+import { getThumbnail, removeWww } from "@/utils/helpers/utils";
+import { db, TrackType } from "@/db";
 import { getSearchEngine } from "@/utils/helpers/getSearchEngine";
 import { guardReply } from "@/utils/helpers/interactionGuard";
 import { useTranslations } from "@/utils/hooks/useTranslations";
@@ -37,7 +37,7 @@ export const data = new SlashCommandBuilder()
 export const execute = async (interaction: ChatInputCommandInteraction) => {
   const t = useTranslations(interaction.guildId ?? "");
 
-  const url = interaction.options.getString("url", true);
+  const url = removeWww(interaction.options.getString("url", true));
   const selectedType = interaction.options.getString("type", true) as TrackType;
 
   if (!url.match(/https:\/\/.*.*/))
@@ -46,7 +46,7 @@ export const execute = async (interaction: ChatInputCommandInteraction) => {
   let trackAlreadyExist: Boolean;
 
   try {
-    trackAlreadyExist = !!(await BossTrack.findOne({ trackUrl: url }));
+    trackAlreadyExist = !!(await db.findBossTrackByUrl(url));
   } catch (error) {
     console.error(
       `[addTrack (find in DB)]: ${
@@ -71,7 +71,7 @@ export const execute = async (interaction: ChatInputCommandInteraction) => {
     return guardReply(interaction, "NO_TRACK_FOUND");
 
   try {
-    await BossTrack.create({ trackUrl: url, trackType: selectedType });
+    await db.createBossTrack(url, selectedType);
   } catch (error) {
     console.error(
       `[addTrack (add to DB)]: ${

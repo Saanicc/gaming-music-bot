@@ -3,7 +3,7 @@ import { buildMessage } from "@/utils/bot-message/buildMessage";
 import { getFormattedTrackDescription } from "@/utils/helpers/getFormattedTrackDescription";
 import { useQueue } from "discord-player";
 import { getThumbnail } from "@/utils/helpers/utils";
-import { BossTrack } from "@/models/BossTrack";
+import { db } from "@/db";
 import { addTrackToCache } from "@/utils/helpers/isTrackInCache";
 import { guardReply } from "@/utils/helpers/interactionGuard";
 import { emoji } from "@/utils/constants/emojis";
@@ -27,7 +27,7 @@ export const execute = async (interaction: ButtonInteraction) => {
 
   let trackAlreadyExist: Boolean;
   try {
-    trackAlreadyExist = !!(await BossTrack.findOne({ trackUrl: trackUrl }));
+    trackAlreadyExist = !!(await db.findBossTrackByUrl(trackUrl));
   } catch (error) {
     console.error(
       `[addTrack (find in DB)]: ${
@@ -42,7 +42,7 @@ export const execute = async (interaction: ButtonInteraction) => {
     return guardReply(interaction, "TRACK_ALREADY_EXISTS", "followUp");
 
   try {
-    await BossTrack.create({ trackUrl, trackType: "song" });
+    await db.createBossTrack(trackUrl, "song");
   } catch (error) {
     console.error(
       `[addTrack (add to DB)]: ${
