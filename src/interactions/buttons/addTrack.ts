@@ -2,8 +2,8 @@ import { ButtonBuilder, ButtonInteraction, ButtonStyle } from "discord.js";
 import { buildMessage } from "@/utils/bot-message/buildMessage";
 import { getFormattedTrackDescription } from "@/utils/helpers/getFormattedTrackDescription";
 import { useQueue } from "discord-player";
-import { getThumbnail } from "@/utils/helpers/utils";
-import { BossTrack } from "@/models/BossTrack";
+import { getThumbnail, removeWww } from "@/utils/helpers/utils";
+import { db } from "@/db";
 import { addTrackToCache } from "@/utils/helpers/isTrackInCache";
 import { guardReply } from "@/utils/helpers/interactionGuard";
 import { emoji } from "@/utils/constants/emojis";
@@ -21,13 +21,18 @@ export const execute = async (interaction: ButtonInteraction) => {
 
   const queue = useQueue();
 
-  const trackUrl = queue?.currentTrack?.url;
+  if (!queue) return guardReply(interaction, "NO_QUEUE", "followUp");
 
-  if (!trackUrl) return guardReply(interaction, "NO_TRACK_URL", "followUp");
+  const currentTrack = queue.currentTrack;
+
+  if (!currentTrack?.url)
+    return guardReply(interaction, "NO_TRACK_URL", "followUp");
+
+  const trackUrl = removeWww(currentTrack.url);
 
   let trackAlreadyExist: Boolean;
   try {
-    trackAlreadyExist = !!(await BossTrack.findOne({ trackUrl: trackUrl }));
+    trackAlreadyExist = !!(await db.findBossTrackByUrl(trackUrl));
   } catch (error) {
     console.error(
       `[addTrack (find in DB)]: ${
@@ -42,7 +47,7 @@ export const execute = async (interaction: ButtonInteraction) => {
     return guardReply(interaction, "TRACK_ALREADY_EXISTS", "followUp");
 
   try {
-    await BossTrack.create({ trackUrl, trackType: "song" });
+    await db.createBossTrack(trackUrl, "song");
   } catch (error) {
     console.error(
       `[addTrack (add to DB)]: ${
@@ -61,9 +66,9 @@ export const execute = async (interaction: ButtonInteraction) => {
     title: t("buttons.addTrack.message.title"),
     description: t("buttons.addTrack.message.description", {
       user: interaction.user.toString(),
-      track: getFormattedTrackDescription(queue.currentTrack, queue),
+      track: getFormattedTrackDescription(currentTrack, queue),
     }),
-    thumbnail: getThumbnail(queue.currentTrack),
+    thumbnail: getThumbnail(currentTrack),
     color: "success",
   });
 

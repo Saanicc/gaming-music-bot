@@ -16,7 +16,8 @@
       "@/ui/*": ["./src/ui/*"],
       "@/utils/*": ["./src/utils/*"],
       "@/services/*": ["./src/services/*"],
-      "@/models/*": ["./src/models/*"],
+      "@/db": ["./src/db/"],
+      "@/db/*": ["./src/db/*"],
       "@/modules/*": ["./src/modules/*"],
       "@/interactions/*": ["./src/interactions/*"]
     }

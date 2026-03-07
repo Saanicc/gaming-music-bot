@@ -1,4 +1,4 @@
-import { BossTrack } from "@/src/models/BossTrack";
+import { db } from "@/db";
 import { Track } from "discord-player";
 
 const guildTracks = new Map<string, string[]>();
@@ -21,7 +21,7 @@ export const checkIfTrackInDB = async (guildId: string, track: Track) => {
 
   if (isTrackInCache(guildId, trackUrl)) return true;
 
-  const inDB = !!(await BossTrack.findOne({ trackUrl }));
+  const inDB = !!(await db.findBossTrackByUrl(trackUrl));
 
   if (inDB) {
     addTrackToCache(guildId, trackUrl);

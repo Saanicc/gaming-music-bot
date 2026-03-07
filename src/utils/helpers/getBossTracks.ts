@@ -1,16 +1,14 @@
 import { Player, Track } from "discord-player";
 import { User } from "discord.js";
 import { getSearchEngine } from "./getSearchEngine";
-import { BossTrack, TrackType } from "@/models/BossTrack";
+import { db, TrackType } from "@/db";
 
 export const getBossTracks = async (
   type: TrackType,
   player: Player,
   requestedBy: User
 ): Promise<Track[]> => {
-  const trackUrls = (await BossTrack.find())
-    .filter((track) => track.trackType === type)
-    .map((track) => track.trackUrl);
+  const trackUrls = await db.findBossTracksByType(type);
 
   if (trackUrls.length === 0) {
     throw new Error("⚠️ No boss tracks found!");

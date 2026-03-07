@@ -2,7 +2,7 @@ import { ChatInputCommandInteraction, SlashCommandBuilder } from "discord.js";
 import { buildXpLeaderboard } from "./xp";
 import { buildQuizLeaderboard } from "./quiz";
 import { Font } from "canvacord";
-import { User } from "@/models/User";
+import { db } from "@/db";
 import { guardReply } from "@/utils/helpers/interactionGuard";
 import { useTranslations } from "@/utils/hooks/useTranslations";
 
@@ -43,20 +43,21 @@ export async function execute(interaction: ChatInputCommandInteraction) {
   const findUsersInDB = async () => {
     const userIds = getUserIds();
     try {
-      const query = User.find({ guildId: guild.id, userId: { $in: userIds } });
-
       if (subcommand === "xp") {
-        return await query.sort({ totalXp: -1 }).limit(8).lean();
+        return await db.findUsersByGuild(guild.id, userIds, {
+          sort: { totalXp: -1 },
+          limit: 8,
+        });
       }
 
       if (subcommand === "quiz") {
-        return await query
-          .sort({
+        return await db.findUsersByGuild(guild.id, userIds, {
+          sort: {
             "quizStats.totalWins": -1,
             "quizStats.totalCorrectAnswers": -1,
-          })
-          .limit(8)
-          .lean();
+          },
+          limit: 8,
+        });
       }
 
       return [];
