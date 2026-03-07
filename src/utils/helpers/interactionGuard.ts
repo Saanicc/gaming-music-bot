@@ -155,7 +155,7 @@ export const guardReply = async (
   messageKey: GuardMessageKey,
   method: ReplyMethod = "reply",
   translationData?: Record<string, string>
-): Promise<unknown> => {
+) => {
   const message = GUARD_MESSAGES[messageKey] as BuildMessagePayload;
   const t = useTranslations(interaction.guildId ?? "");
 

@@ -7,6 +7,7 @@ import { searchSpotifyPlaylists } from "@/src/api/spotify";
 import { joinVoiceChannel } from "@/utils/helpers/joinVoiceChannel";
 import { guardReply } from "@/utils/helpers/interactionGuard";
 import { useTranslations } from "@/utils/hooks/useTranslations";
+import { withTasksQueue } from "@/utils/helpers/withTasksQueue";
 
 interface ExecuteParams {
   interaction: ChatInputCommandInteraction;
@@ -31,8 +32,6 @@ export async function execute({
     const searchGenre = genre
       ? genre
       : GENRES[Math.floor(Math.random() * GENRES.length)];
-
-    let message;
 
     const spotifyPlaylists = await searchSpotifyPlaylists(searchGenre);
 
@@ -90,41 +89,45 @@ export async function execute({
       tracks = tracks.slice(randomStart, randomStart + amountOfTracks);
     }
 
-    queue.addTrack(tracks);
-    queue.tracks.shuffle();
+    const result = await withTasksQueue(queue, async () => {
+      const joinError = await joinVoiceChannel({
+        interaction,
+        queue,
+        voiceChannel,
+      });
 
-    const tracksText = amountOfTracks
-      ? t("commands.play.random.playlist.message.randomlySelectedTracks", {
-          amount: tracks.length.toString(),
-        })
-      : t("commands.play.random.playlist.message.tracks", {
-          amount: tracks.length.toString(),
-        });
+      if (joinError) return false;
 
-    message = buildMessage({
-      title: t("commands.play.random.playlist.message.title"),
-      description: t("commands.play.random.playlist.message.description", {
-        playlist: playlist.title,
-        url: playlist.url,
-        tracksText,
-      }),
-      thumbnail: getThumbnail(playlist),
-      color: "queue",
+      queue.addTrack(tracks);
+      queue.tracks.shuffle();
+
+      if (!queue.node.isPlaying()) {
+        await queue.node.play();
+      }
+
+      const tracksText = amountOfTracks
+        ? t("commands.play.random.playlist.message.randomlySelectedTracks", {
+            amount: tracks.length.toString(),
+          })
+        : t("commands.play.random.playlist.message.tracks", {
+            amount: tracks.length.toString(),
+          });
+
+      return buildMessage({
+        title: t("commands.play.random.playlist.message.title"),
+        description: t("commands.play.random.playlist.message.description", {
+          playlist: playlist.title,
+          url: playlist.url,
+          tracksText,
+        }),
+        thumbnail: getThumbnail(playlist),
+        color: "queue",
+      });
     });
 
-    const joinError = await joinVoiceChannel({
-      interaction,
-      queue,
-      voiceChannel,
-    });
+    if (result === false) return;
 
-    if (joinError) return;
-
-    if (!queue.node.isPlaying()) {
-      await queue.node.play();
-    }
-
-    return interaction.followUp(message);
+    return await interaction.followUp(result);
   } catch (error) {
     console.error(error);
     return guardReply(interaction, "PLAY_ERROR", "followUp");

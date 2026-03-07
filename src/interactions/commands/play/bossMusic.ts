@@ -14,6 +14,7 @@ import { Player, useQueue } from "discord-player";
 import { joinVoiceChannel } from "@/utils/helpers/joinVoiceChannel";
 import { guardReply } from "@/utils/helpers/interactionGuard";
 import { useTranslations } from "@/utils/hooks/useTranslations";
+import { withTasksQueue } from "@/utils/helpers/withTasksQueue";
 
 interface ExecuteBossMusicArgs {
   interaction: ChatInputCommandInteraction | ButtonInteraction;
@@ -50,41 +51,43 @@ export const execute = async ({
   });
 
   try {
-    const tracks = await getBossTracks("song", player, interaction.user);
-    const hornTracks = await getBossTracks("horn", player, interaction.user);
+    await withTasksQueue(newQueue, async () => {
+      const tracks = await getBossTracks("song", player, interaction.user);
+      const hornTracks = await getBossTracks("horn", player, interaction.user);
 
-    const pickRandomHornTrack = () => {
-      const number = Math.floor(Math.random() * hornTracks.length);
-      return hornTracks[number];
-    };
+      const pickRandomHornTrack = () => {
+        const number = Math.floor(Math.random() * hornTracks.length);
+        return hornTracks[number];
+      };
 
-    newQueue.addTrack(tracks);
-    newQueue.tracks.shuffle();
-    newQueue.insertTrack(pickRandomHornTrack());
+      newQueue.addTrack(tracks);
+      newQueue.tracks.shuffle();
+      newQueue.insertTrack(pickRandomHornTrack());
 
-    queueManager.setQueueType("boss");
+      queueManager.setQueueType("boss");
 
-    const data = buildMessage({
-      title: t("commands.play.boss.music.message.title", {
-        emoji: emoji.fight,
-      }),
-      titleFontSize: "lg",
-      imageUrl: await getRandomFightGif(),
-      color: "bossMode",
+      const data = buildMessage({
+        title: t("commands.play.boss.music.message.title", {
+          emoji: emoji.fight,
+        }),
+        titleFontSize: "lg",
+        imageUrl: await getRandomFightGif(),
+        color: "bossMode",
+      });
+
+      const joinError = await joinVoiceChannel({
+        interaction,
+        queue: newQueue,
+        voiceChannel,
+      });
+      if (joinError) return;
+
+      if (!newQueue.isPlaying()) await newQueue.node.play();
+
+      await updateUserLevel(interaction, guild.id, "play_boss_music");
+
+      await interaction.followUp(data);
     });
-
-    const joinError = await joinVoiceChannel({
-      interaction,
-      queue: newQueue,
-      voiceChannel,
-    });
-    if (joinError) return;
-
-    if (!newQueue.isPlaying()) await newQueue.node.play();
-
-    await updateUserLevel(interaction, guild.id, "play_boss_music");
-
-    await interaction.followUp(data);
   } catch (error) {
     console.error(error);
     return guardReply(interaction, "PLAY_ERROR", "followUp");

@@ -8,6 +8,7 @@ import { getThumbnail } from "@/utils/helpers/utils";
 import { joinVoiceChannel } from "@/utils/helpers/joinVoiceChannel";
 import { guardReply } from "@/utils/helpers/interactionGuard";
 import { useTranslations } from "@/utils/hooks/useTranslations";
+import { withTasksQueue } from "@/utils/helpers/withTasksQueue";
 
 interface ExecutePlayNextQueryArgs {
   interaction: ChatInputCommandInteraction;
@@ -38,31 +39,35 @@ export const execute = async ({
       return guardReply(interaction, "NO_RESULTS", "followUp");
 
     const track = result.tracks[0];
-    queue.insertTrack(track);
 
-    const message = buildMessage({
-      title: t("commands.play.next.message.title", {
-        position: queue.tracks.size.toString(),
-      }),
-      description: getFormattedTrackDescription(track, queue),
-      thumbnail: getThumbnail(result.tracks[0]),
-      footerText: t("commands.play.next.message.footerText"),
-      color: "queue",
+    const joinResult = await withTasksQueue(queue, async () => {
+      const joinError = await joinVoiceChannel({
+        interaction,
+        queue,
+        voiceChannel,
+      });
+      if (joinError) return false;
+
+      queue.insertTrack(track);
+
+      if (!queue.isPlaying()) await queue.node.play();
+
+      return buildMessage({
+        title: t("commands.play.next.message.title", {
+          position: String(1),
+        }),
+        description: getFormattedTrackDescription(track, queue),
+        thumbnail: getThumbnail(track),
+        footerText: t("commands.play.next.message.footerText"),
+        color: "queue",
+      });
     });
 
-    await interaction.followUp(message);
-
-    const joinError = await joinVoiceChannel({
-      interaction,
-      queue,
-      voiceChannel,
-    });
-
-    if (joinError) return;
+    if (joinResult === false) return;
 
     await updateUserLevel(interaction, guild.id, "play");
 
-    if (!queue.isPlaying()) await queue.node.play();
+    return await interaction.followUp(joinResult);
   } catch (error) {
     console.error(error);
     return guardReply(interaction, "PLAY_ERROR", "followUp");
