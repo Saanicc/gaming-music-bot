@@ -7,6 +7,7 @@ import { db, TrackType } from "@/db";
 import { getSearchEngine } from "@/utils/helpers/getSearchEngine";
 import { guardReply } from "@/utils/helpers/interactionGuard";
 import { useTranslations } from "@/utils/hooks/useTranslations";
+import { addTrackToCache } from "@/src/utils/helpers/isTrackInCache";
 
 export const data = new SlashCommandBuilder()
   .setName("add_track")
@@ -80,6 +81,10 @@ export const execute = async (interaction: ChatInputCommandInteraction) => {
     );
 
     return guardReply(interaction, "DB_SAVE_ERROR");
+  }
+
+  if (interaction.guildId) {
+    addTrackToCache(interaction.guildId, url);
   }
 
   const data = buildMessage({
