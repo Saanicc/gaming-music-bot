@@ -39,6 +39,13 @@ export const execute = async ({
       return guardReply(interaction, "NO_RESULTS", "followUp");
 
     const joinResult = await withTasksQueue(queue, async () => {
+      const joinError = await joinVoiceChannel({
+        interaction,
+        queue,
+        voiceChannel,
+      });
+      if (joinError) return false;
+
       let message;
 
       if (result.hasPlaylist()) {
@@ -69,14 +76,6 @@ export const execute = async ({
           color: "queue",
         });
       }
-
-      const joinError = await joinVoiceChannel({
-        interaction,
-        queue,
-        voiceChannel,
-      });
-
-      if (joinError) return false;
 
       await updateUserLevel(interaction, guild.id, "play");
 

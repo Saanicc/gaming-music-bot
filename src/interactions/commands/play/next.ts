@@ -41,15 +41,14 @@ export const execute = async ({
     const track = result.tracks[0];
 
     const joinResult = await withTasksQueue(queue, async () => {
-      queue.insertTrack(track);
-
       const joinError = await joinVoiceChannel({
         interaction,
         queue,
         voiceChannel,
       });
-
       if (joinError) return false;
+
+      queue.insertTrack(track);
 
       await updateUserLevel(interaction, guild.id, "play");
 
