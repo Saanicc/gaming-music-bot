@@ -40,7 +40,7 @@ export const execute = async ({
 
     let message;
 
-    await withTasksQueue(queue, async () => {
+    const joinResult = await withTasksQueue(queue, async () => {
       if (result.hasPlaylist()) {
         queue.addTrack(result.playlist?.tracks ?? []);
 
@@ -76,14 +76,14 @@ export const execute = async ({
         voiceChannel,
       });
 
-      if (joinError) return;
+      if (joinError) return false;
 
       await updateUserLevel(interaction, guild.id, "play");
 
       if (!queue.isPlaying()) await queue.node.play();
     });
 
-    await interaction.followUp(message!);
+    if (joinResult !== false) await interaction.followUp(message!);
   } catch (error) {
     console.error(error);
     return guardReply(interaction, "PLAY_ERROR", "followUp");

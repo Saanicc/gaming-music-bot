@@ -91,7 +91,7 @@ export async function execute({
       tracks = tracks.slice(randomStart, randomStart + amountOfTracks);
     }
 
-    await withTasksQueue(queue, async () => {
+    const result = await withTasksQueue(queue, async () => {
       queue.addTrack(tracks);
       queue.tracks.shuffle();
 
@@ -120,12 +120,14 @@ export async function execute({
         voiceChannel,
       });
 
-      if (joinError) return;
+      if (joinError) return false;
 
       if (!queue.node.isPlaying()) {
         await queue.node.play();
       }
     });
+
+    if (result === false) return;
 
     return interaction.followUp(message!);
   } catch (error) {

@@ -40,7 +40,7 @@ export const execute = async ({
 
     const track = result.tracks[0];
 
-    await withTasksQueue(queue, async () => {
+    const joinResult = await withTasksQueue(queue, async () => {
       queue.insertTrack(track);
 
       const joinError = await joinVoiceChannel({
@@ -49,12 +49,14 @@ export const execute = async ({
         voiceChannel,
       });
 
-      if (joinError) return;
+      if (joinError) return false;
 
       await updateUserLevel(interaction, guild.id, "play");
 
       if (!queue.isPlaying()) await queue.node.play();
     });
+
+    if (joinResult === false) return;
 
     const message = buildMessage({
       title: t("commands.play.next.message.title", {

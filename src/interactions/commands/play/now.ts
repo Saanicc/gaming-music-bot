@@ -47,7 +47,7 @@ export const execute = async ({
       color: "queue",
     });
 
-    await withTasksQueue(queue, async () => {
+    const joinResult = await withTasksQueue(queue, async () => {
       queue.insertTrack(track);
 
       const joinError = await joinVoiceChannel({
@@ -56,7 +56,7 @@ export const execute = async ({
         voiceChannel,
       });
 
-      if (joinError) return;
+      if (joinError) return false;
 
       await updateUserLevel(interaction, guild.id, "play");
 
@@ -64,7 +64,7 @@ export const execute = async ({
       else queue.node.skip();
     });
 
-    await interaction.followUp(message);
+    if (joinResult !== false) await interaction.followUp(message);
   } catch (error) {
     console.error(error);
     return guardReply(interaction, "PLAY_ERROR", "followUp");

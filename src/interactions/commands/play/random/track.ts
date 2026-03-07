@@ -54,7 +54,7 @@ export async function execute({
     const track = tracks[Math.floor(Math.random() * tracks.length)];
     let message;
 
-    await withTasksQueue(queue, async () => {
+    const result = await withTasksQueue(queue, async () => {
       queue.addTrack(track);
 
       message = buildMessage({
@@ -72,7 +72,7 @@ export async function execute({
         voiceChannel,
       });
 
-      if (joinError) return;
+      if (joinError) return false;
 
       await updateUserLevel(interaction, queue.guild.id, "play");
 
@@ -80,6 +80,8 @@ export async function execute({
         await queue.node.play();
       }
     });
+
+    if (result === false) return;
 
     return interaction.followUp(message!);
   } catch (error) {
