@@ -23,11 +23,12 @@ export const execute = async (interaction: ButtonInteraction) => {
 
   if (!queue) return guardReply(interaction, "NO_QUEUE", "followUp");
 
-  let trackUrl = queue?.currentTrack?.url;
+  const currentTrack = queue.currentTrack;
 
-  if (!trackUrl) return guardReply(interaction, "NO_TRACK_URL", "followUp");
+  if (!currentTrack?.url)
+    return guardReply(interaction, "NO_TRACK_URL", "followUp");
 
-  trackUrl = removeWww(trackUrl);
+  const trackUrl = removeWww(currentTrack.url);
 
   let trackAlreadyExist: Boolean;
   try {
@@ -65,9 +66,9 @@ export const execute = async (interaction: ButtonInteraction) => {
     title: t("buttons.addTrack.message.title"),
     description: t("buttons.addTrack.message.description", {
       user: interaction.user.toString(),
-      track: getFormattedTrackDescription(queue.currentTrack, queue),
+      track: getFormattedTrackDescription(currentTrack, queue),
     }),
-    thumbnail: getThumbnail(queue.currentTrack),
+    thumbnail: getThumbnail(currentTrack),
     color: "success",
   });
 

@@ -11,6 +11,7 @@ export interface FindUsersOptions {
 }
 
 export const findUser = async (guildId: string, userId: string) => {
+  if (!userId) return null;
   return User.findOne({ guildId, userId });
 };
 
