@@ -65,8 +65,6 @@ export async function execute({
 
       queue.addTrack(track);
 
-      await updateUserLevel(interaction, queue.guild.id, "play");
-
       if (!queue.node.isPlaying()) {
         await queue.node.play();
       }
@@ -82,6 +80,8 @@ export async function execute({
     });
 
     if (result === false) return;
+
+    await updateUserLevel(interaction, queue.guild.id, "play");
 
     return await interaction.followUp(result);
   } catch (error) {

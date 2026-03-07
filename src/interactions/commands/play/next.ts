@@ -50,8 +50,6 @@ export const execute = async ({
 
       queue.insertTrack(track);
 
-      await updateUserLevel(interaction, guild.id, "play");
-
       if (!queue.isPlaying()) await queue.node.play();
 
       return buildMessage({
@@ -66,6 +64,8 @@ export const execute = async ({
     });
 
     if (joinResult === false) return;
+
+    await updateUserLevel(interaction, guild.id, "play");
 
     return await interaction.followUp(joinResult);
   } catch (error) {
