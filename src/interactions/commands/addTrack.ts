@@ -7,7 +7,7 @@ import { db, TrackType } from "@/db";
 import { getSearchEngine } from "@/utils/helpers/getSearchEngine";
 import { guardReply } from "@/utils/helpers/interactionGuard";
 import { useTranslations } from "@/utils/hooks/useTranslations";
-import { addTrackToCache } from "@/src/utils/helpers/isTrackInCache";
+import { addTrackToCache } from "@/utils/helpers/isTrackInCache";
 
 export const data = new SlashCommandBuilder()
   .setName("add_track")

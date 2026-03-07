@@ -2,7 +2,7 @@ import { ButtonBuilder, ButtonInteraction, ButtonStyle } from "discord.js";
 import { buildMessage } from "@/utils/bot-message/buildMessage";
 import { getFormattedTrackDescription } from "@/utils/helpers/getFormattedTrackDescription";
 import { useQueue } from "discord-player";
-import { getThumbnail } from "@/utils/helpers/utils";
+import { getThumbnail, removeWww } from "@/utils/helpers/utils";
 import { db } from "@/db";
 import { addTrackToCache } from "@/utils/helpers/isTrackInCache";
 import { guardReply } from "@/utils/helpers/interactionGuard";
@@ -21,9 +21,13 @@ export const execute = async (interaction: ButtonInteraction) => {
 
   const queue = useQueue();
 
-  const trackUrl = queue?.currentTrack?.url;
+  if (!queue) return guardReply(interaction, "NO_QUEUE", "followUp");
+
+  let trackUrl = queue?.currentTrack?.url;
 
   if (!trackUrl) return guardReply(interaction, "NO_TRACK_URL", "followUp");
+
+  trackUrl = removeWww(trackUrl);
 
   let trackAlreadyExist: Boolean;
   try {

@@ -1,11 +1,9 @@
 import { User } from "./schemas/User";
 
-type XpSortField = "totalXp";
-type LeaderboardSortField =
-  | "quizStats.totalWins"
-  | "quizStats.totalCorrectAnswers";
-
-type Sort = Record<XpSortField, 1 | -1> | Record<LeaderboardSortField, 1 | -1>;
+type Sort =
+  | { totalXp: 1 | -1 }
+  | { "quizStats.totalWins": 1 | -1 }
+  | { "quizStats.totalCorrectAnswers": 1 | -1 };
 
 export interface FindUsersOptions {
   sort: Sort;
@@ -17,10 +15,11 @@ export const findUser = async (guildId: string, userId: string) => {
 };
 
 export const findOrCreateUser = async (guildId: string, userId: string) => {
-  let user = await User.findOne({ guildId, userId });
-  if (!user) {
-    user = await User.create({ guildId, userId });
-  }
+  const user = await User.findOneAndUpdate(
+    { guildId, userId },
+    { $setOnInsert: { guildId, userId } },
+    { upsert: true, new: true, setDefaultsOnInsert: true }
+  );
   return user;
 };
 

@@ -8,7 +8,7 @@ export const getTrackRequestedByFooterText = async (
   guildId: string
 ) => {
   const t = useTranslations(guildId);
-  const user = await db.findUser(discordUser?.id ?? "", guildId);
+  const user = await db.findUser(guildId, discordUser?.id ?? "");
   const userRank = getRankTitleWithEmoji(user?.level ?? 0);
 
   return t("common.trackRequestedBy", {
