@@ -39,14 +39,6 @@ export const execute = async ({
 
     const track = result.tracks[0];
 
-    const message = buildMessage({
-      title: t("commands.play.now.message.title"),
-      description: getFormattedTrackDescription(track, queue),
-      thumbnail: getThumbnail(result.tracks[0]),
-      footerText: t("commands.play.now.message.footerText"),
-      color: "queue",
-    });
-
     const joinResult = await withTasksQueue(queue, async () => {
       queue.insertTrack(track);
 
@@ -62,9 +54,19 @@ export const execute = async ({
 
       if (!queue.isPlaying()) await queue.node.play();
       else queue.node.skip();
+
+      return buildMessage({
+        title: t("commands.play.now.message.title"),
+        description: getFormattedTrackDescription(track, queue),
+        thumbnail: getThumbnail(result.tracks[0]),
+        footerText: t("commands.play.now.message.footerText"),
+        color: "queue",
+      });
     });
 
-    if (joinResult !== false) await interaction.followUp(message);
+    if (joinResult === false) return;
+
+    return await interaction.followUp(joinResult);
   } catch (error) {
     console.error(error);
     return guardReply(interaction, "PLAY_ERROR", "followUp");

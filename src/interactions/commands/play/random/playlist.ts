@@ -33,8 +33,6 @@ export async function execute({
       ? genre
       : GENRES[Math.floor(Math.random() * GENRES.length)];
 
-    let message;
-
     const spotifyPlaylists = await searchSpotifyPlaylists(searchGenre);
 
     if (!spotifyPlaylists.length) {
@@ -92,8 +90,20 @@ export async function execute({
     }
 
     const result = await withTasksQueue(queue, async () => {
+      const joinError = await joinVoiceChannel({
+        interaction,
+        queue,
+        voiceChannel,
+      });
+
+      if (joinError) return false;
+
       queue.addTrack(tracks);
       queue.tracks.shuffle();
+
+      if (!queue.node.isPlaying()) {
+        await queue.node.play();
+      }
 
       const tracksText = amountOfTracks
         ? t("commands.play.random.playlist.message.randomlySelectedTracks", {
@@ -103,7 +113,7 @@ export async function execute({
             amount: tracks.length.toString(),
           });
 
-      message = buildMessage({
+      return buildMessage({
         title: t("commands.play.random.playlist.message.title"),
         description: t("commands.play.random.playlist.message.description", {
           playlist: playlist.title,
@@ -113,23 +123,11 @@ export async function execute({
         thumbnail: getThumbnail(playlist),
         color: "queue",
       });
-
-      const joinError = await joinVoiceChannel({
-        interaction,
-        queue,
-        voiceChannel,
-      });
-
-      if (joinError) return false;
-
-      if (!queue.node.isPlaying()) {
-        await queue.node.play();
-      }
     });
 
     if (result === false) return;
 
-    return interaction.followUp(message!);
+    return await interaction.followUp(result);
   } catch (error) {
     console.error(error);
     return guardReply(interaction, "PLAY_ERROR", "followUp");

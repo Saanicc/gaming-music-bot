@@ -54,21 +54,21 @@ export const execute = async ({
       await updateUserLevel(interaction, guild.id, "play");
 
       if (!queue.isPlaying()) await queue.node.play();
+
+      return buildMessage({
+        title: t("commands.play.next.message.title", {
+          position: queue.tracks.size.toString(),
+        }),
+        description: getFormattedTrackDescription(track, queue),
+        thumbnail: getThumbnail(result.tracks[0]),
+        footerText: t("commands.play.next.message.footerText"),
+        color: "queue",
+      });
     });
 
     if (joinResult === false) return;
 
-    const message = buildMessage({
-      title: t("commands.play.next.message.title", {
-        position: queue.tracks.size.toString(),
-      }),
-      description: getFormattedTrackDescription(track, queue),
-      thumbnail: getThumbnail(result.tracks[0]),
-      footerText: t("commands.play.next.message.footerText"),
-      color: "queue",
-    });
-
-    await interaction.followUp(message);
+    return await interaction.followUp(joinResult);
   } catch (error) {
     console.error(error);
     return guardReply(interaction, "PLAY_ERROR", "followUp");

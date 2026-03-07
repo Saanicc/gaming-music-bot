@@ -52,20 +52,8 @@ export async function execute({
     }
 
     const track = tracks[Math.floor(Math.random() * tracks.length)];
-    let message;
 
     const result = await withTasksQueue(queue, async () => {
-      queue.addTrack(track);
-
-      message = buildMessage({
-        title: t("commands.play.random.track.message.title", {
-          position: queue.tracks.size.toString(),
-        }),
-        description: getFormattedTrackDescription(track, queue),
-        thumbnail: getThumbnail(track),
-        color: "queue",
-      });
-
       const joinError = await joinVoiceChannel({
         interaction,
         queue,
@@ -74,16 +62,27 @@ export async function execute({
 
       if (joinError) return false;
 
+      queue.addTrack(track);
+
       await updateUserLevel(interaction, queue.guild.id, "play");
 
       if (!queue.node.isPlaying()) {
         await queue.node.play();
       }
+
+      return buildMessage({
+        title: t("commands.play.random.track.message.title", {
+          position: queue.tracks.size.toString(),
+        }),
+        description: getFormattedTrackDescription(track, queue),
+        thumbnail: getThumbnail(track),
+        color: "queue",
+      });
     });
 
     if (result === false) return;
 
-    return interaction.followUp(message!);
+    return await interaction.followUp(result);
   } catch (error) {
     console.error(error);
     return guardReply(interaction, "PLAY_ERROR", "followUp");

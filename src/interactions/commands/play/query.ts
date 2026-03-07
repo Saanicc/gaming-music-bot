@@ -38,9 +38,9 @@ export const execute = async ({
     if (!result.tracks.length)
       return guardReply(interaction, "NO_RESULTS", "followUp");
 
-    let message;
-
     const joinResult = await withTasksQueue(queue, async () => {
+      let message;
+
       if (result.hasPlaylist()) {
         queue.addTrack(result.playlist?.tracks ?? []);
 
@@ -81,9 +81,13 @@ export const execute = async ({
       await updateUserLevel(interaction, guild.id, "play");
 
       if (!queue.isPlaying()) await queue.node.play();
+
+      return message;
     });
 
-    if (joinResult !== false) await interaction.followUp(message!);
+    if (joinResult === false) return;
+
+    return await interaction.followUp(joinResult);
   } catch (error) {
     console.error(error);
     return guardReply(interaction, "PLAY_ERROR", "followUp");
