@@ -56,10 +56,10 @@ export const execute = async ({
 
       return buildMessage({
         title: t("commands.play.next.message.title", {
-          position: queue.tracks.size.toString(),
+          position: String(1),
         }),
         description: getFormattedTrackDescription(track, queue),
-        thumbnail: getThumbnail(result.tracks[0]),
+        thumbnail: getThumbnail(track),
         footerText: t("commands.play.next.message.footerText"),
         color: "queue",
       });

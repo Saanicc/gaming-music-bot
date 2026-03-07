@@ -9,6 +9,7 @@ import { joinVoiceChannel } from "@/utils/helpers/joinVoiceChannel";
 import { guardReply } from "@/utils/helpers/interactionGuard";
 import { useTranslations } from "@/utils/hooks/useTranslations";
 import { withTasksQueue } from "@/utils/helpers/withTasksQueue";
+import { getQueuePosition } from "@/utils/helpers/getQueuePosition";
 
 interface ExecutePlayQueryArgs {
   interaction: ChatInputCommandInteraction;
@@ -68,10 +69,10 @@ export const execute = async ({
 
         message = buildMessage({
           title: t("commands.play.query.message.title.track", {
-            position: queue.tracks.size.toString(),
+            position: getQueuePosition(queue),
           }),
           description: getFormattedTrackDescription(track, queue),
-          thumbnail: getThumbnail(result.tracks[0]),
+          thumbnail: getThumbnail(track),
           footerText: t("commands.play.query.message.footerText"),
           color: "queue",
         });

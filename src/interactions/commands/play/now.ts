@@ -57,7 +57,7 @@ export const execute = async ({
       return buildMessage({
         title: t("commands.play.now.message.title"),
         description: getFormattedTrackDescription(track, queue),
-        thumbnail: getThumbnail(result.tracks[0]),
+        thumbnail: getThumbnail(track),
         footerText: t("commands.play.now.message.footerText"),
         color: "queue",
       });

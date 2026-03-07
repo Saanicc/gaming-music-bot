@@ -9,6 +9,7 @@ import { guardReply } from "@/utils/helpers/interactionGuard";
 import { useTranslations } from "@/utils/hooks/useTranslations";
 import { updateUserLevel } from "@/utils/helpers/updateUserLevel";
 import { withTasksQueue } from "@/utils/helpers/withTasksQueue";
+import { getQueuePosition } from "@/utils/helpers/getQueuePosition";
 
 interface ExecuteParams {
   interaction: ChatInputCommandInteraction;
@@ -72,7 +73,7 @@ export async function execute({
 
       return buildMessage({
         title: t("commands.play.random.track.message.title", {
-          position: queue.tracks.size.toString(),
+          position: getQueuePosition(queue),
         }),
         description: getFormattedTrackDescription(track, queue),
         thumbnail: getThumbnail(track),
