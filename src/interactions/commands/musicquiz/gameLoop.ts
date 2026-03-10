@@ -9,7 +9,7 @@ import {
 } from "./queue";
 import { playQuizRounds } from "./playRounds";
 import { declareWinner } from "./winner";
-import { searchDeezerPlaylists } from "@/src/api/deezer";
+import { searchDeezerPlaylists } from "@/api/deezer";
 
 export async function runGameLoop({
   thread,

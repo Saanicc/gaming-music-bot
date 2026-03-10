@@ -7,7 +7,7 @@ import { joinVoiceChannel } from "@/utils/helpers/joinVoiceChannel";
 import { guardReply } from "@/utils/helpers/interactionGuard";
 import { useTranslations } from "@/utils/hooks/useTranslations";
 import { withTasksQueue } from "@/utils/helpers/withTasksQueue";
-import { searchDeezerPlaylists } from "@/src/api/deezer";
+import { searchDeezerPlaylists } from "@/api/deezer";
 import { getSearchEngine } from "@/utils/helpers/getSearchEngine";
 
 interface ExecuteParams {

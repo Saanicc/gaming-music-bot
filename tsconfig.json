@@ -18,6 +18,7 @@
       "@/services/*": ["./src/services/*"],
       "@/db": ["./src/db/"],
       "@/db/*": ["./src/db/*"],
+      "@/api/*": ["./src/api/*"],
       "@/modules/*": ["./src/modules/*"],
       "@/interactions/*": ["./src/interactions/*"]
     }
