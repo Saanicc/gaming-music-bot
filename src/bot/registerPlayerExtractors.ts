@@ -12,7 +12,8 @@ export const registerPlayerExtractors = async (player: Player) => {
   //   market: "SE",
   // });
   const deezerExt = await player.extractors.register(DeezerExtractor, {
-    arl: "",
+    arl: config.DEEZER_ARL,
+    decryptionKey: config.DEEZER_DECRYPTION_KEY,
   });
   const youtubeiExt = await player.extractors.register(YoutubeiExtractor, {
     cookie: config.YOUTUBE_COOKIE,
