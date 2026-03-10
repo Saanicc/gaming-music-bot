@@ -7,11 +7,14 @@ import {
 } from "discord.js";
 import { Player, Track, useMainPlayer } from "discord-player";
 import { joinVoiceChannel } from "./joinVoiceChannel";
+import { getSearchEngine } from "./getSearchEngine";
 
 const reSearch = async (track: Track, player: Player) => {
   try {
-    const result = await player.search(track.url ?? track.title, {
+    const query = track.url ?? track.title;
+    const result = await player.search(query, {
       requestedBy: track.requestedBy ?? undefined,
+      searchEngine: getSearchEngine(query),
     });
     if (result.tracks.length) return result.tracks[0];
   } catch (err) {

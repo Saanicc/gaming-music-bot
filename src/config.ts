@@ -11,15 +11,16 @@ const {
   MONGO_URI,
   NODE_ENV,
   DISCORD_GUILD_ID,
+  DEEZER_ARL,
+  DEEZER_DECRYPTION_KEY,
 } = process.env;
 
 if (
   !DISCORD_TOKEN ||
   !DISCORD_CLIENT_ID ||
-  !SPOTIFY_CLIENT_ID ||
-  !SPOTIFY_CLIENT_SECRET ||
   !YOUTUBE_COOKIE ||
-  !MONGO_URI
+  !MONGO_URI ||
+  !DEEZER_ARL
 ) {
   throw new Error("Missing environment variables");
 }
@@ -41,6 +42,8 @@ export const config = {
   SPOTIFY_CLIENT_SECRET,
   YOUTUBE_COOKIE,
   MONGO_URI,
+  DEEZER_ARL,
+  DEEZER_DECRYPTION_KEY,
   NODE_ENV: NODE_ENV || "production",
   DISCORD_GUILD_ID: DISCORD_GUILD_ID || "",
 };

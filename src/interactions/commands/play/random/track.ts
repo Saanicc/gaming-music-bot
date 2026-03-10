@@ -1,5 +1,5 @@
 import { ChatInputCommandInteraction, VoiceBasedChannel } from "discord.js";
-import { QueryType, Player, GuildQueue } from "discord-player";
+import { Player, GuildQueue } from "discord-player";
 import { buildMessage } from "@/utils/bot-message/buildMessage";
 import { GENRES } from "@/utils/constants/music-quiz-search-queries";
 import { getFormattedTrackDescription } from "@/utils/helpers/getFormattedTrackDescription";
@@ -10,6 +10,7 @@ import { useTranslations } from "@/utils/hooks/useTranslations";
 import { updateUserLevel } from "@/utils/helpers/updateUserLevel";
 import { withTasksQueue } from "@/utils/helpers/withTasksQueue";
 import { getQueuePosition } from "@/utils/helpers/getQueuePosition";
+import { DeezerExtractor } from "discord-player-deezer";
 
 interface ExecuteParams {
   interaction: ChatInputCommandInteraction;
@@ -35,7 +36,7 @@ export async function execute({
 
     const searchResult = await player.search(searchGenre, {
       requestedBy: interaction.user,
-      searchEngine: QueryType.SPOTIFY_SONG,
+      searchEngine: `ext:${DeezerExtractor.identifier}`,
     });
 
     const tracks = searchResult.tracks || [];
