@@ -42,24 +42,23 @@ export const searchDeezerPlaylists = async (
 ): Promise<string[]> => {
   if (retryCount > MAX_RETRIES) return [];
 
-  const response = await fetch(
-    "https://api.deezer.com/search/playlist?" +
-      new URLSearchParams({
-        q: query,
-        limit: "50",
-        index: index.toString(),
-      })
-  );
-
   let data: DeezerResponse;
   try {
+    const response = await fetch(
+      "https://api.deezer.com/search/playlist?" +
+        new URLSearchParams({
+          q: query,
+          limit: "50",
+          index: index.toString(),
+        })
+    );
     data = await response.json();
-  } catch {
-    return [];
-  }
 
-  if (!response.ok || !data.data) {
-    return [];
+    if (!response.ok || !data.data) {
+      return [];
+    }
+  } catch {
+    return searchDeezerPlaylists(query, index, officialCurator, retryCount + 1);
   }
 
   const lowerQuery = query.toLowerCase();
