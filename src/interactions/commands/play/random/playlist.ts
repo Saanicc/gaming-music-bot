@@ -1,13 +1,14 @@
 import { ChatInputCommandInteraction, VoiceBasedChannel } from "discord.js";
-import { QueryType, Player, GuildQueue } from "discord-player";
+import { Player, GuildQueue } from "discord-player";
 import { buildMessage } from "@/utils/bot-message/buildMessage";
 import { GENRES } from "@/utils/constants/music-quiz-search-queries";
 import { getThumbnail } from "@/utils/helpers/utils";
-import { searchSpotifyPlaylists } from "@/src/api/spotify";
 import { joinVoiceChannel } from "@/utils/helpers/joinVoiceChannel";
 import { guardReply } from "@/utils/helpers/interactionGuard";
 import { useTranslations } from "@/utils/hooks/useTranslations";
 import { withTasksQueue } from "@/utils/helpers/withTasksQueue";
+import { searchDeezerPlaylists } from "@/src/api/deezer";
+import { getSearchEngine } from "@/utils/helpers/getSearchEngine";
 
 interface ExecuteParams {
   interaction: ChatInputCommandInteraction;
@@ -33,9 +34,9 @@ export async function execute({
       ? genre
       : GENRES[Math.floor(Math.random() * GENRES.length)];
 
-    const spotifyPlaylists = await searchSpotifyPlaylists(searchGenre);
+    const playlists = await searchDeezerPlaylists(searchGenre);
 
-    if (!spotifyPlaylists.length) {
+    if (!playlists.length) {
       return interaction.followUp(
         buildMessage({
           title: t("common.error"),
@@ -47,12 +48,11 @@ export async function execute({
       );
     }
 
-    const playlistUrl =
-      spotifyPlaylists[Math.floor(Math.random() * spotifyPlaylists.length)];
+    const playlistUrl = playlists[Math.floor(Math.random() * playlists.length)];
 
     const searchResult = await player.search(playlistUrl, {
       requestedBy: interaction.user,
-      searchEngine: QueryType.SPOTIFY_PLAYLIST,
+      searchEngine: getSearchEngine(playlistUrl),
     });
 
     const playlist = searchResult.playlist;

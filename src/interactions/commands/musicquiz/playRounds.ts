@@ -7,6 +7,7 @@ import { QUIZ_CONFIG } from "./constants";
 import { QuizContext } from "./types";
 import { shuffleArray } from "./utils";
 import { askQuestion } from "./question";
+import { getSearchEngine } from "@/utils/helpers/getSearchEngine";
 
 export const fetchPlaylistTracks = async (
   t: ReturnType<typeof useTranslations>,
@@ -32,7 +33,7 @@ export const fetchPlaylistTracks = async (
   try {
     const searchResult = await player.search(randomPlaylist, {
       requestedBy: undefined,
-      searchEngine: QueryType.SPOTIFY_PLAYLIST,
+      searchEngine: getSearchEngine(randomPlaylist),
     });
 
     if (!searchResult || !searchResult.tracks.length) {

@@ -1,7 +1,6 @@
 import { GuildQueue } from "discord-player";
 import { buildMessage } from "@/utils/bot-message/buildMessage";
 import { delay } from "@/utils/helpers/utils";
-import { searchSpotifyPlaylists } from "@/src/api/spotify";
 import { GameLoopOptions, QuizContext } from "./types";
 import {
   savePreviousAndCreateNewQueue,
@@ -10,6 +9,7 @@ import {
 } from "./queue";
 import { playQuizRounds } from "./playRounds";
 import { declareWinner } from "./winner";
+import { searchDeezerPlaylists } from "@/src/api/deezer";
 
 export async function runGameLoop({
   thread,
@@ -39,9 +39,9 @@ export async function runGameLoop({
       })
     );
 
-    const spotifyPlaylists = await searchSpotifyPlaylists(genre);
+    const playlists = await searchDeezerPlaylists(genre);
 
-    if (!spotifyPlaylists?.length) {
+    if (!playlists.length) {
       await thread.send(
         buildMessage({
           title: t("commands.musicquiz.message.errorTitle"),
@@ -69,7 +69,7 @@ export async function runGameLoop({
       }
     }
 
-    await playQuizRounds(spotifyPlaylists, context, rounds, t);
+    await playQuizRounds(playlists, context, rounds, t);
     await delay(3000);
     await declareWinner(context.scores, context.correctAnswers, thread, t);
   } catch (error) {
