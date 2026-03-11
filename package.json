@@ -10,8 +10,8 @@
   },
   "scripts": {
     "dev": "tsx watch src/index.ts",
-    "start": "node dist/index.cjs",
-    "build": "tsup src/index.ts --minify --external unfetch,ffmpeg-static",
+    "start": "node dist/index.js",
+    "build": "tsup src/index.ts --format esm --minify --external unfetch,ffmpeg-static",
     "docker-build": "VERSION=$(node -p \"require('./package.json').version\") && docker build --platform linux/amd64 -t gaming-music-bot:$VERSION -t gaming-music-bot:latest .",
     "docker-save": "VERSION=$(node -p \"require('./package.json').version\") && docker save gaming-music-bot:$VERSION -o music-discord-bot-$VERSION.tar",
     "build-prod": "npm run build && npm run docker-build && npm run docker-save",

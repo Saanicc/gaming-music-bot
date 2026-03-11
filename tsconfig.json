@@ -1,7 +1,8 @@
 {
   "compilerOptions": {
-    "target": "ES2020",
-    "module": "commonjs",
+    "target": "ES2022",
+    "module": "esnext",
+    "moduleResolution": "bundler",
     "rootDir": "./src",
     "outDir": "./dist",
     "removeComments": true,
@@ -12,7 +13,8 @@
     "strictNullChecks": true,
     "skipLibCheck": true,
     "paths": {
-      "@/*": ["./*"],
+      "@/root/*": ["./*"],
+      "@/*": ["./src/*"],
       "@/ui/*": ["./src/ui/*"],
       "@/utils/*": ["./src/utils/*"],
       "@/services/*": ["./src/services/*"],
