@@ -1,9 +1,8 @@
-import { config } from "@/src/config.js";
+import { config } from "@/config";
 import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
 
-// @ts-ignore
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 /**

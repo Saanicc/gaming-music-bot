@@ -1,5 +1,5 @@
 import { db, UserType } from "../db";
-import config from "@/bot-config.json";
+import config from "@/root/bot-config.json";
 
 export type XPGrantingCommand = "play_boss_music" | "play";
 

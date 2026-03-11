@@ -1,4 +1,4 @@
-import config from "@/bot-config.json";
+import config from "@/root/bot-config.json";
 
 export interface RankDefinition {
   minLevel: number;
@@ -16,7 +16,7 @@ export const RANKS: RankDefinition[] = config.ranks.map(
       titleWithEmoji: `${rank.title} ${rank.emoji}`,
       image: rank.imageUrl,
       emoji: rank.emoji,
-    } as RankDefinition)
+    }) as RankDefinition
 );
 
 export const getRankTitle = (level: number): string => {
