@@ -79,9 +79,10 @@ export const getTreasureInfo = (
 export const getSearchEngine = (
   query: string
 ): `ext:${string}` | SearchQueryType | undefined => {
-  if (query.includes("soundcloud.com")) {
+  const normalizedQuery = query.toLowerCase();
+  if (normalizedQuery.includes("soundcloud.com")) {
     return `ext:${SoundcloudExtractor.identifier}`;
-  } else if (query.includes("deezer.com")) {
+  } else if (normalizedQuery.includes("deezer.com")) {
     return `ext:${DeezerExtractor.identifier}`;
   }
 

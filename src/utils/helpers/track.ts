@@ -5,19 +5,17 @@ import { useTranslations } from "@/utils/hooks/useTranslations";
 import { db, TrackType } from "@/db";
 import { getSearchEngine } from "./utils";
 
-const guildTracks = new Map<string, string[]>();
+const guildTracks = new Map<string, Set<string>>();
 
 export const addTrackToCache = (guildId: string, trackUrl: string) => {
-  const tracks = guildTracks.get(guildId) || [];
-  if (!tracks.includes(trackUrl)) {
-    tracks.push(trackUrl);
-    guildTracks.set(guildId, tracks);
-  }
+  const tracks = guildTracks.get(guildId) ?? new Set<string>();
+  tracks.add(trackUrl);
+  guildTracks.set(guildId, tracks);
 };
 
 export const isTrackInCache = (guildId: string, trackUrl: string) => {
   const tracks = guildTracks.get(guildId);
-  return tracks ? tracks.includes(trackUrl) : false;
+  return tracks?.has(trackUrl) ?? false;
 };
 
 export const checkIfTrackInDB = async (guildId: string, track: Track) => {

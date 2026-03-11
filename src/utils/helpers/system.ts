@@ -33,7 +33,7 @@ export const setBotActivity = ({
   activityType,
 }: BotActivity) => {
   client.user?.setActivity(activityText, {
-    type: activityType ?? undefined,
+    type: activityType,
   });
   client.user?.setStatus(status);
 };
