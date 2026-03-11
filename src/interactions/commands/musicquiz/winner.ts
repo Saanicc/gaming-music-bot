@@ -1,6 +1,6 @@
 import { PublicThreadChannel } from "discord.js";
 import { buildMessage } from "@/utils/bot-message/buildMessage";
-import { updateUserQuizStats } from "@/utils/helpers/updateUserQuizStats";
+import { updateUserQuizStats } from "@/utils/helpers/user";
 import { ColorType } from "@/utils/constants/colors";
 import { useTranslations } from "@/utils/hooks/useTranslations";
 

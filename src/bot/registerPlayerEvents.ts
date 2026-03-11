@@ -7,11 +7,11 @@ import {
 import { buildNowPlayingMessage } from "../utils/bot-message/buildNowPlayingMessage";
 import { musicPlayerMessage } from "../services/musicPlayerMessage";
 import { buildMessage } from "../utils/bot-message/buildMessage";
-import { getTrackRequestedByFooterText } from "../utils/helpers/getTrackRequestedByText";
 import {
+  getTrackRequestedByFooterText,
   checkIfTrackInDB,
   isTrackInCache,
-} from "../utils/helpers/isTrackInCache";
+} from "../utils/helpers/track";
 import { useTranslations } from "@/utils/hooks/useTranslations";
 
 export const registerPlayerEvents = (player: Player) => {

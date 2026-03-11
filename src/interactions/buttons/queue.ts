@@ -1,6 +1,6 @@
 import { ButtonBuilder, ButtonInteraction, ButtonStyle } from "discord.js";
 import { execute as showQueue, renderQueue } from "../commands/queue";
-import { guardReply } from "@/utils/helpers/interactionGuard";
+import { guardReply } from "@/utils/helpers/interactions";
 import { emoji } from "@/utils/constants/emojis";
 import { useTranslations } from "@/utils/hooks/useTranslations";
 

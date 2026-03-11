@@ -1,7 +1,7 @@
 import { ChatInputCommandInteraction, SlashCommandBuilder } from "discord.js";
-import { GENRES } from "@/utils/constants/music-quiz-search-queries";
 import { useMainPlayer, useQueue } from "discord-player";
-import { guardReply } from "@/utils/helpers/interactionGuard";
+import { GENRES } from "@/utils/constants/music-quiz-search-queries";
+import { guardReply } from "@/utils/helpers/interactions";
 import { execute as executePlayQuery } from "./query";
 import { execute as executePlayNow } from "./now";
 import { execute as executePlayNext } from "./next";

@@ -1,11 +1,13 @@
 import { ButtonBuilder, ButtonInteraction, ButtonStyle } from "discord.js";
-import { buildMessage } from "@/utils/bot-message/buildMessage";
-import { getFormattedTrackDescription } from "@/utils/helpers/getFormattedTrackDescription";
 import { useQueue } from "discord-player";
+import { buildMessage } from "@/utils/bot-message/buildMessage";
+import {
+  getFormattedTrackDescription,
+  addTrackToCache,
+} from "@/utils/helpers/track";
 import { getThumbnail, removeWww } from "@/utils/helpers/utils";
 import { db } from "@/db";
-import { addTrackToCache } from "@/utils/helpers/isTrackInCache";
-import { guardReply } from "@/utils/helpers/interactionGuard";
+import { guardReply } from "@/utils/helpers/interactions";
 import { emoji } from "@/utils/constants/emojis";
 import { useTranslations } from "@/utils/hooks/useTranslations";
 

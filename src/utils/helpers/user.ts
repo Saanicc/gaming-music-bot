@@ -1,10 +1,19 @@
+import { db } from "@/db";
 import { ButtonInteraction, CommandInteraction, TextChannel } from "discord.js";
 import { addXP, XPGrantingCommand } from "@/modules/xpSystem";
 import { getRankTitleWithEmoji } from "@/modules/rankSystem";
 import { buildMessage } from "../bot-message/buildMessage";
-import { getTreasureInfo } from "./getTreasureMessage";
+import { getTreasureInfo } from "./utils";
 import { emoji } from "../constants/emojis";
 import { useTranslations } from "../hooks/useTranslations";
+
+export const updateUserQuizStats = async (
+  guildId: string,
+  userId: string,
+  quizStats: { won: boolean; correctAnswers: number }
+) => {
+  await db.updateUserQuizStats(guildId, userId, quizStats);
+};
 
 export const updateUserLevel = async (
   interaction: CommandInteraction | ButtonInteraction,

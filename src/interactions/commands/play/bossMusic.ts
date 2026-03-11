@@ -3,18 +3,17 @@ import {
   ChatInputCommandInteraction,
   VoiceBasedChannel,
 } from "discord.js";
-import { buildMessage } from "@/utils/bot-message/buildMessage";
-import { getRandomFightGif } from "@/utils/helpers/getRandomFightingGif";
-import { queueManager } from "@/services/queueManager";
-import { savePreviousQueue } from "@/utils/helpers/saveQueueData";
-import { getBossTracks } from "@/utils/helpers/getBossTracks";
-import { updateUserLevel } from "@/utils/helpers/updateUserLevel";
-import { emoji } from "@/utils/constants/emojis";
 import { Player, useQueue } from "discord-player";
-import { joinVoiceChannel } from "@/utils/helpers/joinVoiceChannel";
-import { guardReply } from "@/utils/helpers/interactionGuard";
+import { buildMessage } from "@/utils/bot-message/buildMessage";
+import { getRandomFightGif } from "@/utils/helpers/utils";
+import { queueManager } from "@/services/queueManager";
+import { savePreviousQueue, withTasksQueue } from "@/utils/helpers/queue";
+import { getBossTracks } from "@/utils/helpers/track";
+import { updateUserLevel } from "@/utils/helpers/user";
+import { emoji } from "@/utils/constants/emojis";
+import { joinVoiceChannel } from "@/utils/helpers/system";
+import { guardReply } from "@/utils/helpers/interactions";
 import { useTranslations } from "@/utils/hooks/useTranslations";
-import { withTasksQueue } from "@/utils/helpers/withTasksQueue";
 
 interface ExecuteBossMusicArgs {
   interaction: ChatInputCommandInteraction | ButtonInteraction;

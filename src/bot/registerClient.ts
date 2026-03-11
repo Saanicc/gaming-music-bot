@@ -9,8 +9,8 @@ import { config } from "../config";
 import { deployCommands } from "../deploy-commands";
 import { buttons } from "../interactions/buttons";
 import { commands } from "../interactions/commands";
-import { handleInteraction } from "../utils/helpers/handleInteraction";
-import { setBotActivity } from "../utils/helpers/setBotActivity";
+import { handleInteraction } from "../utils/helpers/interactions";
+import { setBotActivity } from "../utils/helpers/system";
 import { db } from "../db";
 import { saveBotLanguageToCache } from "../db/language";
 

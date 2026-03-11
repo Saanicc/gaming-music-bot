@@ -1,13 +1,18 @@
 import { ChatInputCommandInteraction, SlashCommandBuilder } from "discord.js";
-import { buildMessage } from "@/utils/bot-message/buildMessage";
-import { getFormattedTrackDescription } from "@/utils/helpers/getFormattedTrackDescription";
 import { useMainPlayer, useQueue } from "discord-player";
-import { getThumbnail, removeWww } from "@/utils/helpers/utils";
-import { db, TrackType } from "@/db";
-import { getSearchEngine } from "@/utils/helpers/getSearchEngine";
-import { guardReply } from "@/utils/helpers/interactionGuard";
+import {
+  getFormattedTrackDescription,
+  addTrackToCache,
+} from "@/utils/helpers/track";
+import {
+  getThumbnail,
+  removeWww,
+  getSearchEngine,
+} from "@/utils/helpers/utils";
 import { useTranslations } from "@/utils/hooks/useTranslations";
-import { addTrackToCache } from "@/utils/helpers/isTrackInCache";
+import { buildMessage } from "@/utils/bot-message/buildMessage";
+import { guardReply } from "@/utils/helpers/interactions";
+import { db, TrackType } from "@/db";
 
 export const data = new SlashCommandBuilder()
   .setName("add_track")

@@ -1,7 +1,7 @@
 import { useMainPlayer, useQueue } from "discord-player";
 import { ButtonInteraction, ChatInputCommandInteraction } from "discord.js";
-import { buildMessage } from "../bot-message/buildMessage";
-import { useTranslations } from "../hooks/useTranslations";
+import { buildMessage } from "../../bot-message/buildMessage";
+import { useTranslations } from "../../hooks/useTranslations";
 import { guardReply } from "./interactionGuard";
 
 const ALLOWED_COMMANDS_DURING_QUIZ = [
@@ -32,8 +32,8 @@ export const handleInteraction = async (
       const t = useTranslations(interaction.guild.id);
       await interaction.reply(
         buildMessage({
-          title: t("commands.musicQuiz.inProgress.title"),
-          description: t("commands.musicQuiz.inProgress.description"),
+          title: t("commands.musicquiz.message.inProgress.title"),
+          description: t("commands.musicquiz.message.inProgress.description"),
           color: "error",
           ephemeral: true,
         })

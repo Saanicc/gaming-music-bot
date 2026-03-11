@@ -1,15 +1,13 @@
 import { ChatInputCommandInteraction, VoiceBasedChannel } from "discord.js";
-import { buildMessage } from "@/utils/bot-message/buildMessage";
-import { getFormattedTrackDescription } from "@/utils/helpers/getFormattedTrackDescription";
-import { updateUserLevel } from "@/utils/helpers/updateUserLevel";
-import { getSearchEngine } from "@/utils/helpers/getSearchEngine";
-import { getThumbnail } from "@/utils/helpers/utils";
 import { Player, GuildQueue } from "discord-player";
-import { joinVoiceChannel } from "@/utils/helpers/joinVoiceChannel";
-import { guardReply } from "@/utils/helpers/interactionGuard";
+import { buildMessage } from "@/utils/bot-message/buildMessage";
+import { getFormattedTrackDescription } from "@/utils/helpers/track";
+import { updateUserLevel } from "@/utils/helpers/user";
+import { getSearchEngine, getThumbnail } from "@/utils/helpers/utils";
+import { joinVoiceChannel } from "@/utils/helpers/system";
+import { guardReply } from "@/utils/helpers/interactions";
 import { useTranslations } from "@/utils/hooks/useTranslations";
-import { withTasksQueue } from "@/utils/helpers/withTasksQueue";
-import { getQueuePosition } from "@/utils/helpers/getQueuePosition";
+import { withTasksQueue, getQueuePosition } from "@/utils/helpers/queue";
 
 interface ExecutePlayQueryArgs {
   interaction: ChatInputCommandInteraction;

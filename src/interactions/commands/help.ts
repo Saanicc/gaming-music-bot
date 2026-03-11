@@ -6,8 +6,8 @@ import {
   SlashCommandBuilder,
 } from "discord.js";
 import { Font } from "canvacord";
-import { guardReply } from "@/utils/helpers/interactionGuard";
-import { HelpBuilder, CommandData } from "@/utils/helpers/HelpBuilder";
+import { guardReply } from "@/utils/helpers/interactions";
+import { HelpBuilder, type CommandData } from "@/utils/helpers/builders";
 import { useTranslations } from "@/utils/hooks/useTranslations";
 
 export const data = new SlashCommandBuilder()

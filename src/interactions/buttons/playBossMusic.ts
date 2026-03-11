@@ -2,7 +2,7 @@ import { ButtonBuilder, ButtonInteraction, ButtonStyle } from "discord.js";
 import { execute as playBossMusic } from "../commands/play/bossMusic";
 import { emoji } from "@/utils/constants/emojis";
 import { useMainPlayer } from "discord-player";
-import { guardReply } from "@/utils/helpers/interactionGuard";
+import { guardReply } from "@/utils/helpers/interactions";
 
 export const bossMusicButton = new ButtonBuilder()
   .setCustomId("playBossMusic")

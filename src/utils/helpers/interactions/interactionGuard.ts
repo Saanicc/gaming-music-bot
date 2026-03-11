@@ -1,7 +1,7 @@
 import { ChatInputCommandInteraction, ButtonInteraction } from "discord.js";
-import { buildMessage } from "../bot-message/buildMessage";
-import { ColorType } from "../constants/colors";
-import { useTranslations } from "../hooks/useTranslations";
+import { buildMessage } from "../../bot-message/buildMessage";
+import { ColorType } from "../../constants/colors";
+import { useTranslations } from "../../hooks/useTranslations";
 
 // ---------------------------------------------------------------------------
 // Centralized guard‑error message definitions

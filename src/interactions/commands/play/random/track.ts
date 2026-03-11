@@ -1,16 +1,15 @@
 import { ChatInputCommandInteraction, VoiceBasedChannel } from "discord.js";
 import { Player, GuildQueue } from "discord-player";
-import { buildMessage } from "@/utils/bot-message/buildMessage";
-import { GENRES } from "@/utils/constants/music-quiz-search-queries";
-import { getFormattedTrackDescription } from "@/utils/helpers/getFormattedTrackDescription";
-import { getThumbnail } from "@/utils/helpers/utils";
-import { joinVoiceChannel } from "@/utils/helpers/joinVoiceChannel";
-import { guardReply } from "@/utils/helpers/interactionGuard";
-import { useTranslations } from "@/utils/hooks/useTranslations";
-import { updateUserLevel } from "@/utils/helpers/updateUserLevel";
-import { withTasksQueue } from "@/utils/helpers/withTasksQueue";
-import { getQueuePosition } from "@/utils/helpers/getQueuePosition";
 import { DeezerExtractor } from "discord-player-deezer";
+import { withTasksQueue, getQueuePosition } from "@/utils/helpers/queue";
+import { GENRES } from "@/utils/constants/music-quiz-search-queries";
+import { getFormattedTrackDescription } from "@/utils/helpers/track";
+import { buildMessage } from "@/utils/bot-message/buildMessage";
+import { useTranslations } from "@/utils/hooks/useTranslations";
+import { joinVoiceChannel } from "@/utils/helpers/system";
+import { guardReply } from "@/utils/helpers/interactions";
+import { updateUserLevel } from "@/utils/helpers/user";
+import { getThumbnail } from "@/utils/helpers/utils";
 
 interface ExecuteParams {
   interaction: ChatInputCommandInteraction;

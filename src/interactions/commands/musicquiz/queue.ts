@@ -7,10 +7,9 @@ import {
   MessageCreateOptions,
 } from "discord.js";
 import { Player, useQueue } from "discord-player";
-import { savePreviousQueue } from "@/utils/helpers/saveQueueData";
+import { savePreviousQueue, restoreOldQueue } from "@/utils/helpers/queue";
 import { queueManager, StoredQueue } from "@/src/services/queueManager";
 import { musicPlayerMessage } from "@/src/services/musicPlayerMessage";
-import { restoreOldQueue } from "@/utils/helpers/restoreOldQueue";
 import { buildMessage } from "@/utils/bot-message/buildMessage";
 import { useTranslations } from "@/utils/hooks/useTranslations";
 import { delay } from "@/utils/helpers/utils";

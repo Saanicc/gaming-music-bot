@@ -1,6 +1,6 @@
 import { ButtonBuilder, ButtonInteraction, ButtonStyle } from "discord.js";
 import { useQueue } from "discord-player";
-import { guardReply } from "@/utils/helpers/interactionGuard";
+import { guardReply } from "@/utils/helpers/interactions";
 import { emoji } from "@/utils/constants/emojis";
 
 export const nextButton = new ButtonBuilder()

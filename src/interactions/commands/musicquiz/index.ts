@@ -7,7 +7,7 @@ import {
 } from "discord.js";
 import { useMainPlayer } from "discord-player";
 import { buildMessage } from "@/utils/bot-message/buildMessage";
-import { guardReply } from "@/utils/helpers/interactionGuard";
+import { guardReply } from "@/utils/helpers/interactions";
 import { useTranslations } from "@/utils/hooks/useTranslations";
 import { sendLobbyMessage, handleLobbyInteractions } from "./lobby";
 

@@ -1,10 +1,10 @@
 import { ChatInputCommandInteraction, SlashCommandBuilder } from "discord.js";
 import { buildMessage } from "@/utils/bot-message/buildMessage";
-import { guardReply } from "@/utils/helpers/interactionGuard";
-import { db } from "@/src/db";
-import { LanguageCode, SUPPORTED_LANGUAGES } from "@/src/ui/translations";
+import { guardReply } from "@/utils/helpers/interactions";
+import { db } from "@/db";
+import { LanguageCode, SUPPORTED_LANGUAGES } from "@/ui/translations";
 import { useTranslations } from "@/utils/hooks/useTranslations";
-import { saveBotLanguageToCache } from "@/src/db/language";
+import { saveBotLanguageToCache } from "@/db/language";
 
 const LANGUAGE_LABELS: Record<LanguageCode, string> = {
   "en-US": "English",

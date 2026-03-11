@@ -1,6 +1,6 @@
 import { ButtonBuilder, ButtonInteraction, ButtonStyle } from "discord.js";
 import { QueueRepeatMode, useQueue } from "discord-player";
-import { guardReply } from "@/utils/helpers/interactionGuard";
+import { guardReply } from "@/utils/helpers/interactions";
 
 export const loopTrackButton = new ButtonBuilder()
   .setCustomId("loopTrack")

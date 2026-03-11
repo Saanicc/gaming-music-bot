@@ -1,4 +1,4 @@
-import { getBotLanguageFromCache } from "@/src/db/language";
+import { getBotLanguageFromCache } from "@/db/language";
 import { DEFAULT_LANGUAGE, locales, LanguageCode } from "@/ui/translations";
 
 export function t(
