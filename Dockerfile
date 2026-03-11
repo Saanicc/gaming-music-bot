@@ -13,4 +13,4 @@ RUN npm ci --omit=dev
 
 COPY --chown=discord-bot:discord dist ./dist
 
-CMD ["node", "dist/index.cjs"]
+CMD ["node", "dist/index.js"]
