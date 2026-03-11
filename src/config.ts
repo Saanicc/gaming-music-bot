@@ -9,7 +9,7 @@ interface Config {
   DISCORD_CLIENT_ID: string;
   SPOTIFY_CLIENT_ID: string | undefined;
   SPOTIFY_CLIENT_SECRET: string | undefined;
-  YOUTUBE_NETSCAPE_COOKIES_B64: string;
+  YOUTUBE_NETSCAPE_COOKIES_B64: string | undefined;
   MONGO_URI: string;
   DEEZER_ARL: string;
   DEEZER_DECRYPTION_KEY: string | undefined;
@@ -21,7 +21,6 @@ const requiredEnvVars = [
   "NODE_ENV",
   "DISCORD_TOKEN",
   "DISCORD_CLIENT_ID",
-  "YOUTUBE_NETSCAPE_COOKIES_B64",
   "MONGO_URI",
   "DEEZER_ARL",
 ] as const;
@@ -69,5 +68,5 @@ export const config: Config = {
   DEEZER_ARL,
   DEEZER_DECRYPTION_KEY,
   NODE_ENV,
-  DISCORD_GUILD_ID,
+  DISCORD_GUILD_ID: DISCORD_GUILD_ID ?? "",
 };
