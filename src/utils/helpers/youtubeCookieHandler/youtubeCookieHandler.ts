@@ -17,6 +17,9 @@ export const youtubeCookieHandler = () => {
       console.warn(
         "[YouTube Cookie Handler] No YOUTUBE_NETSCAPE_COOKIES_B64 found in environment variables"
       );
+      console.warn(
+        "[YouTube Cookie Handler] For better results, consider adding youtube cookies"
+      );
       return;
     }
 

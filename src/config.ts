@@ -2,6 +2,35 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
+type NodeEnv = "dev" | "prod";
+
+interface Config {
+  DISCORD_TOKEN: string;
+  DISCORD_CLIENT_ID: string;
+  SPOTIFY_CLIENT_ID: string | undefined;
+  SPOTIFY_CLIENT_SECRET: string | undefined;
+  YOUTUBE_NETSCAPE_COOKIES_B64: string | undefined;
+  MONGO_URI: string;
+  DEEZER_ARL: string;
+  DEEZER_DECRYPTION_KEY: string | undefined;
+  NODE_ENV: NodeEnv;
+  DISCORD_GUILD_ID: string;
+}
+
+const requiredEnvVars = [
+  "NODE_ENV",
+  "DISCORD_TOKEN",
+  "DISCORD_CLIENT_ID",
+  "MONGO_URI",
+  "DEEZER_ARL",
+] as const;
+
+const missingVars = requiredEnvVars.filter((key) => !process.env[key]);
+
+if (missingVars.length > 0) {
+  throw new Error(`Missing environment variables: ${missingVars.join(", ")}`);
+}
+
 const {
   DISCORD_TOKEN,
   DISCORD_CLIENT_ID,
@@ -13,20 +42,14 @@ const {
   DISCORD_GUILD_ID,
   DEEZER_ARL,
   DEEZER_DECRYPTION_KEY,
-} = process.env;
+} = process.env as unknown as Config;
 
-if (
-  !DISCORD_TOKEN ||
-  !DISCORD_CLIENT_ID ||
-  !YOUTUBE_NETSCAPE_COOKIES_B64 ||
-  !MONGO_URI ||
-  !DEEZER_ARL
-) {
-  throw new Error("Missing environment variables");
-}
-
-if (!NODE_ENV || NODE_ENV !== "dev") {
-  console.warn("Development NODE_ENV is not set! Defaulting to 'production'.");
+if (NODE_ENV === "prod") {
+  console.log("Starting PROD environment");
+} else if (NODE_ENV === "dev") {
+  console.log("Starting DEV environment");
+} else {
+  throw new Error("NODE_ENV has to be either 'dev' or 'prod'.");
 }
 
 if (NODE_ENV === "dev" && !DISCORD_GUILD_ID) {
@@ -35,7 +58,7 @@ if (NODE_ENV === "dev" && !DISCORD_GUILD_ID) {
   );
 }
 
-export const config = {
+export const config: Config = {
   DISCORD_TOKEN,
   DISCORD_CLIENT_ID,
   SPOTIFY_CLIENT_ID,
@@ -44,6 +67,6 @@ export const config = {
   MONGO_URI,
   DEEZER_ARL,
   DEEZER_DECRYPTION_KEY,
-  NODE_ENV: NODE_ENV || "production",
-  DISCORD_GUILD_ID: DISCORD_GUILD_ID || "",
+  NODE_ENV,
+  DISCORD_GUILD_ID: DISCORD_GUILD_ID ?? "",
 };

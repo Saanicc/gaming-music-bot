@@ -54,7 +54,7 @@ export const registerDiscordClient = (): Client => {
       );
     }
 
-    const environment = isDev ? "DEV" : "PROD";
+    const environment = config.NODE_ENV.toUpperCase();
     console.log(`[${environment}] 🤖 Logged in as ${readyClient.user.tag}`);
   });
 
