@@ -1,7 +1,7 @@
 import { useMainPlayer, useQueue } from "discord-player";
 import { ButtonInteraction, ChatInputCommandInteraction } from "discord.js";
-import { buildMessage } from "../bot-message/buildMessage";
-import { useTranslations } from "../hooks/useTranslations";
+import { buildMessage } from "../../bot-message/buildMessage";
+import { useTranslations } from "../../hooks/useTranslations";
 import { guardReply } from "./interactionGuard";
 
 const ALLOWED_COMMANDS_DURING_QUIZ = [

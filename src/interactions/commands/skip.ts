@@ -1,7 +1,7 @@
 import { ChatInputCommandInteraction, SlashCommandBuilder } from "discord.js";
 import { useQueue } from "discord-player";
 import { buildMessage } from "@/utils/bot-message/buildMessage";
-import { guardReply } from "@/utils/helpers/interactionGuard";
+import { guardReply } from "@/utils/helpers/interactions";
 import { useTranslations } from "@/utils/hooks/useTranslations";
 
 export const data = new SlashCommandBuilder()

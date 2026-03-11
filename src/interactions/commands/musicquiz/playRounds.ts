@@ -1,13 +1,12 @@
-import { Player, Track, QueryType } from "discord-player";
+import { Player, Track } from "discord-player";
 import { PublicThreadChannel } from "discord.js";
 import { buildMessage } from "@/utils/bot-message/buildMessage";
 import { useTranslations } from "@/utils/hooks/useTranslations";
-import { delay } from "@/utils/helpers/utils";
+import { delay, getSearchEngine } from "@/utils/helpers/utils";
 import { QUIZ_CONFIG } from "./constants";
 import { QuizContext } from "./types";
 import { shuffleArray } from "./utils";
 import { askQuestion } from "./question";
-import { getSearchEngine } from "@/utils/helpers/getSearchEngine";
 
 export const fetchPlaylistTracks = async (
   t: ReturnType<typeof useTranslations>,

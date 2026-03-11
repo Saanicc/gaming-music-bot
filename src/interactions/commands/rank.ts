@@ -6,7 +6,7 @@ import {
 import { getRequiredXP } from "@/modules/xpSystem";
 import { getRankImage, getRankTitle } from "@/modules/rankSystem";
 import { Font } from "canvacord";
-import { LevelCardBuilder } from "@/utils/helpers/LevelCard";
+import { LevelCardBuilder } from "@/utils/helpers/builders";
 import { db } from "@/db";
 
 export const data = new SlashCommandBuilder()

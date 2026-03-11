@@ -9,10 +9,10 @@ import {
 } from "discord.js";
 import { useQueue } from "discord-player";
 import { buildMessage } from "@/utils/bot-message/buildMessage";
-import { getFormattedTrackDescription } from "@/utils/helpers/getFormattedTrackDescription";
+import { getFormattedTrackDescription } from "@/utils/helpers/track";
 import { emoji } from "@/utils/constants/emojis";
 import { getThumbnail } from "@/utils/helpers/utils";
-import { guardReply } from "@/utils/helpers/interactionGuard";
+import { guardReply } from "@/utils/helpers/interactions";
 import { useTranslations } from "@/utils/hooks/useTranslations";
 
 export const data = new SlashCommandBuilder()

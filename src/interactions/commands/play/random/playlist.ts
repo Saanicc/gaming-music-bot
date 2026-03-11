@@ -1,14 +1,13 @@
 import { ChatInputCommandInteraction, VoiceBasedChannel } from "discord.js";
 import { Player, GuildQueue } from "discord-player";
-import { buildMessage } from "@/utils/bot-message/buildMessage";
+import { getThumbnail, getSearchEngine } from "@/utils/helpers/utils";
 import { GENRES } from "@/utils/constants/music-quiz-search-queries";
-import { getThumbnail } from "@/utils/helpers/utils";
-import { joinVoiceChannel } from "@/utils/helpers/joinVoiceChannel";
-import { guardReply } from "@/utils/helpers/interactionGuard";
+import { buildMessage } from "@/utils/bot-message/buildMessage";
 import { useTranslations } from "@/utils/hooks/useTranslations";
-import { withTasksQueue } from "@/utils/helpers/withTasksQueue";
+import { joinVoiceChannel } from "@/utils/helpers/system";
+import { guardReply } from "@/utils/helpers/interactions";
+import { withTasksQueue } from "@/utils/helpers/queue";
 import { searchDeezerPlaylists } from "@/api/deezer";
-import { getSearchEngine } from "@/utils/helpers/getSearchEngine";
 
 interface ExecuteParams {
   interaction: ChatInputCommandInteraction;

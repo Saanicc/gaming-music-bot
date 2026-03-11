@@ -1,5 +1,5 @@
 import { Collection, Guild, GuildMember } from "discord.js";
-import { LeaderboardBuilder } from "@/utils/helpers/Leaderboard";
+import { LeaderboardBuilder } from "@/utils/helpers/builders";
 import { getRankTitle } from "@/modules/rankSystem";
 import { useTranslations } from "@/utils/hooks/useTranslations";
 

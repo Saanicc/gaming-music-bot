@@ -1,9 +1,23 @@
+import {
+  ActivityType,
+  Client,
+  PresenceStatusData,
+  TextChannel,
+  VoiceBasedChannel,
+  ChatInputCommandInteraction,
+  ButtonInteraction,
+} from "discord.js";
 import { GuildQueue } from "discord-player";
-import { TextChannel, VoiceBasedChannel } from "discord.js";
 import { buildMessage } from "../bot-message/buildMessage";
-import { ChatInputCommandInteraction, ButtonInteraction } from "discord.js";
-import { guardReply } from "./interactionGuard";
+import { guardReply } from "./interactions";
 import { useTranslations } from "../hooks/useTranslations";
+
+interface BotActivity {
+  client: Client;
+  status: PresenceStatusData;
+  activityText: string;
+  activityType?: ActivityType;
+}
 
 interface JoinVoiceChannelArgs {
   queue: GuildQueue;
@@ -11,6 +25,18 @@ interface JoinVoiceChannelArgs {
   interaction?: ChatInputCommandInteraction | ButtonInteraction;
   textChannel?: TextChannel;
 }
+
+export const setBotActivity = ({
+  client,
+  status,
+  activityText,
+  activityType,
+}: BotActivity) => {
+  client.user?.setActivity(activityText, {
+    type: activityType ?? undefined,
+  });
+  client.user?.setStatus(status);
+};
 
 export const joinVoiceChannel = async ({
   queue,

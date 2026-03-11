@@ -19,7 +19,7 @@ import { colors } from "../constants/colors";
 import { queueManager } from "@/services/queueManager";
 import { pauseButton } from "@/interactions/buttons/pause";
 import { resumeButton } from "@/interactions/buttons/resume";
-import { getFormattedTrackDescription } from "../helpers/getFormattedTrackDescription";
+import { getFormattedTrackDescription } from "../helpers/track";
 import { queueButton } from "@/interactions/buttons/queue";
 import { nextButton } from "@/interactions/buttons/next";
 import { previousButton } from "@/interactions/buttons/previous";

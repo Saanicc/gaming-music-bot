@@ -3,7 +3,7 @@ import { buildXpLeaderboard } from "./xp";
 import { buildQuizLeaderboard } from "./quiz";
 import { Font } from "canvacord";
 import { db } from "@/db";
-import { guardReply } from "@/utils/helpers/interactionGuard";
+import { guardReply } from "@/utils/helpers/interactions";
 import { useTranslations } from "@/utils/hooks/useTranslations";
 
 export const data = new SlashCommandBuilder()

@@ -5,9 +5,9 @@ import {
   TextChannel,
   VoiceBasedChannel,
 } from "discord.js";
-import { Player, Track, useMainPlayer } from "discord-player";
-import { joinVoiceChannel } from "./joinVoiceChannel";
-import { getSearchEngine } from "./getSearchEngine";
+import { Player, Track, useMainPlayer, GuildQueue } from "discord-player";
+import { joinVoiceChannel } from "./system";
+import { getSearchEngine } from "./utils";
 
 const reSearch = async (track: Track, player: Player) => {
   try {
@@ -74,4 +74,42 @@ export const restoreOldQueue = async ({
   }
 
   queueManager.clear(guildId);
+};
+
+export const savePreviousQueue = async (queue: GuildQueue, guildId: string) => {
+  const position = queue.node.getTimestamp()?.current.value ?? 0;
+  const voiceChannel = (queue.metadata as any).voiceChannel;
+  const textChannel = (queue.metadata as any).textChannel;
+
+  queueManager.store(guildId, {
+    tracks: queue.tracks.toArray(),
+    queueType: "normal",
+    currentTrack: queue.currentTrack ?? undefined,
+    position,
+    voiceChannel,
+    textChannel,
+  });
+};
+
+/**
+ * Wraps an async operation with the queue's built-in tasksQueue (AsyncQueue)
+ * to serialize track-adding + play operations across concurrent commands.
+ *
+ * @see https://discord-player.js.org/docs/common-actions/common_actions#playing-a-new-track
+ */
+export async function withTasksQueue<T>(
+  queue: GuildQueue,
+  fn: () => Promise<T>
+): Promise<T> {
+  const entry = queue.tasksQueue.acquire();
+  await entry.getTask();
+  try {
+    return await fn();
+  } finally {
+    queue.tasksQueue.release();
+  }
+}
+
+export const getQueuePosition = (queue: GuildQueue): string => {
+  return String(queue.tracks.size > 0 ? queue.tracks.size : 1);
 };

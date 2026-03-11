@@ -11,7 +11,7 @@ import {
 } from "discord.js";
 import { Player } from "discord-player";
 import { buildMessage } from "@/utils/bot-message/buildMessage";
-import { guardReply } from "@/utils/helpers/interactionGuard";
+import { guardReply } from "@/utils/helpers/interactions";
 import { GENRES } from "@/utils/constants/music-quiz-search-queries";
 import { useTranslations } from "@/utils/hooks/useTranslations";
 import { QUIZ_CONFIG } from "./constants";

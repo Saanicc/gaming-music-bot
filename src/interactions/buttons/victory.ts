@@ -6,12 +6,12 @@ import {
   TextChannel,
 } from "discord.js";
 import { queueManager } from "@/services/queueManager";
-import { restoreOldQueue } from "@/utils/helpers/restoreOldQueue";
+import { restoreOldQueue } from "@/utils/helpers/queue";
 import { delay } from "@/utils/helpers/utils";
 import { buildMessage } from "@/utils/bot-message/buildMessage";
 import { musicPlayerMessage } from "@/services/musicPlayerMessage";
 import { useQueue } from "discord-player";
-import { guardReply } from "@/utils/helpers/interactionGuard";
+import { guardReply } from "@/utils/helpers/interactions";
 import { emoji } from "@/utils/constants/emojis";
 import { useTranslations } from "@/utils/hooks/useTranslations";
 
