@@ -32,8 +32,8 @@ export const handleInteraction = async (
       const t = useTranslations(interaction.guild.id);
       await interaction.reply(
         buildMessage({
-          title: t("commands.musicQuiz.inProgress.title"),
-          description: t("commands.musicQuiz.inProgress.description"),
+          title: t("commands.musicquiz.message.inProgress.title"),
+          description: t("commands.musicquiz.message.inProgress.description"),
           color: "error",
           ephemeral: true,
         })

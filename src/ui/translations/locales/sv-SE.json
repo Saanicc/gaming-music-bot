@@ -247,7 +247,7 @@
         "voiceConnectError": "Kunde inte ansluta till röstkanalen. Kontrollera mina behörigheter.",
         "genericError": "Något gick fel under quizet. Försök igen.",
         "loadingTracks": "Laddar låtar...",
-        "fetchingRandomSongs": "Hämtar slumpmässiga låtar från Spotify...",
+        "fetchingRandomSongs": "Hämtar slumpmässiga låtar...",
         "couldNotFindPlaylists": "Kunde inte hitta spellistor för genren: {{genre}}.",
         "failedToFindPlayableTracks": "Misslyckades med att hitta spelbara låtar efter flera försök.",
         "roundTitle": "Omgång {{roundNum}}/{{rounds}}",

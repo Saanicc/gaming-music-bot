@@ -247,7 +247,7 @@
         "voiceConnectError": "Could not join the voice channel. Check my permissions.",
         "genericError": "Something went wrong during the quiz. Please try again.",
         "loadingTracks": "Loading Tracks...",
-        "fetchingRandomSongs": "Fetching random songs from Spotify...",
+        "fetchingRandomSongs": "Fetching random tracks...",
         "couldNotFindPlaylists": "Could not find playlists for theme: {{genre}}.",
         "failedToFindPlayableTracks": "Failed to find playable tracks after multiple attempts.",
         "roundTitle": "Round {{roundNum}}/{{rounds}}",
