@@ -1,5 +1,5 @@
 import { GuildQueue, Track, Player } from "discord-player";
-import { User as DiscordUser, User } from "discord.js";
+import { User as DiscordUser } from "discord.js";
 import { getRankTitleWithEmoji } from "@/modules/rankSystem";
 import { useTranslations } from "@/utils/hooks/useTranslations";
 import { db, TrackType } from "@/db";
@@ -76,7 +76,7 @@ export const getTrackRequestedByFooterText = async (
 export const getBossTracks = async (
   type: TrackType,
   player: Player,
-  requestedBy: User
+  requestedBy: DiscordUser
 ): Promise<Track[]> => {
   const trackUrls = await db.findBossTracksByType(type);
 
