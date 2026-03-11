@@ -4,4 +4,4 @@ music
 music-discord-bot-*.tar
 .env
 **/.DS_Store
-src/cookies.txt
+src/utils/helpers/youtubeCookieHandler/cookies.txt
