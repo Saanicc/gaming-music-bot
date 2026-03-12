@@ -80,7 +80,10 @@
     "paused": "{{emoji}} Music Paused",
     "progress": "Progress",
     "track": "**Track**",
-    "trackNumber": "**{{current}}** of **{{total}}**"
+    "trackNumber": "**{{current}}** of **{{total}}**",
+    "error": {
+      "extractStream": "Could not extract stream, skipping track..."
+    }
   },
   "levelSystem": {
     "treasure": {
