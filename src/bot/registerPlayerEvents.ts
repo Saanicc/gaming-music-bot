@@ -124,27 +124,25 @@ export const registerPlayerEvents = (player: Player) => {
   });
 
   player.events.on(GuildQueueEvent.PlayerError, async (queue, error, track) => {
+    const t = useTranslations(queue.guild.id);
     const channel = queue.metadata.textChannel as TextChannel;
 
-    const extractorName = track.extractor?.identifier ?? "Unknown";
-    const streamUrl =
-      track.raw?.source?.url || track.raw?.url || track.url || "N/A";
+    let message;
 
-    const data = buildMessage({
-      title: `⚠️ ${error.name} ⚠️`,
-      titleFontSize: "md",
-      description: `
-        **Message:** ${error.message}
+    if (error.message === "Could not extract stream for this track") {
+      message = buildMessage({
+        title: t("player.error.extractStream"),
+        color: "error",
+      });
+    } else {
+      message = buildMessage({
+        title: error.name,
+        description: error.message,
+        color: "error",
+      });
+    }
 
-        🎵 **Track:** ${track.title}
-        🔗 **URL:** [Open Track](${track.url})
-        🧩 **Extractor:** ${extractorName}
-        📡 **Stream:** ${streamUrl}
-      `,
-      color: "error",
-    });
-
-    await channel.send(data as MessageCreateOptions);
+    await channel.send(message as MessageCreateOptions);
   });
 
   player.events.on(GuildQueueEvent.Error, async (queue, error) => {

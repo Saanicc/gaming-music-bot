@@ -80,7 +80,10 @@
     "paused": "{{emoji}} Musik pausad",
     "progress": "Förlopp",
     "track": "**Låt**",
-    "trackNumber": "**{{current}}** av **{{total}}**"
+    "trackNumber": "**{{current}}** av **{{total}}**",
+    "error": {
+      "extractStream": "Kunde inte extrahera ljudströmmen, hoppar över låten..."
+    }
   },
   "levelSystem": {
     "treasure": {
