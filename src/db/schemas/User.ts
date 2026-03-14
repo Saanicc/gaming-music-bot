@@ -25,6 +25,10 @@ const userSchema = new mongoose.Schema({
     type: Date,
     default: null,
   },
+  lastTreasure: {
+    type: Date,
+    default: null,
+  },
   totalPlays: {
     type: Number,
     default: 0,

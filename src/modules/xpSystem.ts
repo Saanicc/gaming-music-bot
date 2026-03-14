@@ -5,6 +5,7 @@ export type XPGrantingCommand = "play_boss_music" | "play";
 
 const XP_BASE = config.leveling.xpBase;
 const XP_COOLDOWN_TIME = config.leveling.xpCooldownTime;
+const TREASURE_COOLDOWN_TIME = config.leveling.treasureCooldownTime;
 
 export const getRequiredXP = (level: number) => {
   const { base, multiplier, exponent } = config.leveling.formula;
@@ -50,8 +51,13 @@ export const addXP = async (
   let gainedXP = XP_BASE;
   let treasure = false;
 
-  if (Math.random() < 0.1) {
+  const canFindTreasure =
+    !user.lastTreasure ||
+    now.getTime() - user.lastTreasure.getTime() >= TREASURE_COOLDOWN_TIME;
+
+  if (canFindTreasure && Math.random() < 0.1) {
     treasure = true;
+    user.lastTreasure = now;
 
     let tierRoll = Math.random();
 

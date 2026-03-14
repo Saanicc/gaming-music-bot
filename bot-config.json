@@ -2,6 +2,7 @@
   "leveling": {
     "xpBase": 4,
     "xpCooldownTime": 5000,
+    "treasureCooldownTime": 300000,
     "formula": {
       "base": 10,
       "multiplier": 12,
