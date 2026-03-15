@@ -7,7 +7,7 @@ import { getSearchEngine, getThumbnail } from "@/utils/helpers/utils";
 import { joinVoiceChannel } from "@/utils/helpers/system";
 import { guardReply } from "@/utils/helpers/interactions";
 import { useTranslations } from "@/utils/hooks/useTranslations";
-import { withTasksQueue } from "@/utils/helpers/queue";
+import { withTasksQueue, isTrackInQueue } from "@/utils/helpers/queue";
 
 interface ExecutePlayNextQueryArgs {
   interaction: ChatInputCommandInteraction;
@@ -40,12 +40,14 @@ export const execute = async ({
     const track = result.tracks[0];
 
     const joinResult = await withTasksQueue(queue, async () => {
+      if (isTrackInQueue(queue, track.url)) return "DUPLICATE_TRACK";
+
       const joinError = await joinVoiceChannel({
         interaction,
         queue,
         voiceChannel,
       });
-      if (joinError) return false;
+      if (joinError) return "FAILED";
 
       queue.insertTrack(track);
 
@@ -62,11 +64,16 @@ export const execute = async ({
       });
     });
 
-    if (joinResult === false) return;
-
-    await updateUserLevel(interaction, guild.id, "play");
-
-    return await interaction.followUp(joinResult);
+    switch (joinResult) {
+      case "FAILED":
+        return;
+      case "DUPLICATE_TRACK":
+        return guardReply(interaction, "DUPLICATE_TRACK", "editReply");
+      default: {
+        await updateUserLevel(interaction, guild.id, "play");
+        return interaction.followUp(joinResult);
+      }
+    }
   } catch (error) {
     console.error(error);
     return guardReply(interaction, "PLAY_ERROR", "followUp");

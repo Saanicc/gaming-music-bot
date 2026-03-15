@@ -73,6 +73,14 @@
     "rateLimit": {
       "title": "Kvot överskriden",
       "description": "Du har överskridit din kvot hos Discord. Vänligen försök igen om {{waitTime}} sekunder."
+    },
+    "spamCooldown": {
+      "title": "Spam Upptäckt",
+      "description": "Du skickar kommandon för snabbt! Vänligen vänta {{waitTime}} sekunder innan du försöker igen."
+    },
+    "duplicateTrack": {
+      "title": "Låten finns redan i kön",
+      "description": "Låten spelas redan eller är redan köad."
     }
   },
   "player": {

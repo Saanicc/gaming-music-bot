@@ -1,7 +1,13 @@
 {
+  "spamFilter": {
+    "maxCommands": 6,
+    "burstWindowMs": 4000,
+    "cooldownMs": 60000
+  },
   "leveling": {
     "xpBase": 4,
     "xpCooldownTime": 5000,
+    "treasureCooldownTime": 600000,
     "formula": {
       "base": 10,
       "multiplier": 12,

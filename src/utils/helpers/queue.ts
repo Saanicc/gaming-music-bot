@@ -113,3 +113,12 @@ export async function withTasksQueue<T>(
 export const getQueuePosition = (queue: GuildQueue): string => {
   return String(queue.tracks.size > 0 ? queue.tracks.size : 1);
 };
+
+/**
+ * Returns `true` when the given track URL matches either the currently playing
+ * track or any track already sitting in the queue.
+ */
+export function isTrackInQueue(queue: GuildQueue, trackUrl: string): boolean {
+  if (queue.currentTrack?.url === trackUrl) return true;
+  return queue.tracks.toArray().some((t) => t.url === trackUrl);
+}

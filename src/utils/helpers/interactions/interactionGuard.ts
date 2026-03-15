@@ -121,6 +121,18 @@ export const GUARD_MESSAGES = {
     color: "error",
     ephemeral: true,
   },
+  SPAM_COOLDOWN: {
+    title: "guards.spamCooldown.title",
+    description: "guards.spamCooldown.description",
+    color: "error",
+    ephemeral: true,
+  },
+  DUPLICATE_TRACK: {
+    title: "guards.duplicateTrack.title",
+    description: "guards.duplicateTrack.description",
+    color: "error",
+    ephemeral: true,
+  },
 
   // ── Music quiz ───────────────────────────────────────────────────────
   QUIZ_NO_VOICE_CHANNEL: {

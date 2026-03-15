@@ -1,4 +1,9 @@
-import { ChatInputCommandInteraction, VoiceBasedChannel } from "discord.js";
+import {
+  ChatInputCommandInteraction,
+  InteractionResponse,
+  Message,
+  VoiceBasedChannel,
+} from "discord.js";
 import { Player, GuildQueue } from "discord-player";
 import { buildMessage } from "@/utils/bot-message/buildMessage";
 import { getFormattedTrackDescription } from "@/utils/helpers/track";
@@ -7,7 +12,11 @@ import { getSearchEngine, getThumbnail } from "@/utils/helpers/utils";
 import { joinVoiceChannel } from "@/utils/helpers/system";
 import { guardReply } from "@/utils/helpers/interactions";
 import { useTranslations } from "@/utils/hooks/useTranslations";
-import { withTasksQueue, getQueuePosition } from "@/utils/helpers/queue";
+import {
+  withTasksQueue,
+  getQueuePosition,
+  isTrackInQueue,
+} from "@/utils/helpers/queue";
 
 interface ExecutePlayQueryArgs {
   interaction: ChatInputCommandInteraction;
@@ -43,7 +52,7 @@ export const execute = async ({
         queue,
         voiceChannel,
       });
-      if (joinError) return false;
+      if (joinError) return "FAILED";
 
       let message;
 
@@ -63,6 +72,9 @@ export const execute = async ({
         });
       } else {
         const track = result.tracks[0];
+
+        if (isTrackInQueue(queue, track.url)) return "DUPLICATE_TRACK";
+
         queue.addTrack(track);
 
         message = buildMessage({
@@ -81,11 +93,16 @@ export const execute = async ({
       return message;
     });
 
-    if (joinResult === false) return;
-
-    await updateUserLevel(interaction, guild.id, "play");
-
-    return await interaction.followUp(joinResult);
+    switch (joinResult) {
+      case "FAILED":
+        return;
+      case "DUPLICATE_TRACK":
+        return guardReply(interaction, "DUPLICATE_TRACK", "editReply");
+      default: {
+        await updateUserLevel(interaction, guild.id, "play");
+        return interaction.followUp(joinResult);
+      }
+    }
   } catch (error) {
     console.error(error);
     return guardReply(interaction, "PLAY_ERROR", "followUp");

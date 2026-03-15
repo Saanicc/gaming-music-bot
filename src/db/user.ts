@@ -51,6 +51,7 @@ export const updateUserQuizStats = async (
         guildId,
         userId,
         lastXP: null,
+        lastTreasure: null,
         xp: 0,
         level: 1,
         totalXp: 0,
