@@ -1,7 +1,7 @@
 {
   "spamFilter": {
-    "maxCommands": 7,
-    "burstWindowMs": 10000,
+    "maxCommands": 6,
+    "burstWindowMs": 4000,
     "cooldownMs": 60000
   },
   "leveling": {
