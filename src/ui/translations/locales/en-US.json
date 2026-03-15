@@ -77,6 +77,10 @@
     "spamCooldown": {
       "title": "Spam Detected",
       "description": "You are sending commands too quickly! Please wait {{waitTime}} before trying again."
+    },
+    "duplicateTrack": {
+      "title": "Track already in queue",
+      "description": "That track is already playing or queued."
     }
   },
   "player": {

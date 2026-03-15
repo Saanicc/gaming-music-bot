@@ -77,6 +77,10 @@
     "spamCooldown": {
       "title": "Spam Upptäckt",
       "description": "Du skickar kommandon för snabbt! Vänligen vänta {{waitTime}} innan du försöker igen."
+    },
+    "duplicateTrack": {
+      "title": "Låten finns redan i kön",
+      "description": "Låten spelas redan eller är redan köad."
     }
   },
   "player": {

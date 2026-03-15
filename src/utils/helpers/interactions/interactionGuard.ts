@@ -127,6 +127,12 @@ export const GUARD_MESSAGES = {
     color: "error",
     ephemeral: true,
   },
+  DUPLICATE_TRACK: {
+    title: "guards.duplicateTrack.title",
+    description: "guards.duplicateTrack.description",
+    color: "error",
+    ephemeral: true,
+  },
 
   // ── Music quiz ───────────────────────────────────────────────────────
   QUIZ_NO_VOICE_CHANNEL: {

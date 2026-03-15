@@ -7,7 +7,7 @@ import { getSearchEngine, getThumbnail } from "@/utils/helpers/utils";
 import { joinVoiceChannel } from "@/utils/helpers/system";
 import { guardReply } from "@/utils/helpers/interactions";
 import { useTranslations } from "@/utils/hooks/useTranslations";
-import { withTasksQueue } from "@/utils/helpers/queue";
+import { withTasksQueue, isTrackInQueue } from "@/utils/helpers/queue";
 
 interface ExecutePlayNextQueryArgs {
   interaction: ChatInputCommandInteraction;
@@ -38,6 +38,9 @@ export const execute = async ({
       return guardReply(interaction, "NO_RESULTS", "followUp");
 
     const track = result.tracks[0];
+
+    if (isTrackInQueue(queue, track.url))
+      return guardReply(interaction, "DUPLICATE_TRACK", "editReply");
 
     const joinResult = await withTasksQueue(queue, async () => {
       const joinError = await joinVoiceChannel({
