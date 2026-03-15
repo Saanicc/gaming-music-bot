@@ -52,7 +52,7 @@ export const execute = async ({
         queue,
         voiceChannel,
       });
-      if (joinError) return false;
+      if (joinError) return "FAILED";
 
       let message;
 
@@ -73,8 +73,7 @@ export const execute = async ({
       } else {
         const track = result.tracks[0];
 
-        if (isTrackInQueue(queue, track.url))
-          return await guardReply(interaction, "DUPLICATE_TRACK", "editReply");
+        if (isTrackInQueue(queue, track.url)) return "DUPLICATE_TRACK";
 
         queue.addTrack(track);
 
@@ -94,16 +93,16 @@ export const execute = async ({
       return message;
     });
 
-    if (
-      joinResult === false ||
-      joinResult instanceof InteractionResponse ||
-      joinResult instanceof Message
-    )
-      return;
-
-    await updateUserLevel(interaction, guild.id, "play");
-
-    return await interaction.followUp(joinResult);
+    switch (joinResult) {
+      case "FAILED":
+        return;
+      case "DUPLICATE_TRACK":
+        return guardReply(interaction, "DUPLICATE_TRACK", "editReply");
+      default: {
+        await updateUserLevel(interaction, guild.id, "play");
+        return interaction.followUp(joinResult);
+      }
+    }
   } catch (error) {
     console.error(error);
     return guardReply(interaction, "PLAY_ERROR", "followUp");

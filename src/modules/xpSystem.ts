@@ -5,7 +5,7 @@ export type XPGrantingCommand = "play_boss_music" | "play";
 
 const XP_BASE = config.leveling.xpBase;
 const XP_COOLDOWN_TIME = config.leveling.xpCooldownTime;
-const TREASURE_COOLDOWN_TIME = config.leveling.treasureCooldownTime;
+const TREASURE_COOLDOWN_TIME = config.leveling.treasureCooldownTime ?? 600000;
 
 export const getRequiredXP = (level: number) => {
   const { base, multiplier, exponent } = config.leveling.formula;

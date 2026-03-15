@@ -45,7 +45,7 @@ export function checkSpamFilter(userId: string): SpamCheckResult {
   userCommandTimestamps.set(userId, recent);
 
   // ── Burst threshold exceeded? ───────────────────────────────────────
-  if (recent.length >= spamFilter.maxCommands) {
+  if (recent.length > spamFilter.maxCommands) {
     const expiry = now + spamFilter.cooldownMs;
     userCooldowns.set(userId, expiry);
     userCommandTimestamps.delete(userId); // reset history
