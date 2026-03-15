@@ -73,6 +73,10 @@
     "rateLimit": {
       "title": "Kvot överskriden",
       "description": "Du har överskridit din kvot hos Discord. Vänligen försök igen om {{waitTime}} sekunder."
+    },
+    "spamCooldown": {
+      "title": "Spam Upptäckt",
+      "description": "Du skickar kommandon för snabbt! Vänligen vänta {{waitTime}} innan du försöker igen."
     }
   },
   "player": {

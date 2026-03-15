@@ -73,6 +73,10 @@
     "rateLimit": {
       "title": "Rate Limited",
       "description": "You are being rate limited by Discord. Please try again in {{waitTime}} seconds."
+    },
+    "spamCooldown": {
+      "title": "Spam Detected",
+      "description": "You are sending commands too quickly! Please wait {{waitTime}} before trying again."
     }
   },
   "player": {

@@ -3,6 +3,7 @@ import { ButtonInteraction, ChatInputCommandInteraction } from "discord.js";
 import { buildMessage } from "../../bot-message/buildMessage";
 import { useTranslations } from "../../hooks/useTranslations";
 import { guardReply } from "./interactionGuard";
+import { checkSpamFilter } from "./spamFilter";
 
 const ALLOWED_COMMANDS_DURING_QUIZ = [
   "help",
@@ -17,6 +18,15 @@ export const handleInteraction = async (
   key: string
 ) => {
   if (!interaction.guild) return;
+
+  const spamCheck = checkSpamFilter(interaction.user.id);
+  if (spamCheck.blocked) {
+    const waitTime = Math.ceil(spamCheck.remainingMs / 1000);
+    await guardReply(interaction, "SPAM_COOLDOWN", "reply", {
+      waitTime: `${waitTime} seconds`,
+    });
+    return;
+  }
 
   const handler = collection[key as keyof typeof collection];
   if (!handler) return;
