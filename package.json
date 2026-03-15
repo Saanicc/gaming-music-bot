@@ -1,7 +1,7 @@
 {
   "name": "gaming-music-bot",
   "private": true,
-  "version": "2.2.6",
+  "version": "2.2.7",
   "description": "A Discord bot that plays music",
   "main": "index.js",
   "type": "module",
