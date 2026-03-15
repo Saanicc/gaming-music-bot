@@ -22,7 +22,7 @@ export const handleInteraction = async (
   const spamCheck = checkSpamFilter(interaction.user.id);
   if (spamCheck.blocked) {
     const waitTime = Math.ceil(spamCheck.remainingMs / 1000);
-    await guardReply(interaction, "SPAM_COOLDOWN", "editReply", {
+    await guardReply(interaction, "SPAM_COOLDOWN", "reply", {
       waitTime: String(waitTime),
     });
     return;
