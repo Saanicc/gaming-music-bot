@@ -23,7 +23,7 @@ export const handleInteraction = async (
   if (spamCheck.blocked) {
     const waitTime = Math.ceil(spamCheck.remainingMs / 1000);
     await guardReply(interaction, "SPAM_COOLDOWN", "editReply", {
-      waitTime: `${waitTime} seconds`,
+      waitTime: String(waitTime),
     });
     return;
   }

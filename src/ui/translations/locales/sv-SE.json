@@ -76,7 +76,7 @@
     },
     "spamCooldown": {
       "title": "Spam Upptäckt",
-      "description": "Du skickar kommandon för snabbt! Vänligen vänta {{waitTime}} innan du försöker igen."
+      "description": "Du skickar kommandon för snabbt! Vänligen vänta {{waitTime}} sekunder innan du försöker igen."
     },
     "duplicateTrack": {
       "title": "Låten finns redan i kön",
