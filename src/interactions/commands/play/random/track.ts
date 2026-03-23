@@ -9,7 +9,7 @@ import { useTranslations } from "@/utils/hooks/useTranslations";
 import { joinVoiceChannel } from "@/utils/helpers/system";
 import { guardReply } from "@/utils/helpers/interactions";
 import { updateUserLevel } from "@/utils/helpers/user";
-import { getThumbnail } from "@/utils/helpers/utils";
+import { getSearchEngine, getThumbnail } from "@/utils/helpers/utils";
 
 interface ExecuteParams {
   interaction: ChatInputCommandInteraction;
@@ -35,7 +35,7 @@ export async function execute({
 
     const searchResult = await player.search(searchGenre, {
       requestedBy: interaction.user,
-      searchEngine: `ext:${DeezerExtractor.identifier}`,
+      searchEngine: getSearchEngine(searchGenre),
     });
 
     const tracks = searchResult.tracks || [];

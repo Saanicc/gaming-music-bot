@@ -67,10 +67,15 @@ const getSpotifyToken = async (): Promise<string> => {
   return cachedToken!;
 };
 
+const MAX_RETRIES = 2;
+
 export const searchSpotifyPlaylists = async (
   query: string,
-  offset: number = Math.floor(Math.random() * 100)
+  offset: number = Math.floor(Math.random() * 1000),
+  retryCount: number = 0
 ): Promise<string[]> => {
+  if (retryCount > MAX_RETRIES) return [];
+
   const token = await getSpotifyToken();
 
   const response = await fetch(
@@ -78,7 +83,7 @@ export const searchSpotifyPlaylists = async (
       new URLSearchParams({
         q: query,
         type: "playlist",
-        limit: "50",
+        limit: "10",
         offset: offset.toString(),
       }),
     {
@@ -120,8 +125,11 @@ export const searchSpotifyPlaylists = async (
     })
     .map((p) => p!.external_urls.spotify);
 
-  if (result.length === 0 && offset !== 0) {
-    return searchSpotifyPlaylists(query, 0);
+  if (result.length === 0 && offset !== 0 && retryCount === 0) {
+    const randomOffset = Math.floor(Math.random() * 1000);
+    return searchSpotifyPlaylists(query, randomOffset, retryCount + 1);
+  } else if (result.length === 0 && offset !== 0 && retryCount === 1) {
+    return searchSpotifyPlaylists(query, 0, retryCount + 1);
   }
 
   return result;
