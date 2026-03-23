@@ -1,5 +1,5 @@
 import { Player } from "discord-player";
-// import { SpotifyExtractor } from "discord-player-spotify";
+import { SpotifyExtractor } from "discord-player-spotify";
 import { SoundcloudExtractor } from "discord-player-soundcloud";
 import { config } from "../config";
 import { YoutubeiExtractor, Log } from "discord-player-youtubei";
@@ -9,11 +9,15 @@ import { youtubeCookieHandler } from "../utils/helpers/youtubeCookieHandler/yout
 Log.setLevel(Log.Level.NONE);
 
 export const registerPlayerExtractors = async (player: Player) => {
-  // const spotifyExt = await player.extractors.register(SpotifyExtractor, {
-  //   clientId: config.SPOTIFY_CLIENT_ID,
-  //   clientSecret: config.SPOTIFY_CLIENT_SECRET,
-  //   market: "SE",
-  // });
+  let spotifyExt: SpotifyExtractor | null = null;
+
+  if (config.SPOTIFY_CLIENT_ID && config.SPOTIFY_CLIENT_SECRET) {
+    spotifyExt = await player.extractors.register(SpotifyExtractor, {
+      clientId: config.SPOTIFY_CLIENT_ID,
+      clientSecret: config.SPOTIFY_CLIENT_SECRET,
+      market: "SE",
+    });
+  }
   const deezerExt = await player.extractors.register(DeezerExtractor, {
     arl: config.DEEZER_ARL,
     decryptionKey: config.DEEZER_DECRYPTION_KEY,
@@ -28,7 +32,7 @@ export const registerPlayerExtractors = async (player: Player) => {
     {}
   );
 
-  // if (spotifyExt) spotifyExt.priority = 3;
+  if (spotifyExt) spotifyExt.priority = 4;
   if (deezerExt) deezerExt.priority = 3;
   if (youtubeiExt) youtubeiExt.priority = 2;
   if (soundcloudExt) soundcloudExt.priority = 1;

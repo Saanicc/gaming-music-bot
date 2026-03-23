@@ -9,7 +9,7 @@ import {
 } from "./queue";
 import { playQuizRounds } from "./playRounds";
 import { declareWinner } from "./winner";
-import { searchDeezerPlaylists } from "@/api/deezer";
+import { searchPlaylists } from "@/api/searchPlaylists";
 
 export async function runGameLoop({
   thread,
@@ -39,7 +39,7 @@ export async function runGameLoop({
       })
     );
 
-    const playlists = await searchDeezerPlaylists(genre);
+    const playlists = await searchPlaylists(genre);
 
     if (!playlists.length) {
       await thread.send(

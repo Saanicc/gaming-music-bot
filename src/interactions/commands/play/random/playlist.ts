@@ -7,7 +7,7 @@ import { useTranslations } from "@/utils/hooks/useTranslations";
 import { joinVoiceChannel } from "@/utils/helpers/system";
 import { guardReply } from "@/utils/helpers/interactions";
 import { withTasksQueue } from "@/utils/helpers/queue";
-import { searchDeezerPlaylists } from "@/api/deezer";
+import { searchPlaylists } from "@/api/searchPlaylists";
 
 interface ExecuteParams {
   interaction: ChatInputCommandInteraction;
@@ -33,7 +33,7 @@ export async function execute({
       ? genre
       : GENRES[Math.floor(Math.random() * GENRES.length)];
 
-    const playlists = await searchDeezerPlaylists(searchGenre);
+    const playlists = await searchPlaylists(searchGenre);
 
     if (!playlists.length) {
       return interaction.followUp(
