@@ -71,7 +71,7 @@ const MAX_RETRIES = 2;
 
 export const searchSpotifyPlaylists = async (
   query: string,
-  offset: number = Math.floor(Math.random() * 1000),
+  offset: number = Math.floor(Math.random() * 999) + 1,
   retryCount: number = 0
 ): Promise<string[]> => {
   if (retryCount > MAX_RETRIES) return [];
@@ -126,7 +126,7 @@ export const searchSpotifyPlaylists = async (
     .map((p) => p!.external_urls.spotify);
 
   if (result.length === 0 && offset !== 0 && retryCount === 0) {
-    const randomOffset = Math.floor(Math.random() * 1000);
+    const randomOffset = Math.floor(Math.random() * 999) + 1;
     return searchSpotifyPlaylists(query, randomOffset, retryCount + 1);
   } else if (result.length === 0 && offset !== 0 && retryCount === 1) {
     return searchSpotifyPlaylists(query, 0, retryCount + 1);

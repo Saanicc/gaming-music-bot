@@ -9,11 +9,15 @@ import { youtubeCookieHandler } from "../utils/helpers/youtubeCookieHandler/yout
 Log.setLevel(Log.Level.NONE);
 
 export const registerPlayerExtractors = async (player: Player) => {
-  const spotifyExt = await player.extractors.register(SpotifyExtractor, {
-    clientId: config.SPOTIFY_CLIENT_ID,
-    clientSecret: config.SPOTIFY_CLIENT_SECRET,
-    market: "SE",
-  });
+  let spotifyExt: SpotifyExtractor | null = null;
+
+  if (config.SPOTIFY_CLIENT_ID && config.SPOTIFY_CLIENT_SECRET) {
+    spotifyExt = await player.extractors.register(SpotifyExtractor, {
+      clientId: config.SPOTIFY_CLIENT_ID,
+      clientSecret: config.SPOTIFY_CLIENT_SECRET,
+      market: "SE",
+    });
+  }
   const deezerExt = await player.extractors.register(DeezerExtractor, {
     arl: config.DEEZER_ARL,
     decryptionKey: config.DEEZER_DECRYPTION_KEY,
