@@ -142,7 +142,8 @@ export const registerPlayerEvents = (player: Player) => {
       });
     }
 
-    await channel.send(message as MessageCreateOptions);
+    const msg = await channel.send(message as MessageCreateOptions);
+    setTimeout(() => msg.delete(), 5000);
   });
 
   player.events.on(GuildQueueEvent.Error, async (queue, error) => {
