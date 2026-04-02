@@ -4,14 +4,13 @@
   "version": "2.2.8",
   "description": "A Discord bot that plays music",
   "main": "index.js",
-  "type": "module",
   "engines": {
     "node": ">=20.x"
   },
   "scripts": {
     "dev": "tsx watch src/index.ts",
     "start": "node dist/index.js",
-    "build": "tsup src/index.ts --format esm --minify --external unfetch,ffmpeg-static",
+    "build": "tsup src/index.ts --minify --external unfetch,ffmpeg-static",
     "docker-build": "node docker-scripts.js build",
     "docker-save": "node docker-scripts.js save",
     "build-prod": "npm run build && npm run docker-build && npm run docker-save",

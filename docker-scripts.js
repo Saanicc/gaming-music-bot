@@ -1,6 +1,6 @@
 #!/usr/bin/env node
-import { execSync } from "child_process";
-import packageJson from "./package.json" with { type: "json" };
+const { execSync } = require("child_process");
+const packageJson = require("./package.json");
 
 const version = packageJson.version;
 const command = process.argv[2];
