@@ -31,13 +31,26 @@ npm run build-prod
 
 Make sure you have a `.env` file with the following variables:
 
-```env
+```bash
+# Dev
+DISCORD_GUILD_ID=your-guild-id # only needed for dev
+
+NODE_ENV=prod # or 'dev'
+
 # Discord bot
 DISCORD_TOKEN=your-bot-token
 CLIENT_ID=your-client-id
+
+# Spotify (requires premium account, optional)
 SPOTIFY_CLIENT_ID=your-spotify-client-id
 SPOTIFY_CLIENT_SECRET=your-spotify-client-secret
-YOUTUBE_COOKIE=your-youtube-cookie
+
+# Deezer
+DEEZER_ARL=your-deezer-arl
+DEEZER_DECRYPTION_KEY=your-deezer-decryption-key # (optional)
+
+# Youtube
+YOUTUBE_NETSCAPE_COOKIES_B64=your-youtube-cookie-as-base64 # (optional)
 
 # Mongo DB
 MONGO_INITDB_DATABASE=musicbotdb                # Change if you want

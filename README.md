@@ -8,7 +8,7 @@ Summon it anytime to power up your gameplay with cinematic, high-energy music.
 
 ## Features
 
-- **Play music from any `Spotify`, `Soundcloud` or `Youtube` URL**
+- **Play music from any `Spotify`, `Deezer`, `Soundcloud` or `Youtube` URL**
 - **Play boss music** from your pre-curated collection
 - **Shuffles and reshuffles** boss tracks automatically
 - **Dynamic "Now Playing" embed** with:
@@ -16,37 +16,37 @@ Summon it anytime to power up your gameplay with cinematic, high-energy music.
   - Artist
   - Album art
   - Progress bar
-  - Track number and duration
   - Requester tag and DJ rank
 - **DJ Rank and leaderboard system**
 - **Interactive buttons**
-- Clean, responsive embeds for a sleek experience
+- Clean, responsive messages for a sleek experience
 
 ---
 
 ## Commands
 
-| Command             | Description                                                                             |
-| ------------------- | --------------------------------------------------------------------------------------- |
-| `/play`             | Plays a track from a URL or search term.                                                |
-| `/play_now`         | Plays a track from a url or search term, then plays it instantly.                       |
-| `/play_next`        | Enqueues a track from a url or search term, then plays it after the current track ends. |
-| `/play_boss_music`  | Loads, shuffles and plays all boss tracks                                               |
-| `/add_track`        | Add new track to the boss music collection                                              |
-| `/help`             | Shows info about available commands                                                     |
-| `/queue`            | Displays the next five upcoming tracks in the queue                                     |
-| `/skip`             | Skip the currently playing song.                                                        |
-| `/stop`             | Stops and disconnects the player.                                                       |
-| `/rank`             | Check your (or another users) current DJ rank                                           |
-| `/xp_leaderboard`   | View the DJ XP leaderboard (top 8 DJs)                                                  |
-| `/quiz_leaderboard` | View the Music Quiz leaderboard (top 8 players)                                         |
-| `/autoplay`         | Turn on/off autoplay                                                                    |
-| `/loop-all`         | loops the current queue                                                                 |
-| `/loop-current`     | loops the playing track                                                                 |
-| `/loop-disable`     | Disables the loop mode                                                                  |
-| `/nightcore`        | Turns on/off the nightcore audio filter                                                 |
-| `/musicquiz`        | Start a music quiz in a thread!                                                         |
-| `/play_random`      | Play a random track or playlist from a genre                                            |
+| Command                 | Description                                                                             |
+| ----------------------- | --------------------------------------------------------------------------------------- |
+| `/play`                 | Plays a track from a URL or search term.                                                |
+| `/play now`             | Plays a track from a url or search term, then plays it instantly.                       |
+| `/play next`            | Enqueues a track from a url or search term, then plays it after the current track ends. |
+| `/play boss music`      | Loads, shuffles and plays all boss tracks                                               |
+| `/add_track`            | Add new track to the boss music collection                                              |
+| `/help`                 | Shows info about available commands                                                     |
+| `/queue`                | Displays the next five upcoming tracks in the queue                                     |
+| `/skip`                 | Skip the currently playing song.                                                        |
+| `/stop`                 | Stops and disconnects the player.                                                       |
+| `/rank`                 | Check your (or another users) current DJ rank                                           |
+| `/xp leaderboard`       | View the DJ XP leaderboard (top 8 DJs)                                                  |
+| `/quiz leaderboard`     | View the Music Quiz leaderboard (top 8 players)                                         |
+| `/autoplay`             | Turn on/off autoplay                                                                    |
+| `/loop all`             | loops the current queue                                                                 |
+| `/loop current`         | loops the playing track                                                                 |
+| `/loop disable`         | Disables the loop mode                                                                  |
+| `/nightcore`            | Turns on/off the nightcore audio filter                                                 |
+| `/musicquiz`            | Start a music quiz in a thread!                                                         |
+| `/play random playlist` | Plays a random playlist from a selected or random genre                                 |
+| `/play random track`    | Plays a random track from a selected or random genre                                    |
 
 ---
 
@@ -87,17 +87,26 @@ npm install
 
 Create a .env file in the root folder:
 
-```
-# Development mode
-NODE_ENV=dev
-DISCORD_GUILD_ID=your-guild-id
+```bash
+# Dev
+DISCORD_GUILD_ID=your-guild-id # only needed for dev
+
+NODE_ENV=dev # or 'prod'
 
 # Discord bot
 DISCORD_TOKEN=your-bot-token
 CLIENT_ID=your-client-id
+
+# Spotify (requires premium account, optional)
 SPOTIFY_CLIENT_ID=your-spotify-client-id
 SPOTIFY_CLIENT_SECRET=your-spotify-client-secret
-YOUTUBE_COOKIE=your-youtube-cookie
+
+# Deezer
+DEEZER_ARL=your-deezer-arl
+DEEZER_DECRYPTION_KEY=your-deezer-decryption-key # (optional)
+
+# Youtube
+YOUTUBE_NETSCAPE_COOKIES_B64=your-youtube-cookie-as-base64 # (optional)
 
 # Mongo DB
 MONGO_INITDB_DATABASE=musicbotdb                  # Change if you want
@@ -124,8 +133,8 @@ A full guide on building and running the bot using Docker Compose can be found [
 
 When you’re facing a boss or epic challenge in-game:
 
-```bash
-/play_boss_music
+```
+/play boss music
 ```
 
 The bot joins your voice channel and blasts a shuffled selection of your boss music collection.  
@@ -143,7 +152,7 @@ Use the `/add_track` command and provide a track URL plus a track type.
 
 `horn` – Short horn sounds played randomly as an intro before the main track.
 
-> The track URL must be a valid link from `Soundcloud`, `Spotify` or `YouTube`.
+> The track URL must be a valid link from `Soundcloud`, `Spotify`, `YouTube` or `Deezer`.
 
 ## Technical Notes
 
