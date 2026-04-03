@@ -38,15 +38,14 @@ type NowPlayingMessageProps = {
   isTrackInDB: boolean;
 };
 
-const createProgressBar = (queue: GuildQueue, size = 16) => {
-  return queue.node.createProgressBar({
-    indicator: "▰",
-    leftChar: "▰",
-    rightChar: "▱",
+const createProgressBar = (queue: GuildQueue, size = 10) =>
+  queue.node.createProgressBar({
+    indicator: emoji.progressFilled,
+    leftChar: emoji.progressFilled,
+    rightChar: emoji.progress,
     length: size,
     timecodes: false,
   });
-};
 
 export const buildNowPlayingMessage = ({
   track,
@@ -97,11 +96,12 @@ export const buildNowPlayingMessage = ({
   const container = new ContainerBuilder();
 
   const trackInfoText = new TextDisplayBuilder().setContent(`
-### ${isPlaying ? t("player.nowPlaying", { emoji: emoji.play }) : t("player.paused", { emoji: emoji.pause })}  
+### ${
+    isPlaying
+      ? t("player.nowPlaying", { emoji: emoji.play })
+      : t("player.paused", { emoji: emoji.pause })
+  }  
 ${getFormattedTrackDescription(track, queue)}
-
-**${t("player.progress")}**
-${progressBar}
 `);
 
   const requestedByText = new TextDisplayBuilder().setContent(
@@ -116,20 +116,12 @@ ${progressBar}
 
   container.addSectionComponents(headerSection);
 
-  if (queue) {
-    const currentTrackNumber = queue.history.tracks.size + 1;
-    const totalQueueNumber = queue.tracks.size + currentTrackNumber;
-
-    const queueText = new TextDisplayBuilder().setContent(`
-${t("player.track")}
-${t("player.trackNumber", { current: currentTrackNumber.toString(), total: totalQueueNumber.toString() })}
-    `);
-
-    container.addTextDisplayComponents(queueText);
-  }
-
   const separator = new SeparatorBuilder();
 
+  container.addSeparatorComponents(separator);
+  container.addTextDisplayComponents(
+    new TextDisplayBuilder().setContent(`${progressBar}`)
+  );
   container.addSeparatorComponents(separator);
   container.addActionRowComponents(row, row2);
   container.addSeparatorComponents(separator);
