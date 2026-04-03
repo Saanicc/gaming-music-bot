@@ -89,6 +89,7 @@ export const registerPlayerEvents = (player: Player) => {
   });
 
   player.events.on(GuildQueueEvent.QueueDelete, async (queue) => {
+    musicPlayerMessage.clearProgressInterval();
     if (queue.metadata.isSwitching) return;
 
     const t = useTranslations(queue.guild.id);
@@ -107,6 +108,7 @@ export const registerPlayerEvents = (player: Player) => {
 
   player.events.on(GuildQueueEvent.EmptyQueue, async (queue) => {
     if (queue.metadata.musicQuiz) return;
+    musicPlayerMessage.clearProgressInterval();
 
     const t = useTranslations(queue.guild.id);
 
@@ -123,6 +125,7 @@ export const registerPlayerEvents = (player: Player) => {
   });
 
   player.events.on(GuildQueueEvent.PlayerError, async (queue, error, track) => {
+    musicPlayerMessage.clearProgressInterval();
     const t = useTranslations(queue.guild.id);
     const channel = queue.metadata.textChannel as TextChannel;
 
@@ -146,6 +149,7 @@ export const registerPlayerEvents = (player: Player) => {
   });
 
   player.events.on(GuildQueueEvent.Error, async (queue, error) => {
+    musicPlayerMessage.clearProgressInterval();
     const channel = queue.metadata.textChannel as TextChannel;
 
     const embed = buildMessage({
