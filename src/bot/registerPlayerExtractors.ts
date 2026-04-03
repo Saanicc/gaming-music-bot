@@ -2,7 +2,7 @@ import { Player } from "discord-player";
 import { SpotifyExtractor } from "discord-player-spotify";
 import { SoundcloudExtractor } from "discord-player-soundcloud";
 import { config } from "../config";
-import { YoutubeiExtractor, Log } from "discord-player-youtubei";
+import { YoutubeExtractor, Log } from "discord-player-youtubei";
 import { DeezerExtractor } from "discord-player-deezer";
 import { youtubeCookieHandler } from "../utils/helpers/youtubeCookieHandler/youtubeCookieHandler";
 
@@ -22,10 +22,8 @@ export const registerPlayerExtractors = async (player: Player) => {
     arl: config.DEEZER_ARL,
     decryptionKey: config.DEEZER_DECRYPTION_KEY,
   });
-  const youtubeiExt = await player.extractors.register(YoutubeiExtractor, {
+  const youtubeiExt = await player.extractors.register(YoutubeExtractor, {
     cookie: youtubeCookieHandler(),
-    logLevel: "ALL",
-    useYoutubeDL: true,
   });
   const soundcloudExt = await player.extractors.register(
     SoundcloudExtractor,
