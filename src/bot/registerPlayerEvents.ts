@@ -20,11 +20,7 @@ export const registerPlayerEvents = (player: Player) => {
     const channel = queue.metadata.textChannel as TextChannel;
 
     musicPlayerMessage.clearProgressInterval();
-    try {
-      await musicPlayerMessage.delete();
-    } catch (error) {
-      console.error(error);
-    }
+    await musicPlayerMessage.delete().catch(() => {});
 
     const inDB = await checkIfTrackInDB(queue.guild.id, track);
 
@@ -59,13 +55,16 @@ export const registerPlayerEvents = (player: Player) => {
           footerText,
           isTrackInDB: isTrackInCache(queue.guild.id, track.url),
         });
-        try {
-          await musicPlayerMessage.edit(updateData as MessageEditOptions);
-        } catch (err) {
-          console.error("Failed to update progress:", err);
-        }
+
+        await musicPlayerMessage
+          .edit(updateData as MessageEditOptions)
+          .catch(() => {});
       }, 1000)
     );
+  });
+
+  player.events.on(GuildQueueEvent.PlayerFinish, async () => {
+    musicPlayerMessage.clearProgressInterval();
   });
 
   player.events.on(GuildQueueEvent.PlayerPause, async (queue) => {
