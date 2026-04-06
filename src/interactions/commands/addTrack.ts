@@ -107,6 +107,6 @@ export const execute = async (interaction: ChatInputCommandInteraction) => {
     color: "success",
   });
 
-  musicPlayerMessage.buildAndEdit();
+  await musicPlayerMessage.buildAndEdit();
   return interaction.reply(data);
 };

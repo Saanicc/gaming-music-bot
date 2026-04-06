@@ -33,7 +33,7 @@ class MusicPlayerMessageService {
   private sharedState?: SharedState;
   private readonly progressUpdateIntervalMs = 2000;
 
-  async set(message?: Message) {
+  set(message?: Message) {
     this.nowPlayingMessage = message;
   }
 
@@ -52,6 +52,7 @@ class MusicPlayerMessageService {
 
     await this.nowPlayingMessage.delete().catch(() => {});
     this.nowPlayingMessage = undefined;
+    this.sharedState = undefined;
   }
 
   async build({

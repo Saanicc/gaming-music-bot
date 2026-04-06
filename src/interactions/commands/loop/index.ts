@@ -51,7 +51,7 @@ export async function execute(interaction: ChatInputCommandInteraction) {
 
   queue.setRepeatMode(entry.mode);
 
-  musicPlayerMessage.buildAndEdit();
+  await musicPlayerMessage.buildAndEdit();
   await interaction.editReply(
     buildMessage({ title: entry.title, color: "info" })
   );

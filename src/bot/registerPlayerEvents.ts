@@ -9,8 +9,8 @@ export const registerPlayerEvents = (player: Player) => {
     if (queue.metadata.musicQuiz) return;
 
     musicPlayerMessage.clearProgressInterval();
-    await musicPlayerMessage.delete().catch(() => {});
-    musicPlayerMessage.build({
+    await musicPlayerMessage.delete();
+    await musicPlayerMessage.build({
       queue,
       track,
       isPlaying: true,
@@ -25,7 +25,7 @@ export const registerPlayerEvents = (player: Player) => {
   player.events.on(GuildQueueEvent.PlayerResume, async (queue) => {
     if (!queue.currentTrack) return;
 
-    musicPlayerMessage.build({
+    await musicPlayerMessage.build({
       queue,
       track: queue.currentTrack,
       isPlaying: true,
@@ -36,7 +36,7 @@ export const registerPlayerEvents = (player: Player) => {
   player.events.on(GuildQueueEvent.PlayerPause, async (queue) => {
     if (!queue.currentTrack) return;
 
-    musicPlayerMessage.build({
+    await musicPlayerMessage.build({
       queue,
       track: queue.currentTrack,
       isPlaying: false,
@@ -50,7 +50,6 @@ export const registerPlayerEvents = (player: Player) => {
     const t = useTranslations(queue.guild.id);
 
     await musicPlayerMessage.delete();
-    musicPlayerMessage.set(undefined);
 
     const data = buildMessage({
       title: t("common.leftVoiceChat"),
@@ -64,7 +63,7 @@ export const registerPlayerEvents = (player: Player) => {
   player.events.on(GuildQueueEvent.EmptyQueue, async (queue) => {
     if (queue.metadata.musicQuiz) return;
     musicPlayerMessage.clearProgressInterval();
-    musicPlayerMessage.buildAndEdit(queue, false);
+    await musicPlayerMessage.buildAndEdit(queue, false);
 
     const t = useTranslations(queue.guild.id);
 
