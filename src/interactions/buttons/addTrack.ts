@@ -75,6 +75,6 @@ export const execute = async (interaction: ButtonInteraction) => {
     color: "success",
   });
 
-  musicPlayerMessage.buildAndEdit();
+  musicPlayerMessage.buildAndEdit(queue);
   return interaction.followUp(data);
 };

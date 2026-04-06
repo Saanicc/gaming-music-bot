@@ -5,8 +5,8 @@ import {
   MessagePayload,
   TextChannel,
 } from "discord.js";
-import { buildNowPlayingMessage } from "../utils/bot-message/buildNowPlayingMessage";
 import { GuildQueue, Track } from "discord-player";
+import { buildNowPlayingMessage } from "../utils/bot-message/buildNowPlayingMessage";
 import {
   checkIfTrackInDB,
   getTrackRequestedByFooterText,
@@ -20,35 +20,39 @@ interface BuildParams {
   shouldUpdateProgress?: boolean;
 }
 
-let nowPlayingMessage: Message | undefined;
-let progressInterval: NodeJS.Timeout | null = null;
-let sharedState: {
+interface SharedState {
   queue: GuildQueue;
   track: Track;
   footerText: string;
   isPlaying: boolean;
-} | null = null;
+}
 
-export const musicPlayerMessage = {
-  async set(message: typeof nowPlayingMessage) {
-    nowPlayingMessage = message;
-  },
+class MusicPlayerMessageService {
+  private nowPlayingMessage?: Message;
+  private progressInterval?: NodeJS.Timeout;
+  private sharedState?: SharedState;
+  private readonly progressUpdateIntervalMs = 2000;
+
+  async set(message?: Message) {
+    this.nowPlayingMessage = message;
+  }
 
   get() {
-    return nowPlayingMessage;
-  },
+    return this.nowPlayingMessage;
+  }
 
   async edit(data: string | MessageEditOptions | MessagePayload) {
-    if (nowPlayingMessage) return await nowPlayingMessage.edit(data);
-  },
+    if (!this.nowPlayingMessage) return;
+
+    await this.nowPlayingMessage.edit(data).catch(() => {});
+  }
 
   async delete() {
-    if (!nowPlayingMessage) return;
+    if (!this.nowPlayingMessage) return;
 
-    await nowPlayingMessage.delete();
-    nowPlayingMessage = undefined;
-    return;
-  },
+    await this.nowPlayingMessage.delete().catch(() => {});
+    this.nowPlayingMessage = undefined;
+  }
 
   async build({
     queue,
@@ -57,69 +61,66 @@ export const musicPlayerMessage = {
     shouldUpdateProgress = false,
   }: BuildParams) {
     const channel = queue.metadata.textChannel as TextChannel;
+    if (!channel) return;
 
-    const inDB = await checkIfTrackInDB(queue.guild.id, track);
+    const [isTrackInDB, footerText] = await Promise.all([
+      checkIfTrackInDB(queue.guild.id, track),
+      getTrackRequestedByFooterText(track.requestedBy, queue.guild.id),
+    ]);
 
-    const footerText = await getTrackRequestedByFooterText(
-      track.requestedBy,
-      queue.guild.id
-    );
+    this.sharedState = { queue, track, footerText, isPlaying };
 
-    sharedState = { queue, track, footerText, isPlaying };
-
-    const data = buildNowPlayingMessage({
+    const messageData = buildNowPlayingMessage({
       track,
       isPlaying,
       queue,
       footerText,
-      isTrackInDB: inDB,
+      isTrackInDB,
     });
 
-    let msg: Message;
-    if (this.get()) {
-      await this.edit(data as MessageEditOptions);
+    if (this.nowPlayingMessage) {
+      await this.edit(messageData as MessageEditOptions);
     } else {
-      msg = await channel.send(data as MessageCreateOptions);
-      this.set(msg);
+      try {
+        this.nowPlayingMessage = await channel.send(
+          messageData as MessageCreateOptions
+        );
+      } catch (error) {
+        console.error("Failed to send player message:", error);
+      }
     }
 
-    if (!shouldUpdateProgress) {
-      this.clearProgressInterval();
-      return;
-    }
+    this.clearProgressInterval();
 
-    const INTERVAL_MS = 2000;
-
-    this.setProgressInterval(
-      setInterval(async () => {
+    if (shouldUpdateProgress) {
+      this.progressInterval = setInterval(async () => {
         await this.buildAndEdit();
-      }, INTERVAL_MS)
-    );
-  },
+      }, this.progressUpdateIntervalMs);
+    }
+  }
 
-  async buildAndEdit() {
-    if (!sharedState) return;
-    if (!this.get()) return;
+  async buildAndEdit(updatedQueue?: GuildQueue, updatedIsPlaying?: boolean) {
+    if (!this.sharedState || !this.nowPlayingMessage) return;
 
-    const updateData = buildNowPlayingMessage({
-      track: sharedState.track,
-      isPlaying: sharedState.isPlaying,
-      queue: sharedState.queue,
-      footerText: sharedState.footerText,
-      isTrackInDB: isTrackInCache(
-        sharedState.queue.guild.id,
-        sharedState.track.url
-      ),
+    const { queue, track, isPlaying, footerText } = this.sharedState;
+
+    const messageData = buildNowPlayingMessage({
+      track,
+      isPlaying: updatedIsPlaying ?? isPlaying,
+      queue: updatedQueue ?? queue,
+      footerText,
+      isTrackInDB: isTrackInCache(queue.guild.id, track.url),
     });
 
-    await this.edit(updateData as MessageEditOptions).catch(() => {});
-  },
+    await this.edit(messageData as MessageEditOptions);
+  }
 
   clearProgressInterval() {
-    if (progressInterval) clearInterval(progressInterval);
-  },
+    if (this.progressInterval) {
+      clearInterval(this.progressInterval);
+      this.progressInterval = undefined;
+    }
+  }
+}
 
-  setProgressInterval(interval: NodeJS.Timeout) {
-    progressInterval = interval;
-  },
-};
+export const musicPlayerMessage = new MusicPlayerMessageService();

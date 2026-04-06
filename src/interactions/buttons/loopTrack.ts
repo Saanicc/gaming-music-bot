@@ -22,5 +22,5 @@ export async function execute(interaction: ButtonInteraction) {
     queue.setRepeatMode(QueueRepeatMode.TRACK);
   }
 
-  musicPlayerMessage.buildAndEdit();
+  musicPlayerMessage.buildAndEdit(queue);
 }

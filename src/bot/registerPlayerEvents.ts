@@ -64,6 +64,7 @@ export const registerPlayerEvents = (player: Player) => {
   player.events.on(GuildQueueEvent.EmptyQueue, async (queue) => {
     if (queue.metadata.musicQuiz) return;
     musicPlayerMessage.clearProgressInterval();
+    musicPlayerMessage.buildAndEdit(queue, false);
 
     const t = useTranslations(queue.guild.id);
 
