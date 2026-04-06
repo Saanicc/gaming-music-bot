@@ -43,8 +43,7 @@ const createProgressBar = (queue: GuildQueue, size = 10) =>
     indicator: emoji.progressFilled,
     leftChar: emoji.progressFilled,
     rightChar: emoji.progress,
-    length: size,
-    timecodes: false,
+    timecodes: true,
   });
 
 export const buildNowPlayingMessage = ({

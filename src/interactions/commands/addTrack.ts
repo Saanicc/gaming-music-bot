@@ -13,6 +13,7 @@ import { useTranslations } from "@/utils/hooks/useTranslations";
 import { buildMessage } from "@/utils/bot-message/buildMessage";
 import { guardReply } from "@/utils/helpers/interactions";
 import { db, TrackType } from "@/db";
+import { musicPlayerMessage } from "../../services/musicPlayerMessage";
 
 export const data = new SlashCommandBuilder()
   .setName("add_track")
@@ -106,5 +107,6 @@ export const execute = async (interaction: ChatInputCommandInteraction) => {
     color: "success",
   });
 
+  musicPlayerMessage.buildAndEdit();
   return interaction.reply(data);
 };

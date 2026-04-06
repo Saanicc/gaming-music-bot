@@ -10,6 +10,7 @@ import { db } from "@/db";
 import { guardReply } from "@/utils/helpers/interactions";
 import { emoji } from "@/utils/constants/emojis";
 import { useTranslations } from "@/utils/hooks/useTranslations";
+import { musicPlayerMessage } from "../../services/musicPlayerMessage";
 
 export const addTrackButton = new ButtonBuilder()
   .setCustomId("addTrack")
@@ -74,5 +75,6 @@ export const execute = async (interaction: ButtonInteraction) => {
     color: "success",
   });
 
+  musicPlayerMessage.buildAndEdit();
   return interaction.followUp(data);
 };

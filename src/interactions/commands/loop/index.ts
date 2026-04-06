@@ -3,6 +3,7 @@ import { buildMessage } from "@/utils/bot-message/buildMessage";
 import { QueueRepeatMode, useQueue } from "discord-player";
 import { guardReply } from "@/utils/helpers/interactions";
 import { useTranslations } from "@/utils/hooks/useTranslations";
+import { musicPlayerMessage } from "@/root/src/services/musicPlayerMessage";
 
 export const data = new SlashCommandBuilder()
   .setName("loop")
@@ -50,6 +51,7 @@ export async function execute(interaction: ChatInputCommandInteraction) {
 
   queue.setRepeatMode(entry.mode);
 
+  musicPlayerMessage.buildAndEdit();
   await interaction.editReply(
     buildMessage({ title: entry.title, color: "info" })
   );
