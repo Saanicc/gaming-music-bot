@@ -1,6 +1,7 @@
 import { ButtonBuilder, ButtonInteraction, ButtonStyle } from "discord.js";
 import { QueueRepeatMode, useQueue } from "discord-player";
 import { guardReply } from "@/utils/helpers/interactions";
+import { musicPlayerMessage } from "../../services/musicPlayerMessage";
 
 export const loopTrackButton = new ButtonBuilder()
   .setCustomId("loopTrack")
@@ -20,4 +21,6 @@ export async function execute(interaction: ButtonInteraction) {
   } else {
     queue.setRepeatMode(QueueRepeatMode.TRACK);
   }
+
+  await musicPlayerMessage.buildAndEdit(queue);
 }

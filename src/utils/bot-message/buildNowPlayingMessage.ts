@@ -38,13 +38,13 @@ type NowPlayingMessageProps = {
   isTrackInDB: boolean;
 };
 
-const createProgressBar = (queue: GuildQueue, size = 10) =>
+const createProgressBar = (queue: GuildQueue, length = 12) =>
   queue.node.createProgressBar({
     indicator: emoji.progressFilled,
     leftChar: emoji.progressFilled,
     rightChar: emoji.progress,
-    length: size,
-    timecodes: false,
+    length,
+    timecodes: true,
   });
 
 export const buildNowPlayingMessage = ({

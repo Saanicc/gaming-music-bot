@@ -1,91 +1,46 @@
 import { GuildQueueEvent, Player } from "discord-player";
-import {
-  MessageCreateOptions,
-  MessageEditOptions,
-  TextChannel,
-} from "discord.js";
-import { buildNowPlayingMessage } from "../utils/bot-message/buildNowPlayingMessage";
+import { MessageCreateOptions, TextChannel } from "discord.js";
 import { musicPlayerMessage } from "../services/musicPlayerMessage";
 import { buildMessage } from "../utils/bot-message/buildMessage";
-import {
-  getTrackRequestedByFooterText,
-  checkIfTrackInDB,
-  isTrackInCache,
-} from "../utils/helpers/track";
 import { useTranslations } from "@/utils/hooks/useTranslations";
 
 export const registerPlayerEvents = (player: Player) => {
   player.events.on(GuildQueueEvent.PlayerStart, async (queue, track) => {
     if (queue.metadata.musicQuiz) return;
-    const channel = queue.metadata.textChannel as TextChannel;
 
     musicPlayerMessage.clearProgressInterval();
-    await musicPlayerMessage.delete().catch(() => {});
-
-    const inDB = await checkIfTrackInDB(queue.guild.id, track);
-
-    const footerText = await getTrackRequestedByFooterText(
-      track.requestedBy,
-      queue.guild.id
-    );
-
-    const data = buildNowPlayingMessage({
+    await musicPlayerMessage.delete();
+    await musicPlayerMessage.build({
+      queue,
       track,
       isPlaying: true,
-      queue,
-      footerText,
-      isTrackInDB: inDB,
+      shouldUpdateProgress: true,
     });
-    const msg = await channel.send(data as MessageCreateOptions);
-    musicPlayerMessage.set(msg);
-
-    musicPlayerMessage.setProgressInterval(
-      setInterval(async () => {
-        if (!queue.node.isPlaying()) return;
-        if (
-          !musicPlayerMessage.get() ||
-          musicPlayerMessage.get()?.id !== msg.id
-        )
-          return;
-
-        const updateData = buildNowPlayingMessage({
-          track,
-          isPlaying: true,
-          queue,
-          footerText,
-          isTrackInDB: isTrackInCache(queue.guild.id, track.url),
-        });
-
-        await musicPlayerMessage
-          .edit(updateData as MessageEditOptions)
-          .catch(() => {});
-      }, 1000)
-    );
   });
 
   player.events.on(GuildQueueEvent.PlayerFinish, async () => {
     musicPlayerMessage.clearProgressInterval();
   });
 
+  player.events.on(GuildQueueEvent.PlayerResume, async (queue) => {
+    if (!queue.currentTrack) return;
+
+    await musicPlayerMessage.build({
+      queue,
+      track: queue.currentTrack,
+      isPlaying: true,
+      shouldUpdateProgress: true,
+    });
+  });
+
   player.events.on(GuildQueueEvent.PlayerPause, async (queue) => {
     if (!queue.currentTrack) return;
 
-    const footerText = await getTrackRequestedByFooterText(
-      queue.currentTrack.requestedBy,
-      queue.guild.id
-    );
-
-    await checkIfTrackInDB(queue.guild.id, queue.currentTrack);
-
-    const data = buildNowPlayingMessage({
+    await musicPlayerMessage.build({
+      queue,
       track: queue.currentTrack,
       isPlaying: false,
-      queue,
-      footerText,
-      isTrackInDB: isTrackInCache(queue.guild.id, queue.currentTrack.url),
     });
-
-    await musicPlayerMessage.edit(data as MessageEditOptions);
   });
 
   player.events.on(GuildQueueEvent.QueueDelete, async (queue) => {
@@ -95,7 +50,6 @@ export const registerPlayerEvents = (player: Player) => {
     const t = useTranslations(queue.guild.id);
 
     await musicPlayerMessage.delete();
-    musicPlayerMessage.set(undefined);
 
     const data = buildMessage({
       title: t("common.leftVoiceChat"),
@@ -109,6 +63,7 @@ export const registerPlayerEvents = (player: Player) => {
   player.events.on(GuildQueueEvent.EmptyQueue, async (queue) => {
     if (queue.metadata.musicQuiz) return;
     musicPlayerMessage.clearProgressInterval();
+    await musicPlayerMessage.buildAndEdit(queue, false);
 
     const t = useTranslations(queue.guild.id);
 
