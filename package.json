@@ -17,9 +17,9 @@
     "docker-build": "node docker-scripts.js build",
     "docker-save": "node docker-scripts.js save",
     "build-prod": "npm run build && npm run docker-build && npm run docker-save",
-    "release:patch": "npm version patch && git push && git push --tags",
-    "release:minor": "npm version minor && git push && git push --tags",
-    "release:major": "npm version major && git push && git push --tags"
+    "release:patch": "npm version patch && git push --follow-tags --atomic origin HEAD",
+    "release:minor": "npm version minor && git push --follow-tags --atomic origin HEAD",
+    "release:major": "npm version major && git push --follow-tags --atomic origin HEAD"
   },
   "dependencies": {
     "@snazzah/davey": "0.1.10",
