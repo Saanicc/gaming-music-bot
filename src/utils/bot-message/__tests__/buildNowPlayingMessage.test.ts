@@ -13,7 +13,7 @@ import { MessageFlags } from "discord.js";
 // Mock helper functionalities
 jest.mock("@/services/queueManager", () => ({
   queueManager: {
-    getQueueType: jest.fn(),
+    getGuildQueueType: jest.fn(),
   },
 }));
 
