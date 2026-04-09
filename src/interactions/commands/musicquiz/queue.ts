@@ -50,7 +50,7 @@ export const getPreviousQueue = async (
       title: t("utility.queueManager.nothingToRestore"),
     });
     await musicPlayerMessage.delete().catch(() => {});
-    queueManager.setQueueType("normal");
+    queueManager.setGuildQueueType(guild.id, "normal");
     const channel = (interaction.channel ?? thread) as TextChannel;
     await channel.send(data as MessageCreateOptions);
     return;

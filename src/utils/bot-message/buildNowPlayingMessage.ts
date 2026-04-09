@@ -56,8 +56,11 @@ export const buildNowPlayingMessage = ({
 }: NowPlayingMessageProps): MessageCreateOptions => {
   const t = useTranslations(queue.guild.id);
 
+  const guildId = queue.guild.id;
+
   const isBossQueue =
-    (isPlaying || !isPlaying) && queueManager.getQueueType() === "boss";
+    (isPlaying || !isPlaying) &&
+    queueManager.getGuildQueueType(guildId) === "boss";
 
   const repeatMode = queue.repeatMode;
 

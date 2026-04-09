@@ -13,7 +13,7 @@ export interface StoredQueue {
 }
 
 const storedQueues = new Map<string, StoredQueue>();
-let queueType: QueueType = "normal";
+const guildQueueType = new Map<string, QueueType>();
 
 export const queueManager = {
   store(guildId: string, options: StoredQueue) {
@@ -26,14 +26,14 @@ export const queueManager = {
 
   clear(guildId: string) {
     storedQueues.delete(guildId);
-    this.setQueueType("normal");
+    this.setGuildQueueType(guildId, "normal");
   },
 
-  setQueueType(type: QueueType) {
-    queueType = type;
+  setGuildQueueType(guildId: string, type: QueueType) {
+    guildQueueType.set(guildId, type);
   },
 
-  getQueueType() {
-    return queueType;
+  getGuildQueueType(guildId: string) {
+    return guildQueueType.get(guildId);
   },
 };

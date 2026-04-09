@@ -37,7 +37,7 @@ type SpotifyPlaylist = {
 let cachedToken: string | null = null;
 let tokenExpires = 0;
 
-const getSpotifyToken = async (): Promise<string> => {
+export const getSpotifyToken = async (): Promise<string> => {
   const now = Date.now();
 
   if (cachedToken && now < tokenExpires) {

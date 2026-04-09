@@ -63,7 +63,7 @@ export const execute = async ({
       newQueue.tracks.shuffle();
       newQueue.insertTrack(pickRandomHornTrack());
 
-      queueManager.setQueueType("boss");
+      queueManager.setGuildQueueType(guild.id, "boss");
 
       const data = buildMessage({
         title: t("commands.play.boss.music.message.title", {
