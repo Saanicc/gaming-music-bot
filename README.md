@@ -1,6 +1,6 @@
 # Gaming music bot
 
-![Tests](https://github.com/Saanicc/gaming-music-bot/actions/workflows/test.yml/badge.svg?style=flat-square)
+![Tests](https://github.com/Saanicc/gaming-music-bot/actions/workflows/test.yml/badge.svg)
 
 **Gaming Music Bot** is a Discord bot that brings dynamic soundtracks to your gaming sessions.
 Whether you’re relaxing with background music or preparing for an epic boss fight, this bot delivers the perfect vibe.
