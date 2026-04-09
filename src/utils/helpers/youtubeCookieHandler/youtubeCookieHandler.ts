@@ -20,12 +20,6 @@ export const youtubeCookieHandler = () => {
     }
 
     const cookies = Buffer.from(b64, "base64").toString("utf8");
-
-    if (!cookies) {
-      console.warn("[YouTube Cookie Handler] Decoded cookies string is empty");
-      return;
-    }
-
     const cookiePath = path.join(__dirname, "cookies.txt");
 
     // Write cookies to file
