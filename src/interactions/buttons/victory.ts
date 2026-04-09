@@ -42,7 +42,7 @@ export const execute = async (interaction: ButtonInteraction) => {
       title: t("utility.queueManager.nothingToRestore"),
     });
     await musicPlayerMessage.delete();
-    queueManager.setQueueType("normal");
+    queueManager.setGuildQueueType(guild.id, "normal");
     return await (interaction.channel as TextChannel).send(
       data as MessageCreateOptions
     );

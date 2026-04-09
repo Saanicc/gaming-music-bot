@@ -139,7 +139,7 @@ describe("Now Playing Message Builder (buildNowPlayingMessage.ts)", () => {
       "Mock Description"
     );
     (getThumbnail as jest.Mock).mockReturnValue("https://mock-thumbnail.url");
-    (queueManager.getQueueType as jest.Mock).mockReturnValue("normal");
+    (queueManager.getGuildQueueType as jest.Mock).mockReturnValue("normal");
 
     mockTrack = { title: "Test Track" };
     mockQueue = {
@@ -215,7 +215,7 @@ describe("Now Playing Message Builder (buildNowPlayingMessage.ts)", () => {
   });
 
   it("should format successfully with boss mode colors when processing a boss queue", () => {
-    (queueManager.getQueueType as jest.Mock).mockReturnValue("boss");
+    (queueManager.getGuildQueueType as jest.Mock).mockReturnValue("boss");
 
     const payload = buildNowPlayingMessage({
       track: mockTrack,
