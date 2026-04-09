@@ -6,8 +6,6 @@ import {
   TextDisplayBuilder,
   ThumbnailBuilder,
   SeparatorBuilder,
-  MediaGalleryBuilder,
-  MediaGalleryItemBuilder,
   BaseMessageOptions,
   ButtonBuilder,
   ActionRowBuilder,
@@ -23,7 +21,6 @@ export interface BuildMessageOptions {
   color?: ColorType;
   ephemeral?: boolean;
   description?: string;
-  imageUrl?: string;
   thumbnail?: string;
   footerText?: string;
   actionRowBuilder?: ActionRowBuilder<
@@ -37,7 +34,6 @@ export const buildMessage = ({
   color,
   ephemeral = false,
   description,
-  imageUrl,
   thumbnail,
   footerText,
   actionRowBuilder,
@@ -69,12 +65,6 @@ export const buildMessage = ({
     container.addSectionComponents(headerSection);
   } else {
     container.addTextDisplayComponents(textDisplay);
-  }
-
-  if (imageUrl) {
-    const galleryItem = new MediaGalleryItemBuilder().setURL(imageUrl);
-    const gallery = new MediaGalleryBuilder().addItems(galleryItem);
-    container.addMediaGalleryComponents(gallery);
   }
 
   if (actionRowBuilder) {
