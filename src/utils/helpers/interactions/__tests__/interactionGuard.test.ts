@@ -124,9 +124,7 @@ describe("Interaction Guard (interactionGuard.ts)", () => {
         new Error("Missing Message")
       );
 
-      await expect(
-        guardReply(mockInteraction, "NO_QUEUE", "editReply")
-      ).resolves.not.toThrow();
+      await guardReply(mockInteraction, "NO_QUEUE", "editReply");
 
       expect(mockInteraction.deleteReply).toHaveBeenCalled();
       expect(mockInteraction.followUp).toHaveBeenCalled();

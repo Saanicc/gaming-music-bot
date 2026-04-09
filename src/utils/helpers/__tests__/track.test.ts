@@ -82,7 +82,7 @@ describe("Track Helpers (track.ts)", () => {
       expect(isTrackInCache("db-guild-2", "db-track-url")).toBe(false);
     });
 
-    it("should return true, cache the track, and return true if track is found in DB", async () => {
+    it("should return true and cache the track if found in DB", async () => {
       (db.findBossTrackByUrl as jest.Mock).mockResolvedValue(true);
 
       const result = await checkIfTrackInDB("db-guild-3", mockTrack);

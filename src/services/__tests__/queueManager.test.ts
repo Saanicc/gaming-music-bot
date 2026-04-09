@@ -68,7 +68,7 @@ describe("Queue Manager Service (queueManager.ts)", () => {
       expect(queueManager.retrieve("guild-1")).toBeUndefined();
     });
 
-    it("should additionally reset overarching global queue type natively back to 'normal'", () => {
+    it("should additionally reset the guild's queue type back to 'normal'", () => {
       queueManager.setGuildQueueType("guild-1", "boss");
       expect(queueManager.getGuildQueueType("guild-1")).toBe("boss");
 
@@ -78,7 +78,7 @@ describe("Queue Manager Service (queueManager.ts)", () => {
     });
   });
 
-  describe("setQueueType() & getQueueType()", () => {
+  describe("setGuildQueueType() & getGuildQueueType()", () => {
     it("should accurately toggle overall state flag properly", () => {
       expect(queueManager.getGuildQueueType("guild-1")).toBe("normal"); // Explicit base state
 
