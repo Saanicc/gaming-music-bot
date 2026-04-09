@@ -110,6 +110,15 @@ describe("Message Builder (buildMessage.ts)", () => {
       expect(container.addSectionComponents).not.toHaveBeenCalled();
     });
 
+    it("should inject an image gallery when an image url is provided", () => {
+      const payload = buildMessage({
+        title: "Thumb",
+        imageUrl: "https://image.url",
+      });
+      const container: any = payload.components![0];
+      expect(container.addMediaGalleryComponents).toHaveBeenCalled();
+    });
+
     it("should inject a Section container wrapping the text and the thumbnail accessory if a thumbnail is provided", () => {
       const payload = buildMessage({
         title: "Thumb",

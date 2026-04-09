@@ -10,6 +10,8 @@ import {
   ButtonBuilder,
   ActionRowBuilder,
   StringSelectMenuBuilder,
+  MediaGalleryItemBuilder,
+  MediaGalleryBuilder,
 } from "discord.js";
 import { colors as colorConstant, ColorType } from "../constants/colors";
 
@@ -22,6 +24,7 @@ export interface BuildMessageOptions {
   ephemeral?: boolean;
   description?: string;
   thumbnail?: string;
+  imageUrl?: string;
   footerText?: string;
   actionRowBuilder?: ActionRowBuilder<
     ButtonBuilder | StringSelectMenuBuilder
@@ -35,6 +38,7 @@ export const buildMessage = ({
   ephemeral = false,
   description,
   thumbnail,
+  imageUrl,
   footerText,
   actionRowBuilder,
 }: BuildMessageOptions): BaseMessageOptions => {
@@ -65,6 +69,12 @@ export const buildMessage = ({
     container.addSectionComponents(headerSection);
   } else {
     container.addTextDisplayComponents(textDisplay);
+  }
+
+  if (imageUrl) {
+    const galleryItem = new MediaGalleryItemBuilder().setURL(imageUrl);
+    const gallery = new MediaGalleryBuilder().addItems(galleryItem);
+    container.addMediaGalleryComponents(gallery);
   }
 
   if (actionRowBuilder) {
