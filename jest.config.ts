@@ -7,8 +7,9 @@ const config: Config = {
   moduleFileExtensions: ["ts", "js", "json"],
   testMatch: ["**/__tests__/**/*.test.ts"],
   moduleNameMapper: {
-    "^@/(.*)$": "<rootDir>/src/$1"
-  }
+    "^@/root/(.*)$": "<rootDir>/$1",
+    "^@/(.*)$": "<rootDir>/src/$1",
+  },
 };
 
 export default config;
