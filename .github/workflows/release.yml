@@ -1,0 +1,40 @@
+name: Build & Package Docker Image
+
+on:
+  push:
+    tags:
+      - "v*.*.*"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v6
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: 22.x
+          cache: "npm"
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Build Docker image
+        run: npm run build-prod
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v6
+        with:
+          name: music-discord-bot
+          path: music-discord-bot-*.tar
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: music-discord-bot-*.tar
+          generate_release_notes: true
