@@ -5,7 +5,8 @@ export const handleModalInteraction = async (
   collection: Record<string, { execute: (i: any) => Promise<any> }>,
   key: string
 ) => {
-  const handler = collection[key as keyof typeof collection];
+  const handlerKey = key.split(":")[0];
+  const handler = collection[handlerKey as keyof typeof collection];
 
   if (!handler) return;
 

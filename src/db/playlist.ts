@@ -1,7 +1,5 @@
 import { GuildPlaylists, type Playlist } from "./schemas/Playlist";
 
-const sanitizeName = (name: string) => name.trim().toLowerCase();
-
 /**
  * Find all playlists for a specific guild
  * @param guildId The Discord guild ID
@@ -75,12 +73,12 @@ export const createPlaylist = async (
 /**
  * Update an existing playlist in a guild
  * @param guildId The Discord guild ID
- * @param id The ID of the playlist to update
+ * @param playlistId The ID of the playlist to update
  * @param updatedData Partial playlist data to update (name, trackUrls)
  */
 export const updatePlaylist = async (
   guildId: string,
-  id: string,
+  playlistId: string,
   updatedData: Partial<Playlist>
 ) => {
   const updateQuery: any = {};
@@ -89,7 +87,7 @@ export const updatePlaylist = async (
     updateQuery["playlists.$.trackUrls"] = updatedData.trackUrls;
 
   return GuildPlaylists.updateOne(
-    { guildId, "playlists.id": id },
+    { guildId, "playlists.id": playlistId },
     { $set: updateQuery }
   );
 };
@@ -97,11 +95,11 @@ export const updatePlaylist = async (
 /**
  * Delete a playlist from a guild's collection
  * @param guildId The Discord guild ID
- * @param name The name of the playlist to delete
+ * @param playlistId The ID of the playlist to delete
  */
-export const deletePlaylist = async (guildId: string, name: string) => {
+export const deletePlaylist = async (guildId: string, playlistId: string) => {
   return GuildPlaylists.updateOne(
     { guildId },
-    { $pull: { playlists: { name: name } } }
+    { $pull: { playlists: { id: playlistId } } }
   );
 };

@@ -2,7 +2,6 @@ import { ModalSubmitInteraction } from "discord.js";
 import { useTranslations } from "@/utils/hooks/useTranslations";
 import { buildMessage } from "../../utils/bot-message/buildMessage";
 import { db } from "../../db";
-import { guardReply } from "../../utils/helpers/interactions";
 import { SUPPORTED_TRACK_URL_REGEX } from "@/utils/constants/regex";
 
 const parseAndValidateTracks = (
@@ -30,6 +29,7 @@ export const execute = async (interaction: ModalSubmitInteraction) => {
   await interaction.deferReply();
   const t = useTranslations(interaction.guildId ?? "");
 
+  const playlistId = interaction.customId.split(":")[1];
   const name = interaction.fields.getTextInputValue("name");
   const tracks = interaction.fields.getTextInputValue("tracks");
   const user = interaction.user;
@@ -37,24 +37,15 @@ export const execute = async (interaction: ModalSubmitInteraction) => {
   const { valid, invalid } = parseAndValidateTracks(tracks);
 
   try {
-    await db.createPlaylist(interaction.guildId ?? "", {
+    await db.updatePlaylist(interaction.guildId ?? "", playlistId, {
       name,
       trackUrls: valid,
     });
   } catch (error) {
-    if (
-      error instanceof Error &&
-      error.message === "Playlist name already exists"
-    ) {
-      return guardReply(interaction, "DUPLICATE_PLAYLIST", "editReply", {
-        playlistName: name,
-      });
-    }
-
     await interaction.editReply(
       buildMessage({
-        title: "Error creating playlist",
-        description: `Failed to create playlist **${name}**`,
+        title: "Error updating playlist",
+        description: `Failed to update playlist **${name}**`,
         color: "error",
         ephemeral: true,
       })
@@ -64,8 +55,8 @@ export const execute = async (interaction: ModalSubmitInteraction) => {
 
   await interaction.editReply(
     buildMessage({
-      title: "Playlist created",
-      description: `${user} created a playlist ${valid.length ? `with ${valid.length} tracks` : ""} called **${name}**`,
+      title: "Playlist updated",
+      description: `${user} updated the playlist **${name}** ${valid.length ? `(now containing ${valid.length} tracks)` : ""}`,
       color: "success",
     })
   );
@@ -73,11 +64,9 @@ export const execute = async (interaction: ModalSubmitInteraction) => {
   if (invalid.length > 0) {
     await interaction.followUp(
       buildMessage({
-        title: "Playlist created - Info",
-        description: `You just created a playlist called **${name}**\n\nHowever, the following URLs are invalid or unsupported:\n${invalid.map((url) => `- \`${url}\``).join("\n")}\n\nOnly single track URLs are supported.`,
+        title: "Playlist updated - Info",
+        description: `You updated the playlist **${name}**\n\nHowever, the following URLs are invalid or unsupported and were skipped:\n${invalid.map((url) => `- \`${url}\``).join("\n")}\n\nOnly single track URLs are supported.`,
         color: "info",
-        footerText:
-          "You can add more tracks later using the `/playlist update` command.",
         ephemeral: true,
       })
     );
