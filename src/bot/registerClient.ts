@@ -13,6 +13,7 @@ import { handleInteraction } from "../utils/helpers/interactions";
 import { setBotActivity } from "../utils/helpers/system";
 import { db } from "../db";
 import { saveBotLanguageToCache } from "../db/language";
+import { fetch } from "undici";
 
 export const registerDiscordClient = (): Client => {
   const client = new Client({
@@ -23,6 +24,9 @@ export const registerDiscordClient = (): Client => {
       GatewayIntentBits.GuildMessages,
       GatewayIntentBits.MessageContent,
     ],
+    rest: {
+      makeRequest: fetch,
+    },
   });
 
   const isDev = config.NODE_ENV === "dev";
