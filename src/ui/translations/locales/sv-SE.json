@@ -81,6 +81,18 @@
     "duplicateTrack": {
       "title": "Låten finns redan i kön",
       "description": "Låten spelas redan eller är redan köad."
+    },
+    "playlistNotFound": {
+      "title": "Spellistan hittades inte",
+      "description": "Ingen spellista med namnet **{{playlistName}}** hittades."
+    },
+    "playlistEmpty": {
+      "title": "Spellistan är tom",
+      "description": "Inga låtar hittades i spellistan **{{playlistName}}**."
+    },
+    "duplicatePlaylist": {
+      "title": "Spellistan finns redan",
+      "description": "En spellista med namnet **{{playlistName}}** finns redan."
     }
   },
   "player": {
@@ -210,6 +222,13 @@
         "message": {
           "title": "Köad på plats #{{position}}",
           "footerText": "Inte rätt låt? Försök vara mer specifik eller ange en URL"
+        }
+      },
+      "playlist": {
+        "message": {
+          "title": "Köad",
+          "description": "**{{playlist}}** med {{tracksText}}",
+          "tracks": "{{amount}} låtar"
         }
       }
     },

@@ -1,5 +1,5 @@
 import { GuildQueue, Track, Player } from "discord-player";
-import { User as DiscordUser } from "discord.js";
+import { AutocompleteInteraction, User as DiscordUser } from "discord.js";
 import { getRankTitleWithEmoji } from "@/modules/rankSystem";
 import { useTranslations } from "@/utils/hooks/useTranslations";
 import { db, TrackType } from "@/db";
@@ -100,4 +100,18 @@ export const getBossTracks = async (
   }
 
   return tracks;
+};
+
+export const getPlaylistChoices = async (
+  interaction: AutocompleteInteraction
+) => {
+  const guildId = interaction.guildId ?? "";
+  const playlists = await db.findPlaylistsByGuildId(guildId);
+
+  const choices = playlists.map((playlist) => ({
+    name: playlist.name,
+    value: playlist.id,
+  }));
+
+  await interaction.respond(choices);
 };

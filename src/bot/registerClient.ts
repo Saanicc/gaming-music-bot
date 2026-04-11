@@ -80,6 +80,14 @@ export const registerDiscordClient = (): Client => {
     } else if (interaction.isModalSubmit()) {
       const modal = interaction.customId;
       await handleModalInteraction(interaction, modals, modal);
+    } else if (interaction.isAutocomplete()) {
+      const commandName = interaction.commandName;
+      const handler = commands[commandName as keyof typeof commands];
+      if (!handler) return;
+
+      if ("autocomplete" in handler) {
+        await handler.autocomplete(interaction);
+      }
     }
   });
 

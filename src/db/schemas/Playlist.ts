@@ -1,16 +1,17 @@
 import mongoose, { InferSchemaType, Document } from "mongoose";
 
-type Playlist = {
+export type Playlist = {
+  id: string;
   name: string;
   trackUrls: string[];
 };
 
-interface IPlaylist extends Document {
+interface IGuildPlaylists extends Document {
   guildId: string;
   playlists: Playlist[];
 }
 
-const playlistSchema = new mongoose.Schema<IPlaylist>({
+const playlistSchema = new mongoose.Schema<IGuildPlaylists>({
   guildId: {
     type: String,
     required: true,
@@ -21,6 +22,9 @@ const playlistSchema = new mongoose.Schema<IPlaylist>({
   },
 });
 
-export const Playlist = mongoose.model<IPlaylist>("playlist", playlistSchema);
+export const GuildPlaylists = mongoose.model<IGuildPlaylists>(
+  "guild_playlists",
+  playlistSchema
+);
 
-export type PlaylistType = InferSchemaType<typeof playlistSchema>;
+export type GuildPlaylistType = InferSchemaType<typeof playlistSchema>;

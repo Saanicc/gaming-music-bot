@@ -81,6 +81,18 @@
     "duplicateTrack": {
       "title": "Track already in queue",
       "description": "That track is already playing or queued."
+    },
+    "playlistNotFound": {
+      "title": "Playlist not found",
+      "description": "No playlist with the name **{{playlistName}}** was found."
+    },
+    "playlistEmpty": {
+      "title": "Playlist is empty",
+      "description": "No tracks found in the playlist **{{playlistName}}**."
+    },
+    "duplicatePlaylist": {
+      "title": "Playlist already exists",
+      "description": "A playlist with the name **{{playlistName}}** already exists."
     }
   },
   "player": {
@@ -210,6 +222,13 @@
         "message": {
           "title": "Queued at position #{{position}}",
           "footerText": "Not the correct track? Try being more specific or enter a URL"
+        }
+      },
+      "playlist": {
+        "message": {
+          "title": "Queued",
+          "description": "**{{playlist}}** with {{tracksText}}",
+          "tracks": "{{amount}} tracks"
         }
       }
     },

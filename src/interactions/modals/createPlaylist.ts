@@ -1,6 +1,8 @@
 import { ModalSubmitInteraction, TextChannel } from "discord.js";
 import { useTranslations } from "@/utils/hooks/useTranslations";
 import { buildMessage } from "../../utils/bot-message/buildMessage";
+import { db } from "../../db";
+import { guardReply } from "../../utils/helpers/interactions";
 
 const SUPPORTED_TRACK_URL_REGEX =
   /^(https?:\/\/)(www\.)?(youtube\.com\/watch\?v=(?!.*[&?]list=)|youtu\.be\/|open\.spotify\.com\/track\/|www\.deezer\.com\/track\/|soundcloud\.com\/(?!.*\/sets\/)[\w\-]+\/)[\w\-]+/;
@@ -35,6 +37,32 @@ export const execute = async (interaction: ModalSubmitInteraction) => {
   const user = interaction.user;
 
   const { valid, invalid } = parseAndValidateTracks(tracks);
+
+  try {
+    await db.createPlaylist(interaction.guildId ?? "", {
+      name,
+      trackUrls: valid,
+    });
+  } catch (error) {
+    if (
+      error instanceof Error &&
+      error.message === "Playlist name already exists"
+    ) {
+      return guardReply(interaction, "DUPLICATE_PLAYLIST", "editReply", {
+        playlistName: name,
+      });
+    }
+
+    await interaction.editReply(
+      buildMessage({
+        title: "Error creating playlist",
+        description: `Failed to create playlist **${name}**`,
+        color: "error",
+        ephemeral: true,
+      })
+    );
+    return;
+  }
 
   await interaction.editReply(
     buildMessage({
