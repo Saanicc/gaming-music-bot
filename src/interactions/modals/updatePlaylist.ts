@@ -44,8 +44,10 @@ export const execute = async (interaction: ModalSubmitInteraction) => {
   } catch (error) {
     await interaction.editReply(
       buildMessage({
-        title: "Error updating playlist",
-        description: `Failed to update playlist **${name}**`,
+        title: t("commands.playlist.updateModal.errorEmbed.title"),
+        description: t("commands.playlist.updateModal.errorEmbed.description", {
+          name,
+        }),
         color: "error",
         ephemeral: true,
       })
@@ -53,10 +55,22 @@ export const execute = async (interaction: ModalSubmitInteraction) => {
     return;
   }
 
+  const description =
+    valid.length > 0
+      ? t("commands.playlist.updateModal.successEmbed.descriptionWithTracks", {
+          user: user.toString(),
+          name,
+          count: String(valid.length),
+        })
+      : t("commands.playlist.updateModal.successEmbed.description", {
+          user: user.toString(),
+          name,
+        });
+
   await interaction.editReply(
     buildMessage({
-      title: "Playlist updated",
-      description: `${user} updated the playlist **${name}** ${valid.length ? `(now containing ${valid.length} tracks)` : ""}`,
+      title: t("commands.playlist.updateModal.successEmbed.title"),
+      description,
       color: "success",
     })
   );
@@ -64,8 +78,11 @@ export const execute = async (interaction: ModalSubmitInteraction) => {
   if (invalid.length > 0) {
     await interaction.followUp(
       buildMessage({
-        title: "Playlist updated - Info",
-        description: `You updated the playlist **${name}**\n\nHowever, the following URLs are invalid or unsupported and were skipped:\n${invalid.map((url) => `- \`${url}\``).join("\n")}\n\nOnly single track URLs are supported.`,
+        title: t("commands.playlist.updateModal.infoEmbed.title"),
+        description: t("commands.playlist.updateModal.infoEmbed.description", {
+          name,
+          invalidUrls: invalid.map((url) => `- \`${url}\``).join("\n"),
+        }),
         color: "info",
         ephemeral: true,
       })

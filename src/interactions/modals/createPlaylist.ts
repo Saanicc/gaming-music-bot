@@ -53,8 +53,10 @@ export const execute = async (interaction: ModalSubmitInteraction) => {
 
     await interaction.editReply(
       buildMessage({
-        title: "Error creating playlist",
-        description: `Failed to create playlist **${name}**`,
+        title: t("commands.playlist.createModal.errorEmbed.title"),
+        description: t("commands.playlist.createModal.errorEmbed.description", {
+          name,
+        }),
         color: "error",
         ephemeral: true,
       })
@@ -62,10 +64,22 @@ export const execute = async (interaction: ModalSubmitInteraction) => {
     return;
   }
 
+  const description =
+    valid.length > 0
+      ? t("commands.playlist.createModal.successEmbed.descriptionWithTracks", {
+          user: user.toString(),
+          count: String(valid.length),
+          name,
+        })
+      : t("commands.playlist.createModal.successEmbed.description", {
+          user: user.toString(),
+          name,
+        });
+
   await interaction.editReply(
     buildMessage({
-      title: "Playlist created",
-      description: `${user} created a playlist ${valid.length ? `with ${valid.length} tracks` : ""} called **${name}**`,
+      title: t("commands.playlist.createModal.successEmbed.title"),
+      description,
       color: "success",
     })
   );
@@ -73,11 +87,13 @@ export const execute = async (interaction: ModalSubmitInteraction) => {
   if (invalid.length > 0) {
     await interaction.followUp(
       buildMessage({
-        title: "Playlist created - Info",
-        description: `You just created a playlist called **${name}**\n\nHowever, the following URLs are invalid or unsupported:\n${invalid.map((url) => `- \`${url}\``).join("\n")}\n\nOnly single track URLs are supported.`,
+        title: t("commands.playlist.createModal.infoEmbed.title"),
+        description: t("commands.playlist.createModal.infoEmbed.description", {
+          name,
+          invalidUrls: invalid.map((url) => `- \`${url}\``).join("\n"),
+        }),
         color: "info",
-        footerText:
-          "You can add more tracks later using the `/playlist update` command.",
+        footerText: t("commands.playlist.createModal.infoEmbed.footer"),
         ephemeral: true,
       })
     );

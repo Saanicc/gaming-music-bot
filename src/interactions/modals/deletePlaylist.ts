@@ -24,8 +24,10 @@ export const execute = async (interaction: ModalSubmitInteraction) => {
   if (name !== playlist.name) {
     return interaction.editReply(
       buildMessage({
-        title: "Error deleting playlist",
-        description: `Failed to delete playlist. The name you entered did not match the playlist name.`,
+        title: t("commands.playlist.deleteModal.mismatchErrorEmbed.title"),
+        description: t(
+          "commands.playlist.deleteModal.mismatchErrorEmbed.description"
+        ),
         color: "error",
         ephemeral: true,
       })
@@ -37,8 +39,8 @@ export const execute = async (interaction: ModalSubmitInteraction) => {
   } catch (error) {
     await interaction.editReply(
       buildMessage({
-        title: "Error deleting playlist",
-        description: `Failed to delete playlist`,
+        title: t("commands.playlist.deleteModal.errorEmbed.title"),
+        description: t("commands.playlist.deleteModal.errorEmbed.description"),
         color: "error",
         ephemeral: true,
       })
@@ -48,8 +50,11 @@ export const execute = async (interaction: ModalSubmitInteraction) => {
 
   return interaction.editReply(
     buildMessage({
-      title: "Playlist deleted",
-      description: `${user} deleted playlist: **${playlist.name}**`,
+      title: t("commands.playlist.deleteModal.successEmbed.title"),
+      description: t("commands.playlist.deleteModal.successEmbed.description", {
+        user: user.toString(),
+        name: playlist.name,
+      }),
       color: "success",
     })
   );

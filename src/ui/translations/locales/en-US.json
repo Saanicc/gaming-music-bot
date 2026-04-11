@@ -153,6 +153,68 @@
     }
   },
   "commands": {
+    "playlist": {
+      "createModal": {
+        "title": "Create Playlist",
+        "namePlaceholder": "Enter playlist name...",
+        "nameLabel": "Playlist Name",
+        "tracksPlaceholder": "Enter track urls, one per line",
+        "tracksLabel": "Track urls (optional)",
+        "tracksDetails": "-# Supported sources: __Youtube__, __Spotify__, __Deezer__, __Soundcloud__\n-# Example:\n-# <https://www.youtube.com/watch?v=12345>\n-# <https://open.spotify.com/track/12345>\n-# <https://www.deezer.com/track/12345>\n-# <https://soundcloud.com/abc/123>",
+        "errorEmbed": {
+          "title": "Error creating playlist",
+          "description": "Failed to create playlist **{{name}}**"
+        },
+        "successEmbed": {
+          "title": "Playlist created",
+          "description": "{{user}} created a playlist called **{{name}}**",
+          "descriptionWithTracks": "{{user}} created a playlist with {{count}} tracks called **{{name}}**"
+        },
+        "infoEmbed": {
+          "title": "Playlist created - Info",
+          "description": "You just created a playlist called **{{name}}**\n\nHowever, the following URLs are invalid or unsupported:\n{{invalidUrls}}\n\nOnly single track URLs are supported.",
+          "footer": "You can add more tracks later using the `/playlist update` command."
+        }
+      },
+      "updateModal": {
+        "title": "Update Playlist: {{name}}",
+        "namePlaceholder": "Enter playlist name...",
+        "nameLabel": "Playlist Name",
+        "tracksPlaceholder": "Enter track urls, one per line",
+        "tracksLabel": "Track urls",
+        "tracksDetails": "-# Supported sources: __Youtube__, __Spotify__, __Deezer__, __Soundcloud__\n-# Example:\n-# <https://www.youtube.com/watch?v=12345>\n-# <https://open.spotify.com/track/12345>\n-# <https://www.deezer.com/track/12345>\n-# <https://soundcloud.com/abc/123>",
+        "errorEmbed": {
+          "title": "Error updating playlist",
+          "description": "Failed to update playlist **{{name}}**"
+        },
+        "successEmbed": {
+          "title": "Playlist updated",
+          "description": "{{user}} updated the playlist **{{name}}**",
+          "descriptionWithTracks": "{{user}} updated the playlist **{{name}}** (now containing {{count}} tracks)"
+        },
+        "infoEmbed": {
+          "title": "Playlist updated - Info",
+          "description": "You updated the playlist **{{name}}**\n\nHowever, the following URLs are invalid or unsupported and were skipped:\n{{invalidUrls}}\n\nOnly single track URLs are supported."
+        }
+      },
+      "deleteModal": {
+        "title": "Delete Playlist: {{name}}",
+        "infoLabel": "You are about to delete the playlist __{{name}}__\nIt contains {{count}} tracks.",
+        "confirmLabel": "Type \"{{name}}\" to confirm deletion",
+        "mismatchErrorEmbed": {
+          "title": "Error deleting playlist",
+          "description": "Failed to delete playlist. The name you entered did not match the playlist name."
+        },
+        "errorEmbed": {
+          "title": "Error deleting playlist",
+          "description": "Failed to delete playlist"
+        },
+        "successEmbed": {
+          "title": "Playlist deleted",
+          "description": "{{user}} deleted playlist: **{{name}}**"
+        }
+      }
+    },
     "leaderboard": {
       "xp": {
         "title": "XP Leaderboard",

@@ -11,6 +11,7 @@ import {
 import { getPlaylistChoices } from "@/utils/helpers/track";
 import { db } from "@/root/src/db";
 import { guardReply } from "@/utils/helpers/interactions";
+import { useTranslations } from "@/utils/hooks/useTranslations";
 
 export const data = new SlashCommandBuilder()
   .setName("playlist")
@@ -60,34 +61,36 @@ export const execute = async (interaction: ChatInputCommandInteraction) => {
 };
 
 const handleCreate = async (interaction: ChatInputCommandInteraction) => {
+  const t = useTranslations(interaction.guildId ?? "");
+
   const modal = new ModalBuilder()
     .setCustomId("create_playlist")
-    .setTitle("Create Playlist");
+    .setTitle(t("commands.playlist.createModal.title"));
 
   const nameInput = new TextInputBuilder()
     .setCustomId("name")
     .setStyle(TextInputStyle.Short)
-    .setPlaceholder("Enter playlist name...")
+    .setPlaceholder(t("commands.playlist.createModal.namePlaceholder"))
     .setMinLength(2)
     .setMaxLength(50)
     .setRequired(true);
 
   const nameLabel = new LabelBuilder()
-    .setLabel("Playlist Name")
+    .setLabel(t("commands.playlist.createModal.nameLabel"))
     .setTextInputComponent(nameInput);
 
   const tracksInput = new TextInputBuilder()
     .setCustomId("tracks")
     .setStyle(TextInputStyle.Paragraph)
-    .setPlaceholder("Enter track urls, one per line")
+    .setPlaceholder(t("commands.playlist.createModal.tracksPlaceholder"))
     .setRequired(false);
 
   const tracksLabel = new LabelBuilder()
-    .setLabel("Track urls (optional)")
+    .setLabel(t("commands.playlist.createModal.tracksLabel"))
     .setTextInputComponent(tracksInput);
 
   const nameDetails = new TextDisplayBuilder().setContent(
-    `-# Supported sources: __Youtube__, __Spotify__, __Deezer__, __Soundcloud__\n-# Example urls:\n-# <https://\u200Bwww.youtube.com/watch?v=12345>\n-# <https://\u200Bopen.spotify.com/track/12345>\n-# <https://\u200Bwww.deezer.com/track/12345>\n-# <https://\u200Bsoundcloud.com/12345>`
+    t("commands.playlist.createModal.tracksDetails")
   );
 
   modal
@@ -107,36 +110,40 @@ const handleUpdate = async (interaction: ChatInputCommandInteraction) => {
     return guardReply(interaction, "PLAYLIST_NOT_FOUND", "reply");
   }
 
+  const t = useTranslations(guildId);
+
   const modal = new ModalBuilder()
     .setCustomId(`update_playlist:${playlistId}`)
-    .setTitle(`Update Playlist: ${playlist.name}`);
+    .setTitle(
+      t("commands.playlist.updateModal.title", { name: playlist.name })
+    );
 
   const nameInput = new TextInputBuilder()
     .setCustomId("name")
     .setStyle(TextInputStyle.Short)
-    .setPlaceholder("Enter playlist name...")
+    .setPlaceholder(t("commands.playlist.updateModal.namePlaceholder"))
     .setValue(playlist.name)
     .setMinLength(2)
     .setMaxLength(50)
     .setRequired(true);
 
   const nameLabel = new LabelBuilder()
-    .setLabel("Playlist Name")
+    .setLabel(t("commands.playlist.updateModal.nameLabel"))
     .setTextInputComponent(nameInput);
 
   const tracksInput = new TextInputBuilder()
     .setCustomId("tracks")
     .setStyle(TextInputStyle.Paragraph)
-    .setPlaceholder("Enter track urls, one per line")
+    .setPlaceholder(t("commands.playlist.updateModal.tracksPlaceholder"))
     .setValue(playlist.trackUrls.join("\n"))
     .setRequired(false);
 
   const tracksLabel = new LabelBuilder()
-    .setLabel("Track urls")
+    .setLabel(t("commands.playlist.updateModal.tracksLabel"))
     .setTextInputComponent(tracksInput);
 
   const nameDetails = new TextDisplayBuilder().setContent(
-    `-# Supported sources: __Youtube__, __Spotify__, __Deezer__, __Soundcloud__\n-# Example urls:\n-# <https://\u200Bwww.youtube.com/watch?v=12345>\n-# <https://\u200Bopen.spotify.com/track/12345>\n-# <https://\u200Bwww.deezer.com/track/12345>\n-# <https://\u200Bsoundcloud.com/12345>`
+    t("commands.playlist.updateModal.tracksDetails")
   );
 
   modal
@@ -156,12 +163,19 @@ const handleDelete = async (interaction: ChatInputCommandInteraction) => {
     return guardReply(interaction, "PLAYLIST_NOT_FOUND", "reply");
   }
 
+  const t = useTranslations(guildId);
+
   const modal = new ModalBuilder()
     .setCustomId(`delete_playlist:${playlistId}`)
-    .setTitle(`Delete Playlist: ${playlist.name}`);
+    .setTitle(
+      t("commands.playlist.deleteModal.title", { name: playlist.name })
+    );
 
   const infoLabel = new TextDisplayBuilder().setContent(
-    `You are about to delete the playlist __${playlist.name}__\nIt contains ${playlist.trackUrls.length} tracks.`
+    t("commands.playlist.deleteModal.infoLabel", {
+      name: playlist.name,
+      count: String(playlist.trackUrls.length),
+    })
   );
 
   const confirmInput = new TextInputBuilder()
@@ -170,7 +184,9 @@ const handleDelete = async (interaction: ChatInputCommandInteraction) => {
     .setRequired(true);
 
   const confirmLabel = new LabelBuilder()
-    .setLabel(`Type "${playlist.name}" to confirm deletion`)
+    .setLabel(
+      t("commands.playlist.deleteModal.confirmLabel", { name: playlist.name })
+    )
     .setTextInputComponent(confirmInput);
 
   modal.addTextDisplayComponents(infoLabel).addLabelComponents(confirmLabel);
