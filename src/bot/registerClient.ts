@@ -25,7 +25,7 @@ export const registerDiscordClient = (): Client => {
       GatewayIntentBits.MessageContent,
     ],
     rest: {
-      makeRequest: (url, init) => fetch(url, init),
+      makeRequest: fetch,
     },
   });
 
