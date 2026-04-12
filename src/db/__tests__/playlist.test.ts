@@ -141,7 +141,13 @@ describe("playlist DB functions", () => {
       }); // Pre-check for MAX_PLAYLISTS
       (GuildPlaylists.findOne as jest.Mock).mockResolvedValueOnce(null); // Pre-check for duplicate name
       (GuildPlaylists.findOneAndUpdate as jest.Mock).mockResolvedValue({
-        success: true,
+        playlists: [
+          {
+            id: "mocked-uuid-1234",
+            name: "Cool Tunes",
+            trackUrls: ["http://url"],
+          },
+        ],
       });
 
       const newPlaylist = { name: "Cool Tunes", trackUrls: ["http://url"] };
@@ -160,7 +166,15 @@ describe("playlist DB functions", () => {
         },
         { upsert: true, new: true }
       );
-      expect(result).toEqual({ success: true });
+      expect(result).toEqual({
+        playlists: [
+          {
+            id: "mocked-uuid-1234",
+            name: "Cool Tunes",
+            trackUrls: ["http://url"],
+          },
+        ],
+      });
     });
 
     it("should throw an error if the maximum playlist limit is reached", async () => {
