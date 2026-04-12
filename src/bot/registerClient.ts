@@ -83,10 +83,15 @@ export const registerDiscordClient = (): Client => {
     } else if (interaction.isAutocomplete()) {
       const commandName = interaction.commandName;
       const handler = commands[commandName as keyof typeof commands];
-      if (!handler) return;
+      if (!handler) {
+        await interaction.respond([]);
+        return;
+      }
 
       if ("autocomplete" in handler) {
         await handler.autocomplete(interaction);
+      } else {
+        await interaction.respond([]);
       }
     }
   });
