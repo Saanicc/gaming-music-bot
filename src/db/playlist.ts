@@ -29,11 +29,12 @@ export const findPlaylistById = async (guildId: string, id: string) => {
  * @param name The name of the playlist to find
  */
 export const findPlaylistByName = async (guildId: string, name: string) => {
+  const escapedName = name.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
   const res = await GuildPlaylists.findOne(
     {
       guildId,
       "playlists.name": {
-        $regex: new RegExp(`^${name}$`, "i"),
+        $regex: new RegExp(`^${escapedName}$`, "i"),
       },
     },
     { "playlists.$": 1 }
