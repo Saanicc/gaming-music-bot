@@ -65,7 +65,6 @@ export const execute = async (interaction: ModalSubmitInteraction) => {
           name,
         }),
         color: "error",
-        ephemeral: true,
       })
     );
     return;

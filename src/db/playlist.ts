@@ -89,6 +89,16 @@ export const updatePlaylist = async (
   playlistId: string,
   updatedData: Partial<Playlist>
 ) => {
+  if (updatedData.name) {
+    const existingPlaylist = await findPlaylistByName(
+      guildId,
+      updatedData.name
+    );
+    if (existingPlaylist && existingPlaylist.id !== playlistId) {
+      throw new Error("Playlist name already exists");
+    }
+  }
+
   const updateQuery: any = {};
   if (updatedData.name) updateQuery["playlists.$.name"] = updatedData.name;
   if (updatedData.trackUrls)

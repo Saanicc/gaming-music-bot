@@ -3,6 +3,7 @@ import { useTranslations } from "@/utils/hooks/useTranslations";
 import { buildMessage } from "../../utils/bot-message/buildMessage";
 import { db } from "../../db";
 import { SUPPORTED_TRACK_URL_REGEX } from "@/utils/constants/regex";
+import { guardReply } from "../../utils/helpers/interactions";
 
 const parseAndValidateTracks = (
   input: string
@@ -42,6 +43,15 @@ export const execute = async (interaction: ModalSubmitInteraction) => {
       trackUrls: valid,
     });
   } catch (error) {
+    if (
+      error instanceof Error &&
+      error.message === "Playlist name already exists"
+    ) {
+      return guardReply(interaction, "DUPLICATE_PLAYLIST", "editReply", {
+        playlistName: name,
+      });
+    }
+
     await interaction.editReply(
       buildMessage({
         title: t("commands.playlist.updateModal.errorEmbed.title"),
@@ -49,7 +59,6 @@ export const execute = async (interaction: ModalSubmitInteraction) => {
           name,
         }),
         color: "error",
-        ephemeral: true,
       })
     );
     return;
