@@ -8,10 +8,10 @@ import {
   TextInputBuilder,
   TextInputStyle,
 } from "discord.js";
-import { getPlaylistChoices } from "@/utils/helpers/track";
-import { db } from "@/root/src/db";
+import { db } from "@/db";
 import { guardReply } from "@/utils/helpers/interactions";
 import { useTranslations } from "@/utils/hooks/useTranslations";
+import { getPlaylistChoices } from "@/utils/helpers/track";
 
 export const data = new SlashCommandBuilder()
   .setName("playlist")

@@ -11,7 +11,7 @@ import { updateUserLevel } from "@/utils/helpers/user";
 import { joinVoiceChannel } from "@/utils/helpers/system";
 import { guardReply } from "@/utils/helpers/interactions";
 import { useTranslations } from "@/utils/hooks/useTranslations";
-import { db } from "@/root/src/db";
+import { db } from "@/db";
 
 interface ExecutePlaylistArgs {
   interaction: ChatInputCommandInteraction | ButtonInteraction;

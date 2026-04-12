@@ -6,6 +6,7 @@ import {
 import { useMainPlayer, useQueue } from "discord-player";
 import { GENRES } from "@/utils/constants/music-quiz-search-queries";
 import { guardReply } from "@/utils/helpers/interactions";
+import { getPlaylistChoices } from "@/utils/helpers/track";
 import { execute as executePlayQuery } from "./query";
 import { execute as executePlayNow } from "./now";
 import { execute as executePlayNext } from "./next";
@@ -13,7 +14,6 @@ import { execute as executePlayBossMusic } from "./bossMusic";
 import { execute as executePlayRandomPlaylist } from "./random/playlist";
 import { execute as executePlayRandomTrack } from "./random/track";
 import { execute as executePlayPlaylist } from "./playlist";
-import { getPlaylistChoices } from "@/root/src/utils/helpers/track";
 
 export const data = new SlashCommandBuilder()
   .setName("play")
