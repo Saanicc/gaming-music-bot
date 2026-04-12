@@ -5,7 +5,10 @@
     "leftVoiceChat": "Lämnade röstkanalen",
     "emptyQueue": "Kön är slut. Lägg till nya låtar för att fortsätta uppspelningen!",
     "trackRequestedBy": "Låt begärd av {{user}} — {{userRank}}",
-    "unknown": "Okänd"
+    "unknown": "Okänd",
+    "track": "låt",
+    "tracks": "låtar",
+    "empty": "Tom"
   },
   "guards": {
     "noQueue": {

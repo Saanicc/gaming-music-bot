@@ -5,7 +5,10 @@
     "leftVoiceChat": "Left the voice channel",
     "emptyQueue": "Reached the end of the queue. Please queue new track(s) to continue playback!",
     "trackRequestedBy": "Track requested by {{user}} — {{userRank}}",
-    "unknown": "Unknown"
+    "unknown": "Unknown",
+    "track": "track",
+    "tracks": "tracks",
+    "empty": "empty"
   },
   "guards": {
     "noQueue": {
@@ -93,6 +96,10 @@
     "duplicatePlaylist": {
       "title": "Playlist already exists",
       "description": "A playlist with the name **{{playlistName}}** already exists."
+    },
+    "maxPlaylists": {
+      "title": "Maximum number of playlists reached",
+      "description": "You have reached the maximum number of playlists allowed."
     }
   },
   "player": {
