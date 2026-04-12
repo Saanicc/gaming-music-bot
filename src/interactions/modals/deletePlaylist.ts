@@ -29,7 +29,6 @@ export const execute = async (interaction: ModalSubmitInteraction) => {
           "commands.playlist.deleteModal.mismatchErrorEmbed.description"
         ),
         color: "error",
-        ephemeral: true,
       })
     );
   }
@@ -42,7 +41,6 @@ export const execute = async (interaction: ModalSubmitInteraction) => {
         title: t("commands.playlist.deleteModal.errorEmbed.title"),
         description: t("commands.playlist.deleteModal.errorEmbed.description"),
         color: "error",
-        ephemeral: true,
       })
     );
     return;
