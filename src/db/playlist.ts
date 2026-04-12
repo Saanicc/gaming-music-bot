@@ -1,3 +1,4 @@
+import { MAX_PLAYLISTS } from "../utils/constants";
 import { GuildPlaylists, type Playlist } from "./schemas/Playlist";
 
 /**
@@ -49,10 +50,16 @@ export const createPlaylist = async (
   guildId: string,
   playlist: Omit<Playlist, "id">
 ) => {
+  const numberOfPlaylists = await findPlaylistsByGuildId(guildId);
+  if (numberOfPlaylists.length >= MAX_PLAYLISTS) {
+    throw new Error("Maximum number of playlists reached");
+  }
+
   const existingPlaylist = await findPlaylistByName(guildId, playlist.name);
   if (existingPlaylist) {
     throw new Error("Playlist name already exists");
   }
+
   const res = await GuildPlaylists.findOneAndUpdate(
     { guildId },
     {

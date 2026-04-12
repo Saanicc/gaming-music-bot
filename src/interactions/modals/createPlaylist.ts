@@ -51,6 +51,13 @@ export const execute = async (interaction: ModalSubmitInteraction) => {
       });
     }
 
+    if (
+      error instanceof Error &&
+      error.message === "Maximum number of playlists reached"
+    ) {
+      return guardReply(interaction, "MAX_PLAYLISTS", "editReply");
+    }
+
     await interaction.editReply(
       buildMessage({
         title: t("commands.playlist.createModal.errorEmbed.title"),

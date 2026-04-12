@@ -112,7 +112,13 @@ export const GUARD_MESSAGES = {
   DUPLICATE_PLAYLIST: {
     title: "guards.duplicatePlaylist.title",
     description: "guards.duplicatePlaylist.description",
-    ephemeral: true,
+    ephemeral: false,
+    color: "error",
+  },
+  MAX_PLAYLISTS: {
+    title: "guards.maxPlaylists.title",
+    description: "guards.maxPlaylists.description",
+    ephemeral: false,
     color: "error",
   },
 
