@@ -188,6 +188,7 @@ describe("Helper Utils", () => {
       "https://freesvg.org/storage/img/thumb/vinyl-plokstele.png";
 
     it("should return the default thumbnail if obj is null or undefined", () => {
+      expect(getThumbnail(null)).toEqual(DEFAULT_THUMBNAIL);
       expect(getThumbnail()).toEqual(DEFAULT_THUMBNAIL);
     });
 
