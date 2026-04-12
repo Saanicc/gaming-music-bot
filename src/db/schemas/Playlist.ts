@@ -11,14 +11,24 @@ interface IGuildPlaylists extends Document {
   playlists: Playlist[];
 }
 
+const playlistItemSchema = new mongoose.Schema(
+  {
+    id: { type: String, required: true },
+    name: { type: String, required: true },
+    trackUrls: { type: [String], required: true, default: [] },
+  },
+  { _id: false }
+);
+
 const playlistSchema = new mongoose.Schema<IGuildPlaylists>({
   guildId: {
     type: String,
     required: true,
   },
   playlists: {
-    type: [Object],
+    type: [playlistItemSchema],
     required: true,
+    default: [],
   },
 });
 
