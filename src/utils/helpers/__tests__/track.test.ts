@@ -8,6 +8,7 @@ import {
   getFormattedTrackDescription,
   getTrackRequestedByFooterText,
   getBossTracks,
+  getPlaylistChoices,
 } from "../track";
 import { db } from "@/db";
 import { getRankTitleWithEmoji } from "@/modules/rankSystem";
@@ -20,6 +21,7 @@ jest.mock("@/db", () => ({
     findBossTrackByUrl: jest.fn(),
     findUser: jest.fn(),
     findBossTracksByType: jest.fn(),
+    findPlaylistsByGuildId: jest.fn(),
   },
 }));
 
@@ -269,6 +271,65 @@ describe("Track Helpers (track.ts)", () => {
       );
 
       warnSpy.mockRestore();
+    });
+  });
+
+  describe("getPlaylistChoices()", () => {
+    const mockRespond = jest.fn();
+    const mockInteraction = {
+      guildId: "guild-1",
+      respond: mockRespond,
+    } as any;
+
+    const mockT = jest.fn((key: string) => {
+      if (key === "common.empty") return "Empty";
+      if (key === "common.track") return "Track";
+      if (key === "common.tracks") return "Tracks";
+      return key;
+    });
+
+    beforeEach(() => {
+      (useTranslations as jest.Mock).mockReturnValue(mockT);
+      mockRespond.mockClear();
+    });
+
+    it("should respond with correctly formatted choices for empty, singular, and plural playlists", async () => {
+      (db.findPlaylistsByGuildId as jest.Mock).mockResolvedValue([
+        { id: "p1", name: "Empty Playlist", trackUrls: [] },
+        { id: "p2", name: "Singular Playlist", trackUrls: ["url1"] },
+        { id: "p3", name: "Plural Playlist", trackUrls: ["url1", "url2"] },
+      ]);
+
+      await getPlaylistChoices(mockInteraction);
+
+      expect(useTranslations).toHaveBeenCalledWith("guild-1");
+      expect(db.findPlaylistsByGuildId).toHaveBeenCalledWith("guild-1");
+      expect(mockRespond).toHaveBeenCalledWith([
+        { name: "Empty Playlist — (Empty)", value: "p1" },
+        { name: "Singular Playlist — (1 Track)", value: "p2" },
+        { name: "Plural Playlist — (2 Tracks)", value: "p3" },
+      ]);
+    });
+
+    it("should handle null guildId safely", async () => {
+      const emptyInteraction = { respond: mockRespond } as any;
+      (db.findPlaylistsByGuildId as jest.Mock).mockResolvedValue([]);
+
+      await getPlaylistChoices(emptyInteraction);
+
+      expect(useTranslations).toHaveBeenCalledWith("");
+      expect(db.findPlaylistsByGuildId).toHaveBeenCalledWith("");
+      expect(mockRespond).toHaveBeenCalledWith([]);
+    });
+
+    it("should handle no playlists found", async () => {
+      (db.findPlaylistsByGuildId as jest.Mock).mockResolvedValue([]);
+
+      await getPlaylistChoices(mockInteraction);
+
+      expect(useTranslations).toHaveBeenCalledWith("guild-1");
+      expect(db.findPlaylistsByGuildId).toHaveBeenCalledWith("guild-1");
+      expect(mockRespond).toHaveBeenCalledWith([]);
     });
   });
 });
