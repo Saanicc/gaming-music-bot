@@ -24,6 +24,8 @@ const playlistSchema = new mongoose.Schema<IGuildPlaylists>({
   guildId: {
     type: String,
     required: true,
+    unique: true,
+    index: true,
   },
   playlists: {
     type: [playlistItemSchema],
