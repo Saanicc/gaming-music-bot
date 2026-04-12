@@ -96,6 +96,10 @@
     "duplicatePlaylist": {
       "title": "Spellistan finns redan",
       "description": "En spellista med namnet **{{playlistName}}** finns redan."
+    },
+    "maxPlaylists": {
+      "title": "Maximalt antal spellistor uppnått",
+      "description": "Du har nått det maximala antalet tillåtna spellistor."
     }
   },
   "player": {
