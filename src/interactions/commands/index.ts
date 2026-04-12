@@ -12,6 +12,7 @@ import * as stop from "./stop";
 import * as musicquiz from "./musicquiz";
 import * as leaderboard from "./leaderboard";
 import * as setLanguage from "./setLanguage";
+import * as playlist from "./playlist";
 
 export const commands = {
   help,
@@ -28,4 +29,5 @@ export const commands = {
   stop,
   musicquiz,
   set_language: setLanguage,
+  playlist,
 };

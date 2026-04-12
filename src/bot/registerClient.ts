@@ -9,11 +9,13 @@ import { config } from "../config";
 import { deployCommands } from "../deploy-commands";
 import { buttons } from "../interactions/buttons";
 import { commands } from "../interactions/commands";
+import { modals } from "../interactions/modals";
 import { handleInteraction } from "../utils/helpers/interactions";
 import { setBotActivity } from "../utils/helpers/system";
 import { db } from "../db";
 import { saveBotLanguageToCache } from "../db/language";
 import { fetch } from "undici";
+import { handleModalInteraction } from "../utils/helpers/interactions/handleModalInteraction";
 
 export const registerDiscordClient = (): Client => {
   const client = new Client({
@@ -75,6 +77,22 @@ export const registerDiscordClient = (): Client => {
     } else if (interaction.isButton()) {
       const button = interaction.customId.split(":")[0];
       await handleInteraction(interaction, buttons, button);
+    } else if (interaction.isModalSubmit()) {
+      const modal = interaction.customId;
+      await handleModalInteraction(interaction, modals, modal);
+    } else if (interaction.isAutocomplete()) {
+      const commandName = interaction.commandName;
+      const handler = commands[commandName as keyof typeof commands];
+      if (!handler) {
+        await interaction.respond([]);
+        return;
+      }
+
+      if ("autocomplete" in handler) {
+        await handler.autocomplete(interaction);
+      } else {
+        await interaction.respond([]);
+      }
     }
   });
 

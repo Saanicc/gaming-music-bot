@@ -5,7 +5,10 @@
     "leftVoiceChat": "Lämnade röstkanalen",
     "emptyQueue": "Kön är slut. Lägg till nya låtar för att fortsätta uppspelningen!",
     "trackRequestedBy": "Låt begärd av {{user}} — {{userRank}}",
-    "unknown": "Okänd"
+    "unknown": "Okänd",
+    "track": "låt",
+    "tracks": "låtar",
+    "empty": "Tom"
   },
   "guards": {
     "noQueue": {
@@ -81,6 +84,22 @@
     "duplicateTrack": {
       "title": "Låten finns redan i kön",
       "description": "Låten spelas redan eller är redan köad."
+    },
+    "playlistNotFound": {
+      "title": "Spellistan hittades inte",
+      "description": "Ingen spellista med namnet **{{playlistName}}** hittades."
+    },
+    "playlistEmpty": {
+      "title": "Spellistan är tom",
+      "description": "Inga låtar hittades i spellistan **{{playlistName}}**."
+    },
+    "duplicatePlaylist": {
+      "title": "Spellistan finns redan",
+      "description": "En spellista med namnet **{{playlistName}}** finns redan."
+    },
+    "maxPlaylists": {
+      "title": "Maximalt antal spellistor uppnått",
+      "description": "Du har nått det maximala antalet tillåtna spellistor."
     }
   },
   "player": {
@@ -141,6 +160,68 @@
     }
   },
   "commands": {
+    "playlist": {
+      "createModal": {
+        "title": "Skapa spellista",
+        "namePlaceholder": "Ange spellistans namn...",
+        "nameLabel": "Spellistans namn",
+        "tracksPlaceholder": "Ange låtar, en länk per rad",
+        "tracksLabel": "Länkar (valfritt)",
+        "tracksDetails": "-# Giltiga källor: __Youtube__, __Spotify__, __Deezer__, __Soundcloud__\n-# Exempel:\n-# <https://www.youtube.com/watch?v=12345>\n-# <https://open.spotify.com/track/12345>\n-# <https://www.deezer.com/track/12345>\n-# <https://soundcloud.com/abc/123>",
+        "errorEmbed": {
+          "title": "Fel vid skapande av spellista",
+          "description": "Kunde inte skapa spellistan **{{name}}**"
+        },
+        "successEmbed": {
+          "title": "Spellista skapad",
+          "description": "{{user}} skapade en spellista som heter **{{name}}**",
+          "descriptionWithTracks": "{{user}} skapade en spellista med {{count}} låtar som heter **{{name}}**"
+        },
+        "infoEmbed": {
+          "title": "Spellista skapad - Info",
+          "description": "Du har precis skapat en spellista som heter **{{name}}**\n\nDock är följande länkar ogiltiga eller utan stöd:\n{{invalidUrls}}\n\nEndast länkar till enskilda låtar stöds.",
+          "footer": "Du kan lägga till fler låtar senare med kommandot `/playlist update`."
+        }
+      },
+      "updateModal": {
+        "title": "Uppdatera spellista: {{name}}",
+        "namePlaceholder": "Ange spellistans namn...",
+        "nameLabel": "Spellistans namn",
+        "tracksPlaceholder": "Ange låtar, en länk per rad",
+        "tracksLabel": "Låtar",
+        "tracksDetails": "-# Giltiga källor: __Youtube__, __Spotify__, __Deezer__, __Soundcloud__\n-# Exempel:\n-# <https://www.youtube.com/watch?v=12345>\n-# <https://open.spotify.com/track/12345>\n-# <https://www.deezer.com/track/12345>\n-# <https://soundcloud.com/abc/123>",
+        "errorEmbed": {
+          "title": "Fel vid uppdatering av spellista",
+          "description": "Kunde inte uppdatera spellistan **{{name}}**"
+        },
+        "successEmbed": {
+          "title": "Spellista uppdaterad",
+          "description": "{{user}} uppdaterade spellistan **{{name}}**",
+          "descriptionWithTracks": "{{user}} uppdaterade spellistan **{{name}}** (innehåller nu {{count}} låtar)"
+        },
+        "infoEmbed": {
+          "title": "Spellista uppdaterad - Info",
+          "description": "Du uppdaterade spellistan **{{name}}**\n\nDock är följande länkar ogiltiga eller utan stöd och hoppades över:\n{{invalidUrls}}\n\nEndast länkar till enskilda låtar stöds."
+        }
+      },
+      "deleteModal": {
+        "title": "Ta bort spellista: {{name}}",
+        "infoLabel": "Du är på väg att ta bort spellistan __{{name}}__\nDen innehåller {{count}} låtar.",
+        "confirmLabel": "Skriv \"{{name}}\" för att bekräfta raderingen",
+        "mismatchErrorEmbed": {
+          "title": "Fel vid radering av spellista",
+          "description": "Kunde inte ta bort spellistan. Namnet du angav matchade inte spellistans namn."
+        },
+        "errorEmbed": {
+          "title": "Fel vid radering av spellista",
+          "description": "Kunde inte ta bort spellistan"
+        },
+        "successEmbed": {
+          "title": "Spellista raderad",
+          "description": "{{user}} raderade spellistan: **{{name}}**"
+        }
+      }
+    },
     "leaderboard": {
       "xp": {
         "title": "XP-topplista",
@@ -210,6 +291,13 @@
         "message": {
           "title": "Köad på plats #{{position}}",
           "footerText": "Inte rätt låt? Försök vara mer specifik eller ange en URL"
+        }
+      },
+      "playlist": {
+        "message": {
+          "title": "Köad",
+          "description": "**{{playlist}}** med {{tracksText}}",
+          "tracks": "{{amount}} låtar"
         }
       }
     },

@@ -97,7 +97,7 @@ export const delay = (ms: number) => {
   return new Promise((resolve) => setTimeout(resolve, ms));
 };
 
-export const getThumbnail = (obj: Track | Playlist | null | undefined) => {
+export const getThumbnail = (obj?: Track | Playlist | null) => {
   const THUMBNAIL = "https://freesvg.org/storage/img/thumb/vinyl-plokstele.png";
   if (!obj || !obj.thumbnail) return THUMBNAIL;
 

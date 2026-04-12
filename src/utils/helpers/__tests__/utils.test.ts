@@ -189,7 +189,7 @@ describe("Helper Utils", () => {
 
     it("should return the default thumbnail if obj is null or undefined", () => {
       expect(getThumbnail(null)).toEqual(DEFAULT_THUMBNAIL);
-      expect(getThumbnail(undefined)).toEqual(DEFAULT_THUMBNAIL);
+      expect(getThumbnail()).toEqual(DEFAULT_THUMBNAIL);
     });
 
     it("should return the default thumbnail if obj.thumbnail is missing", () => {

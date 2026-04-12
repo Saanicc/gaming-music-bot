@@ -1,9 +1,10 @@
 import { GuildQueue, Track, Player } from "discord-player";
-import { User as DiscordUser } from "discord.js";
+import { AutocompleteInteraction, User as DiscordUser } from "discord.js";
 import { getRankTitleWithEmoji } from "@/modules/rankSystem";
 import { useTranslations } from "@/utils/hooks/useTranslations";
 import { db, TrackType } from "@/db";
 import { getSearchEngine } from "./utils";
+import { Playlist } from "../../db/schemas/Playlist";
 
 const guildTracks = new Map<string, Set<string>>();
 
@@ -100,4 +101,29 @@ export const getBossTracks = async (
   }
 
   return tracks;
+};
+
+export const getPlaylistChoices = async (
+  interaction: AutocompleteInteraction
+) => {
+  const t = useTranslations(interaction.guildId ?? "");
+  const guildId = interaction.guildId ?? "";
+  const playlists = await db.findPlaylistsByGuildId(guildId);
+
+  const formattedName = (playlist: Playlist) => {
+    const number = playlist.trackUrls.length;
+
+    const emptyText = t("common.empty");
+    const tracksText = `${number === 1 ? t("common.track") : t("common.tracks")}`;
+    const trackInfo = `(${number === 0 ? emptyText : `${number} ${tracksText}`})`;
+
+    return `${playlist.name} — ${trackInfo}`;
+  };
+
+  const choices = playlists.map((playlist) => ({
+    name: formattedName(playlist),
+    value: playlist.id,
+  }));
+
+  await interaction.respond(choices);
 };

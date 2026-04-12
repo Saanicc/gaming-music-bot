@@ -1,4 +1,8 @@
-import { ChatInputCommandInteraction, ButtonInteraction } from "discord.js";
+import {
+  ChatInputCommandInteraction,
+  ButtonInteraction,
+  ModalSubmitInteraction,
+} from "discord.js";
 import { buildMessage } from "../../bot-message/buildMessage";
 import { ColorType } from "../../constants/colors";
 import { useTranslations } from "../../hooks/useTranslations";
@@ -94,6 +98,30 @@ export const GUARD_MESSAGES = {
     color: "error",
   },
 
+  // ── Playlist ─────────────────────────────────────────────────────────
+  PLAYLIST_NOT_FOUND: {
+    title: "guards.playlistNotFound.title",
+    ephemeral: false,
+    color: "error",
+  },
+  PLAYLIST_EMPTY: {
+    title: "guards.playlistEmpty.title",
+    ephemeral: false,
+    color: "error",
+  },
+  DUPLICATE_PLAYLIST: {
+    title: "guards.duplicatePlaylist.title",
+    description: "guards.duplicatePlaylist.description",
+    ephemeral: false,
+    color: "error",
+  },
+  MAX_PLAYLISTS: {
+    title: "guards.maxPlaylists.title",
+    description: "guards.maxPlaylists.description",
+    ephemeral: false,
+    color: "error",
+  },
+
   // ── Generic errors ───────────────────────────────────────────────────
   GENERIC_ERROR: {
     title: "guards.genericError.title",
@@ -149,7 +177,10 @@ export const GUARD_MESSAGES = {
 
 type GuardMessageKey = keyof typeof GUARD_MESSAGES;
 type ReplyMethod = "reply" | "editReply" | "followUp";
-type Repliable = ChatInputCommandInteraction | ButtonInteraction;
+type Repliable =
+  | ChatInputCommandInteraction
+  | ButtonInteraction
+  | ModalSubmitInteraction;
 
 /**
  * Build the error message for a guard key and send it via the specified
