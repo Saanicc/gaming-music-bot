@@ -58,10 +58,13 @@ export const execute = async ({
     }
   }
 
+  if (tracks.length === 0) {
+    return guardReply(interaction, "PLAYLIST_EMPTY", "followUp");
+  }
+
   try {
     await withTasksQueue(queue, async () => {
       queue.addTrack(tracks);
-      queue.tracks.shuffle();
 
       const joinError = await joinVoiceChannel({
         interaction,
