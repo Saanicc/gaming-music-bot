@@ -33,22 +33,26 @@ Summon it anytime to power up your gameplay with cinematic, high-energy music.
 | `/play now`             | Plays a track from a url or search term, then plays it instantly.                       |
 | `/play next`            | Enqueues a track from a url or search term, then plays it after the current track ends. |
 | `/play boss music`      | Loads, shuffles and plays all boss tracks                                               |
+| `/play random playlist` | Plays a random playlist from a selected or random genre                                 |
+| `/play random track`    | Plays a random track from a selected or random genre                                    |
+| `/play playlist`        | Play one of your playlists                                                              |
+| `/playlist create`      | Create a new playlist                                                                   |
+| `/playlist delete`      | Delete a playlist                                                                       |
+| `/playlist update`      | Update a playlist                                                                       |
 | `/add_track`            | Add new track to the boss music collection                                              |
 | `/help`                 | Shows info about available commands                                                     |
 | `/queue`                | Displays the next five upcoming tracks in the queue                                     |
 | `/skip`                 | Skip the currently playing song.                                                        |
 | `/stop`                 | Stops and disconnects the player.                                                       |
 | `/rank`                 | Check your (or another users) current DJ rank                                           |
-| `/xp leaderboard`       | View the DJ XP leaderboard (top 8 DJs)                                                  |
-| `/quiz leaderboard`     | View the Music Quiz leaderboard (top 8 players)                                         |
+| `/leaderboard xp`       | View the DJ XP leaderboard (top 8 DJs)                                                  |
+| `/leaderboard quiz`     | View the Music Quiz leaderboard (top 8 players)                                         |
 | `/autoplay`             | Turn on/off autoplay                                                                    |
 | `/loop all`             | loops the current queue                                                                 |
 | `/loop current`         | loops the playing track                                                                 |
 | `/loop disable`         | Disables the loop mode                                                                  |
 | `/nightcore`            | Turns on/off the nightcore audio filter                                                 |
 | `/musicquiz`            | Start a music quiz in a thread!                                                         |
-| `/play random playlist` | Plays a random playlist from a selected or random genre                                 |
-| `/play random track`    | Plays a random track from a selected or random genre                                    |
 
 ---
 
