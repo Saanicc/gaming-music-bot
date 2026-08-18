@@ -2,11 +2,9 @@ import { Player } from "discord-player";
 import { SpotifyExtractor } from "discord-player-spotify";
 import { SoundcloudExtractor } from "discord-player-soundcloud";
 import { config } from "../config";
-import { YoutubeExtractor, Log } from "discord-player-youtubei";
+import { YoutubeExtractor } from "discord-player-youtube";
 import { DeezerExtractor } from "discord-player-deezer";
 import { youtubeCookieHandler } from "../utils/helpers/youtubeCookieHandler/youtubeCookieHandler";
-
-Log.setLevel(Log.Level.NONE);
 
 export const registerPlayerExtractors = async (player: Player) => {
   let spotifyExt: SpotifyExtractor | null = null;

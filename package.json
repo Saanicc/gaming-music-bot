@@ -23,19 +23,19 @@
     "release:major": "npm run branch-guard && npm version major && git push --follow-tags --atomic origin HEAD"
   },
   "dependencies": {
-    "@snazzah/davey": "0.1.10",
+    "@snazzah/davey": "0.1.12",
     "canvacord": "6.0.4",
     "discord-player": "7.2.0",
     "discord-player-deezer": "2.6.0",
     "discord-player-soundcloud": "1.0.7",
     "discord-player-spotify": "1.1.9",
-    "discord-player-youtubei": "3.0.0-beta.4",
-    "discord.js": "14.26.2",
+    "discord-player-youtube": "^0.8.7",
+    "discord.js": "14.27.0",
     "dotenv": "17.3.1",
     "mediaplex": "1.0.0",
     "mongoose": "8.19.2",
     "undici": "6.24.1",
-    "youtube-dl-exec": "3.1.7"
+    "youtube-dl-exec": "3.1.12"
   },
   "devDependencies": {
     "@types/jest": "30.0.0",
