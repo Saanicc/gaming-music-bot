@@ -3,7 +3,7 @@ import {
   ChatInputCommandInteraction,
   VoiceBasedChannel,
 } from "discord.js";
-import { Player, useQueue } from "discord-player";
+import { Player, QueueFilters, useQueue } from "discord-player";
 import { buildMessage } from "@/utils/bot-message/buildMessage";
 import { getRandomFightGif } from "@/utils/helpers/utils";
 import { queueManager } from "@/services/queueManager";
@@ -40,6 +40,7 @@ export const execute = async ({
   }
 
   const newQueue = player.nodes.create(guild, {
+    defaultFFmpegFilters: ["loudnorm" as keyof QueueFilters],
     metadata: {
       textChannel: interaction.channel,
       voiceChannel,

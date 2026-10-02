@@ -5,7 +5,13 @@ import {
   TextChannel,
   VoiceBasedChannel,
 } from "discord.js";
-import { Player, Track, useMainPlayer, GuildQueue } from "discord-player";
+import {
+  Player,
+  Track,
+  useMainPlayer,
+  GuildQueue,
+  QueueFilters,
+} from "discord-player";
 import { joinVoiceChannel } from "./system";
 import { getSearchEngine } from "./utils";
 
@@ -43,6 +49,7 @@ export const restoreOldQueue = async ({
   const player = useMainPlayer();
 
   const newQueue = player.nodes.create(guild, {
+    defaultFFmpegFilters: ["loudnorm" as keyof QueueFilters],
     metadata: { textChannel, voiceChannel },
     leaveOnEnd: false,
     leaveOnEmpty: true,

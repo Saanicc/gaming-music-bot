@@ -3,7 +3,12 @@ import {
   ChatInputCommandInteraction,
   SlashCommandBuilder,
 } from "discord.js";
-import { useMainPlayer, useQueue } from "discord-player";
+import {
+  AudioFilters,
+  QueueFilters,
+  useMainPlayer,
+  useQueue,
+} from "discord-player";
 import { GENRES } from "@/utils/constants/music-quiz-search-queries";
 import { guardReply } from "@/utils/helpers/interactions";
 import { getPlaylistChoices } from "@/utils/helpers/track";
@@ -150,6 +155,7 @@ export const execute = async (interaction: ChatInputCommandInteraction) => {
 
   if (!queue) {
     queue = player.nodes.create(guild, {
+      defaultFFmpegFilters: ["loudnorm" as keyof QueueFilters],
       metadata: { textChannel, voiceChannel },
       leaveOnEnd: false,
       leaveOnEmpty: true,

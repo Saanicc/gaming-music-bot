@@ -6,7 +6,7 @@ import {
   TextChannel,
   MessageCreateOptions,
 } from "discord.js";
-import { Player, useQueue } from "discord-player";
+import { Player, QueueFilters, useQueue } from "discord-player";
 import { savePreviousQueue, restoreOldQueue } from "@/utils/helpers/queue";
 import { queueManager, StoredQueue } from "@/services/queueManager";
 import { musicPlayerMessage } from "@/services/musicPlayerMessage";
@@ -29,6 +29,7 @@ export const savePreviousAndCreateNewQueue = async (
   }
 
   const newQueue = player.nodes.create(voiceChannel.guild, {
+    defaultFFmpegFilters: ["loudnorm" as keyof QueueFilters],
     metadata: { textChannel: thread, isSwitching: true, musicQuiz: true },
     leaveOnEmpty: false,
     leaveOnEnd: false,
