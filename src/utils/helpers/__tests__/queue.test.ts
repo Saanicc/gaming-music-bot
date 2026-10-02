@@ -107,6 +107,7 @@ describe("Queue Helpers (queue.ts)", () => {
       // Assert queue create
       expect(useMainPlayer).toHaveBeenCalled();
       expect(mockPlayerNodeCreate).toHaveBeenCalledWith(mockGuild, {
+        defaultFFmpegFilters: ["loudnorm"],
         metadata: {
           textChannel: mockTextChannel,
           voiceChannel: mockVoiceChannel,
